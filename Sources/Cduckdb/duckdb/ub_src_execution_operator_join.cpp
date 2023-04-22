@@ -1,6 +1,9 @@
 #line 0 "src/execution/operator/join/outer_join_marker.cpp"
 #include "src/execution/operator/join/outer_join_marker.cpp"
 
+#line 0 "src/execution/operator/join/physical_asof_join.cpp"
+#include "src/execution/operator/join/physical_asof_join.cpp"
+
 #line 0 "src/execution/operator/join/physical_blockwise_nl_join.cpp"
 #include "src/execution/operator/join/physical_blockwise_nl_join.cpp"
 
