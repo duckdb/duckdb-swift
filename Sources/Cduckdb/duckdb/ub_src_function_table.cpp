@@ -16,6 +16,9 @@
 #line 0 "src/function/table/repeat.cpp"
 #include "src/function/table/repeat.cpp"
 
+#line 0 "src/function/table/repeat_row.cpp"
+#include "src/function/table/repeat_row.cpp"
+
 #line 0 "src/function/table/copy_csv.cpp"
 #include "src/function/table/copy_csv.cpp"
 
