@@ -4,6 +4,9 @@
 #line 0 "src/common/enums/compression_type.cpp"
 #include "src/common/enums/compression_type.cpp"
 
+#line 0 "src/common/enums/date_part_specifier.cpp"
+#include "src/common/enums/date_part_specifier.cpp"
+
 #line 0 "src/common/enums/expression_type.cpp"
 #include "src/common/enums/expression_type.cpp"
 

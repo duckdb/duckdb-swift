@@ -10,3 +10,6 @@
 #line 0 "src/main/extension/extension_load.cpp"
 #include "src/main/extension/extension_load.cpp"
 
+#line 0 "src/main/extension/extension_util.cpp"
+#include "src/main/extension/extension_util.cpp"
+
