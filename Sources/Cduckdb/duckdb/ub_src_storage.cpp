@@ -40,6 +40,9 @@
 #line 0 "src/storage/write_ahead_log.cpp"
 #include "src/storage/write_ahead_log.cpp"
 
+#line 0 "src/storage/optimistic_data_writer.cpp"
+#include "src/storage/optimistic_data_writer.cpp"
+
 #line 0 "src/storage/partial_block_manager.cpp"
 #include "src/storage/partial_block_manager.cpp"
 

@@ -13,6 +13,9 @@
 #line 0 "src/parallel/event.cpp"
 #include "src/parallel/event.cpp"
 
+#line 0 "src/parallel/interrupt.cpp"
+#include "src/parallel/interrupt.cpp"
+
 #line 0 "src/parallel/pipeline.cpp"
 #include "src/parallel/pipeline.cpp"
 
