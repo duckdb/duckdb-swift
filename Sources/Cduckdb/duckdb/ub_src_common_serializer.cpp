@@ -1,3 +1,9 @@
+#line 0 "src/common/serializer/binary_serializer.cpp"
+#include "src/common/serializer/binary_serializer.cpp"
+
+#line 0 "src/common/serializer/binary_deserializer.cpp"
+#include "src/common/serializer/binary_deserializer.cpp"
+
 #line 0 "src/common/serializer/buffered_deserializer.cpp"
 #include "src/common/serializer/buffered_deserializer.cpp"
 
@@ -9,7 +15,4 @@
 
 #line 0 "src/common/serializer/buffered_serializer.cpp"
 #include "src/common/serializer/buffered_serializer.cpp"
-
-#line 0 "src/common/serializer/enum_serializer.cpp"
-#include "src/common/serializer/enum_serializer.cpp"
 

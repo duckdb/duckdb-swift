@@ -142,6 +142,7 @@ let package = Package(
         "duckdb/ub_src_transaction.cpp",
         "duckdb/src/verification/copied_statement_verifier.cpp",
         "duckdb/src/verification/deserialized_statement_verifier.cpp",
+        "duckdb/src/verification/deserialized_statement_verifier_v2.cpp",
         "duckdb/src/verification/external_statement_verifier.cpp",
         "duckdb/src/verification/no_operator_caching_verifier.cpp",
         "duckdb/src/verification/parsed_statement_verifier.cpp",

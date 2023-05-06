@@ -79,14 +79,14 @@
 #line 0 "src/common/string_util.cpp"
 #include "src/common/string_util.cpp"
 
+#line 0 "src/common/enum_util.cpp"
+#include "src/common/enum_util.cpp"
+
 #line 0 "src/common/tree_renderer.cpp"
 #include "src/common/tree_renderer.cpp"
 
 #line 0 "src/common/types.cpp"
 #include "src/common/types.cpp"
-
-#line 0 "src/common/vector.cpp"
-#include "src/common/vector.cpp"
 
 #line 0 "src/common/virtual_file_system.cpp"
 #include "src/common/virtual_file_system.cpp"
