@@ -10,6 +10,9 @@
 #line 0 "src/core_functions/scalar/map/map_entries.cpp"
 #include "src/core_functions/scalar/map/map_entries.cpp"
 
+#line 0 "src/core_functions/scalar/map/map_concat.cpp"
+#include "src/core_functions/scalar/map/map_concat.cpp"
+
 #line 0 "src/core_functions/scalar/map/map_keys_values.cpp"
 #include "src/core_functions/scalar/map/map_keys_values.cpp"
 

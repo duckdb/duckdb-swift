@@ -13,6 +13,9 @@
 #line 0 "src/execution/operator/persistent/csv_reader_options.cpp"
 #include "src/execution/operator/persistent/csv_reader_options.cpp"
 
+#line 0 "src/execution/operator/persistent/physical_fixed_batch_copy.cpp"
+#include "src/execution/operator/persistent/physical_fixed_batch_copy.cpp"
+
 #line 0 "src/execution/operator/persistent/physical_batch_copy_to_file.cpp"
 #include "src/execution/operator/persistent/physical_batch_copy_to_file.cpp"
 
