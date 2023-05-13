@@ -10,6 +10,9 @@
 #line 0 "src/execution/operator/persistent/csv_buffer.cpp"
 #include "src/execution/operator/persistent/csv_buffer.cpp"
 
+#line 0 "src/execution/operator/persistent/csv_file_handle.cpp"
+#include "src/execution/operator/persistent/csv_file_handle.cpp"
+
 #line 0 "src/execution/operator/persistent/csv_reader_options.cpp"
 #include "src/execution/operator/persistent/csv_reader_options.cpp"
 
