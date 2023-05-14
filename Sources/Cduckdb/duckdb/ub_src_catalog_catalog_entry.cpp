@@ -16,8 +16,8 @@
 #line 0 "src/catalog/catalog_entry/index_catalog_entry.cpp"
 #include "src/catalog/catalog_entry/index_catalog_entry.cpp"
 
-#line 0 "src/catalog/catalog_entry/scalar_macro_catalog_entry.cpp"
-#include "src/catalog/catalog_entry/scalar_macro_catalog_entry.cpp"
+#line 0 "src/catalog/catalog_entry/macro_catalog_entry.cpp"
+#include "src/catalog/catalog_entry/macro_catalog_entry.cpp"
 
 #line 0 "src/catalog/catalog_entry/pragma_function_catalog_entry.cpp"
 #include "src/catalog/catalog_entry/pragma_function_catalog_entry.cpp"

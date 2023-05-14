@@ -10,6 +10,9 @@
 #line 0 "src/parser/parsed_data/alter_table_info.cpp"
 #include "src/parser/parsed_data/alter_table_info.cpp"
 
+#line 0 "src/parser/parsed_data/attach_info.cpp"
+#include "src/parser/parsed_data/attach_info.cpp"
+
 #line 0 "src/parser/parsed_data/create_info.cpp"
 #include "src/parser/parsed_data/create_info.cpp"
 
@@ -25,8 +28,14 @@
 #line 0 "src/parser/parsed_data/create_copy_function_info.cpp"
 #include "src/parser/parsed_data/create_copy_function_info.cpp"
 
+#line 0 "src/parser/parsed_data/create_macro_info.cpp"
+#include "src/parser/parsed_data/create_macro_info.cpp"
+
 #line 0 "src/parser/parsed_data/create_pragma_function_info.cpp"
 #include "src/parser/parsed_data/create_pragma_function_info.cpp"
+
+#line 0 "src/parser/parsed_data/create_sequence_info.cpp"
+#include "src/parser/parsed_data/create_sequence_info.cpp"
 
 #line 0 "src/parser/parsed_data/create_scalar_function_info.cpp"
 #include "src/parser/parsed_data/create_scalar_function_info.cpp"
@@ -37,9 +46,24 @@
 #line 0 "src/parser/parsed_data/create_table_info.cpp"
 #include "src/parser/parsed_data/create_table_info.cpp"
 
+#line 0 "src/parser/parsed_data/create_type_info.cpp"
+#include "src/parser/parsed_data/create_type_info.cpp"
+
 #line 0 "src/parser/parsed_data/create_view_info.cpp"
 #include "src/parser/parsed_data/create_view_info.cpp"
 
+#line 0 "src/parser/parsed_data/detach_info.cpp"
+#include "src/parser/parsed_data/detach_info.cpp"
+
+#line 0 "src/parser/parsed_data/drop_info.cpp"
+#include "src/parser/parsed_data/drop_info.cpp"
+
 #line 0 "src/parser/parsed_data/sample_options.cpp"
 #include "src/parser/parsed_data/sample_options.cpp"
+
+#line 0 "src/parser/parsed_data/transaction_info.cpp"
+#include "src/parser/parsed_data/transaction_info.cpp"
+
+#line 0 "src/parser/parsed_data/vacuum_info.cpp"
+#include "src/parser/parsed_data/vacuum_info.cpp"
 
