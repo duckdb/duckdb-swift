@@ -1,15 +1,13 @@
 #ifndef DUCKDB_VERSION
-#define DUCKDB_VERSION "0.7.2-dev3710"
+#define DUCKDB_VERSION "0.7.2-dev3763"
 #endif
 #ifndef DUCKDB_SOURCE_ID
-#define DUCKDB_SOURCE_ID "59a4ec3adc"
+#define DUCKDB_SOURCE_ID "d3562b54ee"
 #endif
 #include "duckdb/function/table/system_functions.hpp"
 #include "duckdb/main/database.hpp"
 
 #include <cstdint>
-
-#define DUCKDB_STRINGIFY(x) #x
 
 namespace duckdb {
 
@@ -93,8 +91,8 @@ string DuckDB::Platform() {
 	postfix = "_mingw";
 #endif
 // this is used for the windows R builds which use a separate build environment
-#ifdef DUCKDB_OVERRIDE_PLATFORM_POSTFIX
-	postfix = DUCKDB_STRINGIFY(DUCKDB_OVERRIDE_PLATFORM_POSTFIX);
+#ifdef DUCKDB_PLATFORM_RTOOLS
+	postfix = "_rtools";
 #endif
 	return os + "_" + arch + postfix;
 }
