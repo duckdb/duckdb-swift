@@ -37,9 +37,6 @@
 #line 0 "src/parser/transform/statement/transform_create_type.cpp"
 #include "src/parser/transform/statement/transform_create_type.cpp"
 
-#line 0 "src/parser/transform/statement/transform_create_database.cpp"
-#include "src/parser/transform/statement/transform_create_database.cpp"
-
 #line 0 "src/parser/transform/statement/transform_delete.cpp"
 #include "src/parser/transform/statement/transform_delete.cpp"
 
