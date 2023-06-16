@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// json-extension.hpp
+// json_extension.hpp
 //
 //
 //===----------------------------------------------------------------------===//
@@ -12,7 +12,7 @@
 
 namespace duckdb {
 
-class JSONExtension : public Extension {
+class JsonExtension : public Extension {
 public:
 	void Load(DuckDB &db) override;
 	std::string Name() override;

@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// icu-extension.hpp
+// icu_extension.hpp
 //
 //
 //===----------------------------------------------------------------------===//
@@ -12,7 +12,7 @@
 
 namespace duckdb {
 
-class ICUExtension : public Extension {
+class IcuExtension : public Extension {
 public:
 	void Load(DuckDB &db) override;
 	std::string Name() override;
