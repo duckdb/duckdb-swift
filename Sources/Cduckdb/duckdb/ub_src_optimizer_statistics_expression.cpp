@@ -1,9 +1,6 @@
 #line 0 "src/optimizer/statistics/expression/propagate_aggregate.cpp"
 #include "src/optimizer/statistics/expression/propagate_aggregate.cpp"
 
-#line 0 "src/optimizer/statistics/expression/propagate_and_compress.cpp"
-#include "src/optimizer/statistics/expression/propagate_and_compress.cpp"
-
 #line 0 "src/optimizer/statistics/expression/propagate_between.cpp"
 #include "src/optimizer/statistics/expression/propagate_between.cpp"
 

@@ -52,3 +52,6 @@
 #line 0 "src/parser/transform/expression/transform_subquery.cpp"
 #include "src/parser/transform/expression/transform_subquery.cpp"
 
+#line 0 "src/parser/transform/expression/transform_multi_assign_reference.cpp"
+#include "src/parser/transform/expression/transform_multi_assign_reference.cpp"
+

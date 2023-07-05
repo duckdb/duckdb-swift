@@ -34,9 +34,6 @@
 #line 0 "src/execution/index/art/prefix.cpp"
 #include "src/execution/index/art/prefix.cpp"
 
-#line 0 "src/execution/index/art/prefix_segment.cpp"
-#include "src/execution/index/art/prefix_segment.cpp"
-
 #line 0 "src/execution/index/art/art.cpp"
 #include "src/execution/index/art/art.cpp"
 
