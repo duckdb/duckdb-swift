@@ -10,3 +10,6 @@
 #line 0 "src/storage/serialization/serialize_tableref.cpp"
 #include "src/storage/serialization/serialize_tableref.cpp"
 
+#line 0 "src/storage/serialization/serialize_types.cpp"
+#include "src/storage/serialization/serialize_types.cpp"
+
