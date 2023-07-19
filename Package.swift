@@ -52,6 +52,7 @@ let package = Package(
         "duckdb/ub_src_core_functions_scalar_bit.cpp",
         "duckdb/ub_src_core_functions_scalar_blob.cpp",
         "duckdb/ub_src_core_functions_scalar_date.cpp",
+        "duckdb/ub_src_core_functions_scalar_debug.cpp",
         "duckdb/ub_src_core_functions_scalar_enum.cpp",
         "duckdb/ub_src_core_functions_scalar_generic.cpp",
         "duckdb/ub_src_core_functions_scalar_list.cpp",
