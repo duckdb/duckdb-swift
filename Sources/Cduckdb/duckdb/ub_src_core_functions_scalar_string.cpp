@@ -58,6 +58,9 @@
 #line 0 "src/core_functions/scalar/string/string_split.cpp"
 #include "src/core_functions/scalar/string/string_split.cpp"
 
+#line 0 "src/core_functions/scalar/string/to_base.cpp"
+#include "src/core_functions/scalar/string/to_base.cpp"
+
 #line 0 "src/core_functions/scalar/string/translate.cpp"
 #include "src/core_functions/scalar/string/translate.cpp"
 

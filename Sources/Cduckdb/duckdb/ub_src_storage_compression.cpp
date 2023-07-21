@@ -22,6 +22,9 @@
 #line 0 "src/storage/compression/bitpacking.cpp"
 #include "src/storage/compression/bitpacking.cpp"
 
+#line 0 "src/storage/compression/bitpacking_hugeint.cpp"
+#include "src/storage/compression/bitpacking_hugeint.cpp"
+
 #line 0 "src/storage/compression/patas.cpp"
 #include "src/storage/compression/patas.cpp"
 
