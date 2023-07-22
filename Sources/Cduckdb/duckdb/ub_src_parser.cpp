@@ -10,9 +10,6 @@
 #line 0 "src/parser/constraint.cpp"
 #include "src/parser/constraint.cpp"
 
-#line 0 "src/parser/common_table_expression_info.cpp"
-#include "src/parser/common_table_expression_info.cpp"
-
 #line 0 "src/parser/expression_util.cpp"
 #include "src/parser/expression_util.cpp"
 
