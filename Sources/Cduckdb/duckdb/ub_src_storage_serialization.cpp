@@ -31,6 +31,9 @@
 #line 0 "src/storage/serialization/serialize_statement.cpp"
 #include "src/storage/serialization/serialize_statement.cpp"
 
+#line 0 "src/storage/serialization/serialize_table_filter.cpp"
+#include "src/storage/serialization/serialize_table_filter.cpp"
+
 #line 0 "src/storage/serialization/serialize_tableref.cpp"
 #include "src/storage/serialization/serialize_tableref.cpp"
 

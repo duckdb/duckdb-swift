@@ -16,3 +16,6 @@
 #line 0 "src/common/serializer/buffered_serializer.cpp"
 #include "src/common/serializer/buffered_serializer.cpp"
 
+#line 0 "src/common/serializer/format_serializer.cpp"
+#include "src/common/serializer/format_serializer.cpp"
+
