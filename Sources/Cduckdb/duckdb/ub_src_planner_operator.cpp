@@ -4,9 +4,6 @@
 #line 0 "src/planner/operator/logical_any_join.cpp"
 #include "src/planner/operator/logical_any_join.cpp"
 
-#line 0 "src/planner/operator/logical_asof_join.cpp"
-#include "src/planner/operator/logical_asof_join.cpp"
-
 #line 0 "src/planner/operator/logical_column_data_get.cpp"
 #include "src/planner/operator/logical_column_data_get.cpp"
 
@@ -36,9 +33,6 @@
 
 #line 0 "src/planner/operator/logical_delim_get.cpp"
 #include "src/planner/operator/logical_delim_get.cpp"
-
-#line 0 "src/planner/operator/logical_delim_join.cpp"
-#include "src/planner/operator/logical_delim_join.cpp"
 
 #line 0 "src/planner/operator/logical_dependent_join.cpp"
 #include "src/planner/operator/logical_dependent_join.cpp"
