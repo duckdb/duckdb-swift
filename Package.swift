@@ -100,6 +100,7 @@ let package = Package(
         "duckdb/ub_src_main.cpp",
         "duckdb/ub_src_main_capi.cpp",
         "duckdb/ub_src_main_capi_cast.cpp",
+        "duckdb/ub_src_main_chunk_scan_state.cpp",
         "duckdb/ub_src_main_extension.cpp",
         "duckdb/ub_src_main_relation.cpp",
         "duckdb/ub_src_main_settings.cpp",
