@@ -22,12 +22,6 @@
 #line 0 "src/storage/magic_bytes.cpp"
 #include "src/storage/magic_bytes.cpp"
 
-#line 0 "src/storage/meta_block_reader.cpp"
-#include "src/storage/meta_block_reader.cpp"
-
-#line 0 "src/storage/meta_block_writer.cpp"
-#include "src/storage/meta_block_writer.cpp"
-
 #line 0 "src/storage/storage_manager.cpp"
 #include "src/storage/storage_manager.cpp"
 
