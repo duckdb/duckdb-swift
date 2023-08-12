@@ -1,8 +1,8 @@
 #ifndef DUCKDB_VERSION
-#define DUCKDB_VERSION "0.8.2-dev2700"
+#define DUCKDB_VERSION "0.8.2-dev2809"
 #endif
 #ifndef DUCKDB_SOURCE_ID
-#define DUCKDB_SOURCE_ID "acbbfe0e79"
+#define DUCKDB_SOURCE_ID "a8ce02cc2e"
 #endif
 #include "duckdb/function/table/system_functions.hpp"
 #include "duckdb/main/database.hpp"
@@ -94,6 +94,9 @@ string DuckDB::Platform() {
 	if (os == "linux") {
 		postfix = "_gcc4";
 	}
+#endif
+#if defined(__ANDROID__)
+	postfix += "_android"; // using + because it may also be gcc4
 #endif
 #ifdef __MINGW32__
 	postfix = "_mingw";
