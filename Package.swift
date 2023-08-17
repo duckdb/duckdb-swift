@@ -20,6 +20,7 @@ let package = Package(
         "duckdb/ub_src_catalog_catalog_entry.cpp",
         "duckdb/ub_src_catalog_default.cpp",
         "duckdb/ub_src_common_adbc.cpp",
+        "duckdb/ub_src_common_adbc_nanoarrow.cpp",
         "duckdb/ub_src_common.cpp",
         "duckdb/ub_src_common_arrow_appender.cpp",
         "duckdb/ub_src_common_arrow.cpp",
