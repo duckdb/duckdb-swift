@@ -19,9 +19,6 @@
 #line 0 "src/execution/join_hashtable.cpp"
 #include "src/execution/join_hashtable.cpp"
 
-#line 0 "src/execution/partitionable_hashtable.cpp"
-#include "src/execution/partitionable_hashtable.cpp"
-
 #line 0 "src/execution/perfect_aggregate_hashtable.cpp"
 #include "src/execution/perfect_aggregate_hashtable.cpp"
 

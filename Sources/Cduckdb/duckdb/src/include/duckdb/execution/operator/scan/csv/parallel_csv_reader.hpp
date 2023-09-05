@@ -1,18 +1,18 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/execution/operator/persistent/parallel_csv_reader.hpp
+// duckdb/execution/operator/scan/csv/parallel_csv_reader.hpp
 //
 //
 //===----------------------------------------------------------------------===//
 
 #pragma once
 
-#include "duckdb/execution/operator/persistent/base_csv_reader.hpp"
-#include "duckdb/execution/operator/persistent/csv_reader_options.hpp"
-#include "duckdb/execution/operator/persistent/csv_file_handle.hpp"
-#include "duckdb/execution/operator/persistent/csv_buffer.hpp"
-#include "duckdb/execution/operator/persistent/csv_line_info.hpp"
+#include "duckdb/execution/operator/scan/csv/base_csv_reader.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_reader_options.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_file_handle.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_buffer.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_line_info.hpp"
 
 #include <sstream>
 #include <utility>
@@ -20,21 +20,17 @@
 namespace duckdb {
 
 struct CSVBufferRead {
-	CSVBufferRead(shared_ptr<CSVBuffer> buffer_p, idx_t buffer_start_p, idx_t buffer_end_p, idx_t batch_index,
+	CSVBufferRead(unique_ptr<CSVBufferHandle> buffer_p, idx_t buffer_start_p, idx_t buffer_end_p, idx_t batch_index,
 	              idx_t local_batch_index_p, optional_ptr<LineInfo> line_info_p)
 	    : buffer(std::move(buffer_p)), line_info(line_info_p), buffer_start(buffer_start_p), buffer_end(buffer_end_p),
 	      batch_index(batch_index), local_batch_index(local_batch_index_p) {
-		if (buffer) {
-			if (buffer_end > buffer->GetBufferSize()) {
-				buffer_end = buffer->GetBufferSize();
-			}
-		} else {
-			buffer_start = 0;
-			buffer_end = 0;
+		D_ASSERT(buffer);
+		if (buffer_end > buffer->actual_size) {
+			buffer_end = buffer->actual_size;
 		}
 	}
 
-	CSVBufferRead(shared_ptr<CSVBuffer> buffer_p, shared_ptr<CSVBuffer> nxt_buffer_p, idx_t buffer_start_p,
+	CSVBufferRead(unique_ptr<CSVBufferHandle> buffer_p, unique_ptr<CSVBufferHandle> nxt_buffer_p, idx_t buffer_start_p,
 	              idx_t buffer_end_p, idx_t batch_index, idx_t local_batch_index, optional_ptr<LineInfo> line_info_p)
 	    : CSVBufferRead(std::move(buffer_p), buffer_start_p, buffer_end_p, batch_index, local_batch_index,
 	                    line_info_p) {
@@ -44,33 +40,33 @@ struct CSVBufferRead {
 	CSVBufferRead() : buffer_start(0), buffer_end(NumericLimits<idx_t>::Maximum()) {};
 
 	const char &operator[](size_t i) const {
-		if (i < buffer->GetBufferSize()) {
+		if (i < buffer->actual_size) {
 			auto buffer_ptr = buffer->Ptr();
 			return buffer_ptr[i];
 		}
 		auto next_ptr = next_buffer->Ptr();
-		return next_ptr[i - buffer->GetBufferSize()];
+		return next_ptr[i - buffer->actual_size];
 	}
 
 	string_t GetValue(idx_t start_buffer, idx_t position_buffer, idx_t offset) {
 		idx_t length = position_buffer - start_buffer - offset;
 		// 1) It's all in the current buffer
-		if (start_buffer + length <= buffer->GetBufferSize()) {
+		if (start_buffer + length <= buffer->actual_size) {
 			auto buffer_ptr = buffer->Ptr();
 			return string_t(buffer_ptr + start_buffer, length);
-		} else if (start_buffer >= buffer->GetBufferSize()) {
+		} else if (start_buffer >= buffer->actual_size) {
 			// 2) It's all in the next buffer
 			D_ASSERT(next_buffer);
-			D_ASSERT(next_buffer->GetBufferSize() >= length + (start_buffer - buffer->GetBufferSize()));
+			D_ASSERT(next_buffer->actual_size >= length + (start_buffer - buffer->actual_size));
 			auto buffer_ptr = next_buffer->Ptr();
-			return string_t(buffer_ptr + (start_buffer - buffer->GetBufferSize()), length);
+			return string_t(buffer_ptr + (start_buffer - buffer->actual_size), length);
 		} else {
 			// 3) It starts in the current buffer and ends in the next buffer
 			D_ASSERT(next_buffer);
 			auto intersection = make_unsafe_uniq_array<char>(length);
 			idx_t cur_pos = 0;
 			auto buffer_ptr = buffer->Ptr();
-			for (idx_t i = start_buffer; i < buffer->GetBufferSize(); i++) {
+			for (idx_t i = start_buffer; i < buffer->actual_size; i++) {
 				intersection[cur_pos++] = buffer_ptr[i];
 			}
 			idx_t nxt_buffer_pos = 0;
@@ -83,8 +79,8 @@ struct CSVBufferRead {
 		}
 	}
 
-	shared_ptr<CSVBuffer> buffer;
-	shared_ptr<CSVBuffer> next_buffer;
+	unique_ptr<CSVBufferHandle> buffer;
+	unique_ptr<CSVBufferHandle> next_buffer;
 	vector<unsafe_unique_array<char>> intersections;
 	optional_ptr<LineInfo> line_info;
 
@@ -103,7 +99,7 @@ struct VerificationPositions {
 //! CSV Reader for Parallel Reading
 class ParallelCSVReader : public BaseCSVReader {
 public:
-	ParallelCSVReader(ClientContext &context, BufferedCSVReaderOptions options, unique_ptr<CSVBufferRead> buffer,
+	ParallelCSVReader(ClientContext &context, CSVReaderOptions options, unique_ptr<CSVBufferRead> buffer,
 	                  idx_t first_pos_first_buffer, const vector<LogicalType> &requested_types, idx_t file_idx_p);
 	virtual ~ParallelCSVReader() {
 	}
@@ -162,8 +158,6 @@ private:
 
 	//! Parses a CSV file with a one-byte delimiter, escape and quote character
 	bool TryParseSimpleCSV(DataChunk &insert_chunk, string &error_message, bool try_add_line = false);
-	//! Verifies that the line length did not go over a pre-defined limit.
-	void VerifyLineLength(idx_t line_size);
 
 	//! First Position of First Buffer
 	idx_t first_pos_first_buffer = 0;

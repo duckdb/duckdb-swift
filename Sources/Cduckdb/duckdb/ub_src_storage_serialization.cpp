@@ -40,3 +40,6 @@
 #line 0 "src/storage/serialization/serialize_types.cpp"
 #include "src/storage/serialization/serialize_types.cpp"
 
+#line 0 "src/storage/serialization/serialize_storage.cpp"
+#include "src/storage/serialization/serialize_storage.cpp"
+

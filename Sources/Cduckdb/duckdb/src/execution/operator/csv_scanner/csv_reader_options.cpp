@@ -1,4 +1,4 @@
-#include "duckdb/execution/operator/persistent/csv_reader_options.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_reader_options.hpp"
 #include "duckdb/common/bind_helpers.hpp"
 #include "duckdb/common/vector_size.hpp"
 #include "duckdb/common/string_util.hpp"
@@ -60,60 +60,77 @@ static int64_t ParseInteger(const Value &value, const string &loption) {
 	return value.GetValue<int64_t>();
 }
 
-void BufferedCSVReaderOptions::SetHeader(bool input) {
-	this->header = input;
+void CSVReaderOptions::SetHeader(bool input) {
+	this->dialect_options.header = input;
 	this->has_header = true;
 }
 
-void BufferedCSVReaderOptions::SetCompression(const string &compression_p) {
+void CSVReaderOptions::SetCompression(const string &compression_p) {
 	this->compression = FileCompressionTypeFromString(compression_p);
 }
 
-void BufferedCSVReaderOptions::SetEscape(const string &input) {
-	this->escape = input;
+void CSVReaderOptions::SetEscape(const string &input) {
+	auto escape_str = input;
+	if (escape_str.size() > 1) {
+		throw InvalidInputException("The escape option cannot exceed a size of 1 byte.");
+	}
+	if (escape_str.empty()) {
+		escape_str = string("\0", 1);
+	}
+	this->dialect_options.state_machine_options.escape = escape_str[0];
 	this->has_escape = true;
 }
 
-void BufferedCSVReaderOptions::SetDelimiter(const string &input) {
-	this->delimiter = StringUtil::Replace(input, "\\t", "\t");
+void CSVReaderOptions::SetDelimiter(const string &input) {
+	auto delim_str = StringUtil::Replace(input, "\\t", "\t");
+	if (delim_str.size() > 1) {
+		throw InvalidInputException("The delimiter option cannot exceed a size of 1 byte.");
+	}
 	this->has_delimiter = true;
 	if (input.empty()) {
-		this->delimiter = string("\0", 1);
+		delim_str = string("\0", 1);
 	}
+	this->dialect_options.state_machine_options.delimiter = delim_str[0];
 }
 
-void BufferedCSVReaderOptions::SetQuote(const string &quote_p) {
-	this->quote = quote_p;
+void CSVReaderOptions::SetQuote(const string &quote_p) {
+	auto quote_str = quote_p;
+	if (quote_str.size() > 1) {
+		throw InvalidInputException("The quote option cannot exceed a size of 1 byte.");
+	}
+	if (quote_str.empty()) {
+		quote_str = string("\0", 1);
+	}
+	this->dialect_options.state_machine_options.quote = quote_str[0];
 	this->has_quote = true;
 }
 
-void BufferedCSVReaderOptions::SetNewline(const string &input) {
+void CSVReaderOptions::SetNewline(const string &input) {
 	if (input == "\\n" || input == "\\r") {
-		new_line = NewLineIdentifier::SINGLE;
+		dialect_options.new_line = NewLineIdentifier::SINGLE;
 	} else if (input == "\\r\\n") {
-		new_line = NewLineIdentifier::CARRY_ON;
+		dialect_options.new_line = NewLineIdentifier::CARRY_ON;
 	} else {
 		throw InvalidInputException("This is not accepted as a newline: " + input);
 	}
 	has_newline = true;
 }
 
-void BufferedCSVReaderOptions::SetDateFormat(LogicalTypeId type, const string &format, bool read_format) {
+void CSVReaderOptions::SetDateFormat(LogicalTypeId type, const string &format, bool read_format) {
 	string error;
 	if (read_format) {
-		error = StrTimeFormat::ParseFormatSpecifier(format, date_format[type]);
-		date_format[type].format_specifier = format;
+		error = StrTimeFormat::ParseFormatSpecifier(format, dialect_options.date_format[type]);
+		dialect_options.date_format[type].format_specifier = format;
 	} else {
 		error = StrTimeFormat::ParseFormatSpecifier(format, write_date_format[type]);
 	}
 	if (!error.empty()) {
 		throw InvalidInputException("Could not parse DATEFORMAT: %s", error.c_str());
 	}
-	has_format[type] = true;
+	dialect_options.has_format[type] = true;
 }
 
-void BufferedCSVReaderOptions::SetReadOption(const string &loption, const Value &value,
-                                             vector<string> &expected_names) {
+void CSVReaderOptions::SetReadOption(const string &loption, const Value &value, vector<string> &expected_names) {
 	if (SetBaseOption(loption, value)) {
 		return;
 	}
@@ -135,7 +152,7 @@ void BufferedCSVReaderOptions::SetReadOption(const string &loption, const Value 
 			sample_chunks = sample_size / STANDARD_VECTOR_SIZE + 1;
 		}
 	} else if (loption == "skip") {
-		skip_rows = ParseInteger(value, loption);
+		dialect_options.skip_rows = ParseInteger(value, loption);
 		skip_rows_set = true;
 	} else if (loption == "max_line_size" || loption == "maximum_line_size") {
 		maximum_line_size = ParseInteger(value, loption);
@@ -204,7 +221,7 @@ void BufferedCSVReaderOptions::SetReadOption(const string &loption, const Value 
 	}
 }
 
-void BufferedCSVReaderOptions::SetWriteOption(const string &loption, const Value &value) {
+void CSVReaderOptions::SetWriteOption(const string &loption, const Value &value) {
 	if (loption == "new_line") {
 		// Steal this from SetBaseOption so we can write different newlines (e.g., format JSON ARRAY)
 		write_newline = ParseString(value, loption);
@@ -236,7 +253,7 @@ void BufferedCSVReaderOptions::SetWriteOption(const string &loption, const Value
 	}
 }
 
-bool BufferedCSVReaderOptions::SetBaseOption(const string &loption, const Value &value) {
+bool CSVReaderOptions::SetBaseOption(const string &loption, const Value &value) {
 	// Make sure this function was only called after the option was turned into lowercase
 	D_ASSERT(!std::any_of(loption.begin(), loption.end(), ::isupper));
 
@@ -266,12 +283,14 @@ bool BufferedCSVReaderOptions::SetBaseOption(const string &loption, const Value 
 	return true;
 }
 
-std::string BufferedCSVReaderOptions::ToString() const {
-	return "  file=" + file_path + "\n  delimiter='" + delimiter +
-	       (has_delimiter ? "'" : (auto_detect ? "' (auto detected)" : "' (default)")) + "\n  quote='" + quote +
-	       (has_quote ? "'" : (auto_detect ? "' (auto detected)" : "' (default)")) + "\n  escape='" + escape +
+string CSVReaderOptions::ToString() const {
+	return "  file=" + file_path + "\n  delimiter='" + dialect_options.state_machine_options.delimiter +
+	       (has_delimiter ? "'" : (auto_detect ? "' (auto detected)" : "' (default)")) + "\n  quote='" +
+	       dialect_options.state_machine_options.quote +
+	       (has_quote ? "'" : (auto_detect ? "' (auto detected)" : "' (default)")) + "\n  escape='" +
+	       dialect_options.state_machine_options.escape +
 	       (has_escape ? "'" : (auto_detect ? "' (auto detected)" : "' (default)")) +
-	       "\n  header=" + std::to_string(header) +
+	       "\n  header=" + std::to_string(dialect_options.header) +
 	       (has_header ? "" : (auto_detect ? " (auto detected)" : "' (default)")) +
 	       "\n  sample_size=" + std::to_string(sample_chunk_size * sample_chunks) +
 	       "\n  ignore_errors=" + std::to_string(ignore_errors) + "\n  all_varchar=" + std::to_string(all_varchar);

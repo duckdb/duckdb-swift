@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/execution/operator/persistent/csv_file_handle.hpp
+// duckdb/execution/operator/scan/csv/csv_file_handle.hpp
 //
 //
 //===----------------------------------------------------------------------===//
@@ -20,15 +20,13 @@ class FileSystem;
 struct CSVFileHandle {
 public:
 	CSVFileHandle(FileSystem &fs, Allocator &allocator, unique_ptr<FileHandle> file_handle_p, const string &path_p,
-	              FileCompressionType compression, bool enable_reset = true);
+	              FileCompressionType compression);
 
 	mutex main_mutex;
 
 public:
 	bool CanSeek();
 	void Seek(idx_t position);
-	idx_t SeekPosition();
-	void Reset();
 	bool OnDiskFile();
 
 	idx_t FileSize();
@@ -38,29 +36,24 @@ public:
 	idx_t Read(void *buffer, idx_t nr_bytes);
 
 	string ReadLine();
-	void DisableReset();
+
+	string GetFilePath();
 
 	static unique_ptr<FileHandle> OpenFileHandle(FileSystem &fs, Allocator &allocator, const string &path,
 	                                             FileCompressionType compression);
 	static unique_ptr<CSVFileHandle> OpenFile(FileSystem &fs, Allocator &allocator, const string &path,
-	                                          FileCompressionType compression, bool enable_reset);
+	                                          FileCompressionType compression);
 
 private:
-	FileSystem &fs;
-	Allocator &allocator;
 	unique_ptr<FileHandle> file_handle;
 	string path;
-	FileCompressionType compression;
-	bool reset_enabled = true;
 	bool can_seek = false;
 	bool on_disk_file = false;
 	idx_t file_size = 0;
-	// reset support
-	AllocatedData cached_buffer;
-	idx_t read_position = 0;
-	idx_t buffer_size = 0;
-	idx_t buffer_capacity = 0;
+
 	idx_t requested_bytes = 0;
+	//! If we finished reading the file
+	bool finished = false;
 };
 
 } // namespace duckdb

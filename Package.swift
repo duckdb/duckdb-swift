@@ -70,6 +70,8 @@ let package = Package(
         "duckdb/ub_src_execution_index_art.cpp",
         "duckdb/ub_src_execution_nested_loop_join.cpp",
         "duckdb/ub_src_execution_operator_aggregate.cpp",
+        "duckdb/ub_src_execution_operator_csv_scanner.cpp",
+        "duckdb/ub_src_execution_operator_csv_scanner_sniffer.cpp",
         "duckdb/ub_src_execution_operator_filter.cpp",
         "duckdb/ub_src_execution_operator_helper.cpp",
         "duckdb/ub_src_execution_operator_join.cpp",

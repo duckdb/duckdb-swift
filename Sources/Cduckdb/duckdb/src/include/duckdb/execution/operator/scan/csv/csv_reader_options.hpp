@@ -1,14 +1,14 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/execution/operator/persistent/csv_reader_options.hpp
+// duckdb/execution/operator/scan/csv/csv_reader_options.hpp
 //
 //
 //===----------------------------------------------------------------------===//
 
 #pragma once
 
-#include "duckdb/execution/operator/persistent/csv_buffer.hpp"
+#include "duckdb/execution/operator/scan/csv/csv_buffer.hpp"
 #include "duckdb/common/map.hpp"
 #include "duckdb/function/scalar/strftime_format.hpp"
 #include "duckdb/common/types/value.hpp"
@@ -28,31 +28,65 @@ enum class NewLineIdentifier : uint8_t {
 
 enum class ParallelMode { AUTOMATIC = 0, PARALLEL = 1, SINGLE_THREADED = 2 };
 
-struct BufferedCSVReaderOptions {
+//! Struct that holds the configuration of a CSV State Machine
+//! Basically which char, quote and escape were used to generate it.
+struct CSVStateMachineOptions {
+	CSVStateMachineOptions() {};
+	CSVStateMachineOptions(char delimiter_p, char quote_p, char escape_p)
+	    : delimiter(delimiter_p), quote(quote_p), escape(escape_p) {};
+
+	//! Delimiter to separate columns within each line
+	char delimiter = ',';
+	//! Quote used for columns that contain reserved characters, e.g '
+	char quote = '\"';
+	//! Escape character to escape quote character
+	char escape = '\0';
+
+	bool operator==(const CSVStateMachineOptions &other) const {
+		return delimiter == other.delimiter && quote == other.quote && escape == other.escape;
+	}
+
+	void Serialize(FieldWriter &writer) const;
+	void Deserialize(FieldReader &reader);
+};
+
+struct DialectOptions {
+	CSVStateMachineOptions state_machine_options;
+	//! New Line separator
+	NewLineIdentifier new_line = NewLineIdentifier::NOT_SET;
+	//! Expected number of columns
+	idx_t num_cols = 0;
+	//! Whether or not the file has a header line
+	bool header = false;
+	//! The date format to use (if any is specified)
+	map<LogicalTypeId, StrpTimeFormat> date_format = {{LogicalTypeId::DATE, {}}, {LogicalTypeId::TIMESTAMP, {}}};
+	//! Whether or not a type format is specified
+	map<LogicalTypeId, bool> has_format = {{LogicalTypeId::DATE, false}, {LogicalTypeId::TIMESTAMP, false}};
+	//! How many leading rows to skip
+	idx_t skip_rows = 0;
+	//! True start of the first CSV Buffer (After skipping empty lines, headers, notes and so on)
+	idx_t true_start = 0;
+
+	void Serialize(FieldWriter &writer) const;
+	void Deserialize(FieldReader &reader);
+};
+
+struct CSVReaderOptions {
 	//===--------------------------------------------------------------------===//
 	// CommonCSVOptions
 	//===--------------------------------------------------------------------===//
-
+	//! See struct above.
+	DialectOptions dialect_options;
 	//! Whether or not a delimiter was defined by the user
 	bool has_delimiter = false;
-	//! Delimiter to separate columns within each line
-	string delimiter = ",";
 	//! Whether or not a new_line was defined by the user
 	bool has_newline = false;
-	//! New Line separator
-	NewLineIdentifier new_line = NewLineIdentifier::NOT_SET;
 	//! Whether or not a quote was defined by the user
 	bool has_quote = false;
-	//! Quote used for columns that contain reserved characters, e.g., delimiter
-	string quote = "\"";
 	//! Whether or not an escape character was defined by the user
 	bool has_escape = false;
-	//! Escape character to escape quote character
-	string escape;
 	//! Whether or not a header information was given by the user
 	bool has_header = false;
-	//! Whether or not the file has a header line
-	bool header = false;
 	//! Whether or not we should ignore InvalidInput errors
 	bool ignore_errors = false;
 	//! Rejects table name
@@ -63,8 +97,6 @@ struct BufferedCSVReaderOptions {
 	vector<string> rejects_recovery_columns;
 	//! Index of the recovery columns
 	vector<idx_t> rejects_recovery_column_ids;
-	//! Expected number of columns
-	idx_t num_cols = 0;
 	//! Number of samples to buffer
 	idx_t buffer_sample_size = STANDARD_VECTOR_SIZE * 50;
 	//! Specifies the string that represents a null value
@@ -92,9 +124,6 @@ struct BufferedCSVReaderOptions {
 	//===--------------------------------------------------------------------===//
 	// ReadCSVOptions
 	//===--------------------------------------------------------------------===//
-
-	//! How many leading rows to skip
-	idx_t skip_rows = 0;
 	//! Whether or not the skip_rows is set by the user
 	bool skip_rows_set = false;
 	//! Maximum CSV line size: specified because if we reach this amount, we likely have wrong delimiters (default: 2MB)
@@ -117,7 +146,7 @@ struct BufferedCSVReaderOptions {
 	//! Multi-file reader options
 	MultiFileReaderOptions file_options;
 	//! Buffer Size (Parallel Scan)
-	idx_t buffer_size = CSVBuffer::INITIAL_BUFFER_SIZE_COLOSSAL;
+	idx_t buffer_size = CSVBuffer::CSV_BUFFER_SIZE;
 	//! Decimal separator when reading as numeric
 	string decimal_separator = ".";
 	//! Whether or not to pad rows that do not have enough columns with NULL values
@@ -137,18 +166,13 @@ struct BufferedCSVReaderOptions {
 	string suffix;
 	string write_newline;
 
-	//! The date format to use (if any is specified)
-	std::map<LogicalTypeId, StrpTimeFormat> date_format = {{LogicalTypeId::DATE, {}}, {LogicalTypeId::TIMESTAMP, {}}};
 	//! The date format to use for writing (if any is specified)
-	std::map<LogicalTypeId, StrfTimeFormat> write_date_format = {{LogicalTypeId::DATE, {}},
-	                                                             {LogicalTypeId::TIMESTAMP, {}}};
-	//! Whether or not a type format is specified
-	std::map<LogicalTypeId, bool> has_format = {{LogicalTypeId::DATE, false}, {LogicalTypeId::TIMESTAMP, false}};
+	map<LogicalTypeId, StrfTimeFormat> write_date_format = {{LogicalTypeId::DATE, {}}, {LogicalTypeId::TIMESTAMP, {}}};
 
 	void Serialize(FieldWriter &writer) const;
 	void Deserialize(FieldReader &reader);
 	void FormatSerialize(FormatSerializer &serializer) const;
-	static BufferedCSVReaderOptions FormatDeserialize(FormatDeserializer &deserializer);
+	static CSVReaderOptions FormatDeserialize(FormatDeserializer &deserializer);
 
 	void SetCompression(const string &compression);
 	void SetHeader(bool has_header);
@@ -168,6 +192,6 @@ struct BufferedCSVReaderOptions {
 	void SetWriteOption(const string &loption, const Value &value);
 	void SetDateFormat(LogicalTypeId type, const string &format, bool read_format);
 
-	std::string ToString() const;
+	string ToString() const;
 };
 } // namespace duckdb
