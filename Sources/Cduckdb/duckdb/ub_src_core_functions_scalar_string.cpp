@@ -52,6 +52,9 @@
 #line 0 "src/core_functions/scalar/string/reverse.cpp"
 #include "src/core_functions/scalar/string/reverse.cpp"
 
+#line 0 "src/core_functions/scalar/string/sha256.cpp"
+#include "src/core_functions/scalar/string/sha256.cpp"
+
 #line 0 "src/core_functions/scalar/string/starts_with.cpp"
 #include "src/core_functions/scalar/string/starts_with.cpp"
 
