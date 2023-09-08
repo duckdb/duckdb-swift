@@ -16,6 +16,15 @@
 #line 0 "src/core_functions/scalar/list/list_sort.cpp"
 #include "src/core_functions/scalar/list/list_sort.cpp"
 
+#line 0 "src/core_functions/scalar/list/list_distance.cpp"
+#include "src/core_functions/scalar/list/list_distance.cpp"
+
+#line 0 "src/core_functions/scalar/list/list_cosine_similarity.cpp"
+#include "src/core_functions/scalar/list/list_cosine_similarity.cpp"
+
+#line 0 "src/core_functions/scalar/list/list_inner_product.cpp"
+#include "src/core_functions/scalar/list/list_inner_product.cpp"
+
 #line 0 "src/core_functions/scalar/list/range.cpp"
 #include "src/core_functions/scalar/list/range.cpp"
 
