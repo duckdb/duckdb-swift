@@ -28,9 +28,6 @@
 #line 0 "src/planner/planner.cpp"
 #include "src/planner/planner.cpp"
 
-#line 0 "src/planner/plan_serialization.cpp"
-#include "src/planner/plan_serialization.cpp"
-
 #line 0 "src/planner/pragma_handler.cpp"
 #include "src/planner/pragma_handler.cpp"
 

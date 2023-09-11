@@ -46,15 +46,6 @@
 #line 0 "src/planner/operator/logical_empty_result.cpp"
 #include "src/planner/operator/logical_empty_result.cpp"
 
-#line 0 "src/planner/operator/logical_execute.cpp"
-#include "src/planner/operator/logical_execute.cpp"
-
-#line 0 "src/planner/operator/logical_explain.cpp"
-#include "src/planner/operator/logical_explain.cpp"
-
-#line 0 "src/planner/operator/logical_export.cpp"
-#include "src/planner/operator/logical_export.cpp"
-
 #line 0 "src/planner/operator/logical_expression_get.cpp"
 #include "src/planner/operator/logical_expression_get.cpp"
 
@@ -114,9 +105,6 @@
 
 #line 0 "src/planner/operator/logical_set_operation.cpp"
 #include "src/planner/operator/logical_set_operation.cpp"
-
-#line 0 "src/planner/operator/logical_show.cpp"
-#include "src/planner/operator/logical_show.cpp"
 
 #line 0 "src/planner/operator/logical_simple.cpp"
 #include "src/planner/operator/logical_simple.cpp"

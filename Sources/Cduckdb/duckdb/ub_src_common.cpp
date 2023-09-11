@@ -31,9 +31,6 @@
 #line 0 "src/common/extra_type_info.cpp"
 #include "src/common/extra_type_info.cpp"
 
-#line 0 "src/common/field_writer.cpp"
-#include "src/common/field_writer.cpp"
-
 #line 0 "src/common/file_buffer.cpp"
 #include "src/common/file_buffer.cpp"
 
@@ -78,9 +75,6 @@
 
 #line 0 "src/common/random_engine.cpp"
 #include "src/common/random_engine.cpp"
-
-#line 0 "src/common/serializer.cpp"
-#include "src/common/serializer.cpp"
 
 #line 0 "src/common/string_util.cpp"
 #include "src/common/string_util.cpp"
