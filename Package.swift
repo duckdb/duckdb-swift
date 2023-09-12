@@ -314,9 +314,9 @@ let package = Package(
         .headerSearchPath("duckdb/extension/icu/third_party/icu/i18n"),
         .headerSearchPath("duckdb/extension/json/include"),
         .headerSearchPath("duckdb/extension/json/yyjson/include"),
-        .define("BUILD_PARQUET_EXTENSION"),
-        .define("BUILD_ICU_EXTENSION"),
-        .define("BUILD_JSON_EXTENSION"),
+        .define("DUCKDB_EXTENSION_PARQUET_LINKED"),
+        .define("DUCKDB_EXTENSION_ICU_LINKED"),
+        .define("DUCKDB_EXTENSION_JSON_LINKED"),
         .define("DUCKDB_BUILD_LIBRARY")
       ]
     ),
