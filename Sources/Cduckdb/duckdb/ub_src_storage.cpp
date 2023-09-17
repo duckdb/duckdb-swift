@@ -10,6 +10,9 @@
 #line 0 "src/storage/block.cpp"
 #include "src/storage/block.cpp"
 
+#line 0 "src/storage/data_pointer.cpp"
+#include "src/storage/data_pointer.cpp"
+
 #line 0 "src/storage/data_table.cpp"
 #include "src/storage/data_table.cpp"
 

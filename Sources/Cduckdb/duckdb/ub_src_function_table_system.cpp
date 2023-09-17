@@ -49,6 +49,9 @@
 #line 0 "src/function/table/system/pragma_database_size.cpp"
 #include "src/function/table/system/pragma_database_size.cpp"
 
+#line 0 "src/function/table/system/pragma_metadata_info.cpp"
+#include "src/function/table/system/pragma_metadata_info.cpp"
+
 #line 0 "src/function/table/system/pragma_storage_info.cpp"
 #include "src/function/table/system/pragma_storage_info.cpp"
 
