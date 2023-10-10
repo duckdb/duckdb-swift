@@ -4,6 +4,9 @@
 #line 0 "src/optimizer/pushdown/pushdown_cross_product.cpp"
 #include "src/optimizer/pushdown/pushdown_cross_product.cpp"
 
+#line 0 "src/optimizer/pushdown/pushdown_distinct.cpp"
+#include "src/optimizer/pushdown/pushdown_distinct.cpp"
+
 #line 0 "src/optimizer/pushdown/pushdown_filter.cpp"
 #include "src/optimizer/pushdown/pushdown_filter.cpp"
 
