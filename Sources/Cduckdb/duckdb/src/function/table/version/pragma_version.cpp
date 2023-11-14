@@ -1,5 +1,5 @@
 #ifndef DUCKDB_VERSION
-#define DUCKDB_VERSION "v0.9.2-dev406"
+#define DUCKDB_VERSION "v0.9.2"
 #endif
 #ifndef DUCKDB_SOURCE_ID
 #define DUCKDB_SOURCE_ID "3c695d7ba9"
