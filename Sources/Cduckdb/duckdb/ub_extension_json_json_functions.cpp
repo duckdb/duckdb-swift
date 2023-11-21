@@ -31,6 +31,9 @@
 #line 0 "extension/json/json_functions/json_valid.cpp"
 #include "extension/json/json_functions/json_valid.cpp"
 
+#line 0 "extension/json/json_functions/json_serialize_plan.cpp"
+#include "extension/json/json_functions/json_serialize_plan.cpp"
+
 #line 0 "extension/json/json_functions/json_serialize_sql.cpp"
 #include "extension/json/json_functions/json_serialize_sql.cpp"
 

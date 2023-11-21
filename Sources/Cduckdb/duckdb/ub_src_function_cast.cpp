@@ -1,3 +1,6 @@
+#line 0 "src/function/cast/array_casts.cpp"
+#include "src/function/cast/array_casts.cpp"
+
 #line 0 "src/function/cast/blob_cast.cpp"
 #include "src/function/cast/blob_cast.cpp"
 

@@ -7,11 +7,8 @@
 #line 0 "src/core_functions/scalar/list/list_aggregates.cpp"
 #include "src/core_functions/scalar/list/list_aggregates.cpp"
 
-#line 0 "src/core_functions/scalar/list/list_lambdas.cpp"
-#include "src/core_functions/scalar/list/list_lambdas.cpp"
-
-#line 0 "src/core_functions/scalar/list/list_value.cpp"
-#include "src/core_functions/scalar/list/list_value.cpp"
+#line 0 "src/core_functions/scalar/list/list_filter.cpp"
+#include "src/core_functions/scalar/list/list_filter.cpp"
 
 #line 0 "src/core_functions/scalar/list/list_sort.cpp"
 #include "src/core_functions/scalar/list/list_sort.cpp"
@@ -24,6 +21,12 @@
 
 #line 0 "src/core_functions/scalar/list/list_inner_product.cpp"
 #include "src/core_functions/scalar/list/list_inner_product.cpp"
+
+#line 0 "src/core_functions/scalar/list/list_transform.cpp"
+#include "src/core_functions/scalar/list/list_transform.cpp"
+
+#line 0 "src/core_functions/scalar/list/list_value.cpp"
+#include "src/core_functions/scalar/list/list_value.cpp"
 
 #line 0 "src/core_functions/scalar/list/range.cpp"
 #include "src/core_functions/scalar/list/range.cpp"

@@ -7,6 +7,9 @@
 #line 0 "src/storage/statistics/distinct_statistics.cpp"
 #include "src/storage/statistics/distinct_statistics.cpp"
 
+#line 0 "src/storage/statistics/array_stats.cpp"
+#include "src/storage/statistics/array_stats.cpp"
+
 #line 0 "src/storage/statistics/list_stats.cpp"
 #include "src/storage/statistics/list_stats.cpp"
 

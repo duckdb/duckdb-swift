@@ -31,6 +31,9 @@
 #line 0 "src/parser/expression/lambda_expression.cpp"
 #include "src/parser/expression/lambda_expression.cpp"
 
+#line 0 "src/parser/expression/lambdaref_expression.cpp"
+#include "src/parser/expression/lambdaref_expression.cpp"
+
 #line 0 "src/parser/expression/operator_expression.cpp"
 #include "src/parser/expression/operator_expression.cpp"
 
