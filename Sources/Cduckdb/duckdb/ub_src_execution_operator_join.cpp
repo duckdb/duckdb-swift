@@ -22,9 +22,6 @@
 #line 0 "src/execution/operator/join/physical_iejoin.cpp"
 #include "src/execution/operator/join/physical_iejoin.cpp"
 
-#line 0 "src/execution/operator/join/physical_index_join.cpp"
-#include "src/execution/operator/join/physical_index_join.cpp"
-
 #line 0 "src/execution/operator/join/physical_join.cpp"
 #include "src/execution/operator/join/physical_join.cpp"
 
