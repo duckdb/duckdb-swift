@@ -7,6 +7,9 @@
 #line 0 "src/planner/binder/statement/bind_copy.cpp"
 #include "src/planner/binder/statement/bind_copy.cpp"
 
+#line 0 "src/planner/binder/statement/bind_copy_database.cpp"
+#include "src/planner/binder/statement/bind_copy_database.cpp"
+
 #line 0 "src/planner/binder/statement/bind_create.cpp"
 #include "src/planner/binder/statement/bind_create.cpp"
 

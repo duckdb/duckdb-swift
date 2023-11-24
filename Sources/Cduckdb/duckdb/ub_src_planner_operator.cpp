@@ -13,6 +13,9 @@
 #line 0 "src/planner/operator/logical_copy_to_file.cpp"
 #include "src/planner/operator/logical_copy_to_file.cpp"
 
+#line 0 "src/planner/operator/logical_copy_database.cpp"
+#include "src/planner/operator/logical_copy_database.cpp"
+
 #line 0 "src/planner/operator/logical_create.cpp"
 #include "src/planner/operator/logical_create.cpp"
 

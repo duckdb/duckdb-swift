@@ -13,6 +13,9 @@
 #line 0 "src/execution/physical_plan/plan_comparison_join.cpp"
 #include "src/execution/physical_plan/plan_comparison_join.cpp"
 
+#line 0 "src/execution/physical_plan/plan_copy_database.cpp"
+#include "src/execution/physical_plan/plan_copy_database.cpp"
+
 #line 0 "src/execution/physical_plan/plan_copy_to_file.cpp"
 #include "src/execution/physical_plan/plan_copy_to_file.cpp"
 
