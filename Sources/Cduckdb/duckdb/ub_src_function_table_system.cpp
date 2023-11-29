@@ -22,6 +22,9 @@
 #line 0 "src/function/table/system/duckdb_indexes.cpp"
 #include "src/function/table/system/duckdb_indexes.cpp"
 
+#line 0 "src/function/table/system/duckdb_optimizers.cpp"
+#include "src/function/table/system/duckdb_optimizers.cpp"
+
 #line 0 "src/function/table/system/duckdb_schemas.cpp"
 #include "src/function/table/system/duckdb_schemas.cpp"
 
