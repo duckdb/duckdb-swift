@@ -16,6 +16,9 @@
 #line 0 "src/main/client_verify.cpp"
 #include "src/main/client_verify.cpp"
 
+#line 0 "src/main/connection_manager.cpp"
+#include "src/main/connection_manager.cpp"
+
 #line 0 "src/main/chunk_scan_state.cpp"
 #include "src/main/chunk_scan_state.cpp"
 
