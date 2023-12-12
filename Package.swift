@@ -18,6 +18,7 @@ let package = Package(
       sources: [
         "duckdb/ub_src_catalog.cpp",
         "duckdb/ub_src_catalog_catalog_entry.cpp",
+        "duckdb/ub_src_catalog_catalog_entry_dependency.cpp",
         "duckdb/ub_src_catalog_default.cpp",
         "duckdb/ub_src_common_adbc.cpp",
         "duckdb/ub_src_common_adbc_nanoarrow.cpp",

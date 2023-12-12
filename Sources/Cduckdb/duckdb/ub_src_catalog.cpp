@@ -16,11 +16,14 @@
 #line 0 "src/catalog/duck_catalog.cpp"
 #include "src/catalog/duck_catalog.cpp"
 
+#line 0 "src/catalog/dependency_manager.cpp"
+#include "src/catalog/dependency_manager.cpp"
+
 #line 0 "src/catalog/dependency_list.cpp"
 #include "src/catalog/dependency_list.cpp"
 
-#line 0 "src/catalog/dependency_manager.cpp"
-#include "src/catalog/dependency_manager.cpp"
+#line 0 "src/catalog/dependency_catalog_set.cpp"
+#include "src/catalog/dependency_catalog_set.cpp"
 
 #line 0 "src/catalog/similar_catalog_entry.cpp"
 #include "src/catalog/similar_catalog_entry.cpp"
