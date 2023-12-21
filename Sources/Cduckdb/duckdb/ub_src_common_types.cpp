@@ -34,6 +34,9 @@
 #line 0 "src/common/types/hugeint.cpp"
 #include "src/common/types/hugeint.cpp"
 
+#line 0 "src/common/types/uhugeint.cpp"
+#include "src/common/types/uhugeint.cpp"
+
 #line 0 "src/common/types/uuid.cpp"
 #include "src/common/types/uuid.cpp"
 
