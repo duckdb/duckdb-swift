@@ -67,6 +67,9 @@
 #line 0 "src/parser/transform/statement/transform_rename.cpp"
 #include "src/parser/transform/statement/transform_rename.cpp"
 
+#line 0 "src/parser/transform/statement/transform_secret.cpp"
+#include "src/parser/transform/statement/transform_secret.cpp"
+
 #line 0 "src/parser/transform/statement/transform_select.cpp"
 #include "src/parser/transform/statement/transform_select.cpp"
 
