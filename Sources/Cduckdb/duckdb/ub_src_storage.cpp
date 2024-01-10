@@ -7,6 +7,9 @@
 #line 0 "src/storage/checkpoint_manager.cpp"
 #include "src/storage/checkpoint_manager.cpp"
 
+#line 0 "src/storage/temporary_memory_manager.cpp"
+#include "src/storage/temporary_memory_manager.cpp"
+
 #line 0 "src/storage/block.cpp"
 #include "src/storage/block.cpp"
 

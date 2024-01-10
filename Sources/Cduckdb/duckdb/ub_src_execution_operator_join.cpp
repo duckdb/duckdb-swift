@@ -16,6 +16,9 @@
 #line 0 "src/execution/operator/join/physical_delim_join.cpp"
 #include "src/execution/operator/join/physical_delim_join.cpp"
 
+#line 0 "src/execution/operator/join/physical_left_delim_join.cpp"
+#include "src/execution/operator/join/physical_left_delim_join.cpp"
+
 #line 0 "src/execution/operator/join/physical_hash_join.cpp"
 #include "src/execution/operator/join/physical_hash_join.cpp"
 
@@ -39,4 +42,7 @@
 
 #line 0 "src/execution/operator/join/physical_range_join.cpp"
 #include "src/execution/operator/join/physical_range_join.cpp"
+
+#line 0 "src/execution/operator/join/physical_right_delim_join.cpp"
+#include "src/execution/operator/join/physical_right_delim_join.cpp"
 
