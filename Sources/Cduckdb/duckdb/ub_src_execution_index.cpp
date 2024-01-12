@@ -4,3 +4,9 @@
 #line 0 "src/execution/index/fixed_size_buffer.cpp"
 #include "src/execution/index/fixed_size_buffer.cpp"
 
+#line 0 "src/execution/index/unknown_index.cpp"
+#include "src/execution/index/unknown_index.cpp"
+
+#line 0 "src/execution/index/index_type_set.cpp"
+#include "src/execution/index/index_type_set.cpp"
+
