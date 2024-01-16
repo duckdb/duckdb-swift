@@ -13,6 +13,9 @@
 #line 0 "src/parser/tableref/pivotref.cpp"
 #include "src/parser/tableref/pivotref.cpp"
 
+#line 0 "src/parser/tableref/showref.cpp"
+#include "src/parser/tableref/showref.cpp"
+
 #line 0 "src/parser/tableref/subqueryref.cpp"
 #include "src/parser/tableref/subqueryref.cpp"
 

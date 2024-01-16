@@ -13,6 +13,9 @@
 #line 0 "src/planner/binder/tableref/bind_pivot.cpp"
 #include "src/planner/binder/tableref/bind_pivot.cpp"
 
+#line 0 "src/planner/binder/tableref/bind_showref.cpp"
+#include "src/planner/binder/tableref/bind_showref.cpp"
+
 #line 0 "src/planner/binder/tableref/bind_subqueryref.cpp"
 #include "src/planner/binder/tableref/bind_subqueryref.cpp"
 

@@ -73,6 +73,3 @@
 #line 0 "src/planner/binder/statement/bind_vacuum.cpp"
 #include "src/planner/binder/statement/bind_vacuum.cpp"
 
-#line 0 "src/planner/binder/statement/bind_show.cpp"
-#include "src/planner/binder/statement/bind_show.cpp"
-

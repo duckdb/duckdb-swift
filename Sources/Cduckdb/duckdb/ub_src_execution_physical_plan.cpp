@@ -106,9 +106,6 @@
 #line 0 "src/execution/physical_plan/plan_sample.cpp"
 #include "src/execution/physical_plan/plan_sample.cpp"
 
-#line 0 "src/execution/physical_plan/plan_show_select.cpp"
-#include "src/execution/physical_plan/plan_show_select.cpp"
-
 #line 0 "src/execution/physical_plan/plan_simple.cpp"
 #include "src/execution/physical_plan/plan_simple.cpp"
 
