@@ -153,6 +153,7 @@ let package = Package(
         "duckdb/ub_src_storage.cpp",
         "duckdb/ub_src_storage_buffer.cpp",
         "duckdb/ub_src_storage_checkpoint.cpp",
+        "duckdb/ub_src_storage_compression_alp.cpp",
         "duckdb/ub_src_storage_compression.cpp",
         "duckdb/ub_src_storage_compression_chimp.cpp",
         "duckdb/ub_src_storage_metadata.cpp",

@@ -40,6 +40,9 @@
 #line 0 "src/core_functions/scalar/string/pad.cpp"
 #include "src/core_functions/scalar/string/pad.cpp"
 
+#line 0 "src/core_functions/scalar/string/parse_path.cpp"
+#include "src/core_functions/scalar/string/parse_path.cpp"
+
 #line 0 "src/core_functions/scalar/string/printf.cpp"
 #include "src/core_functions/scalar/string/printf.cpp"
 
