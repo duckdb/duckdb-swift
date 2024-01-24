@@ -164,6 +164,7 @@ let package = Package(
         "duckdb/src/verification/copied_statement_verifier.cpp",
         "duckdb/src/verification/deserialized_statement_verifier.cpp",
         "duckdb/src/verification/external_statement_verifier.cpp",
+        "duckdb/src/verification/fetch_row_verifier.cpp",
         "duckdb/src/verification/no_operator_caching_verifier.cpp",
         "duckdb/src/verification/parsed_statement_verifier.cpp",
         "duckdb/src/verification/prepared_statement_verifier.cpp",
