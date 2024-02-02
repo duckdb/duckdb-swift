@@ -27,6 +27,7 @@ let package = Package(
         "duckdb/ub_src_common_arrow.cpp",
         "duckdb/ub_src_common_crypto.cpp",
         "duckdb/ub_src_common_enums.cpp",
+        "duckdb/ub_src_common_exception.cpp",
         "duckdb/ub_src_common_operator.cpp",
         "duckdb/ub_src_common_progress_bar.cpp",
         "duckdb/ub_src_common_row_operations.cpp",
