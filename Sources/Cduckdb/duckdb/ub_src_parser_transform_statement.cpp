@@ -16,6 +16,9 @@
 #line 0 "src/parser/transform/statement/transform_create_function.cpp"
 #include "src/parser/transform/statement/transform_create_function.cpp"
 
+#line 0 "src/parser/transform/statement/transform_comment_on.cpp"
+#include "src/parser/transform/statement/transform_comment_on.cpp"
+
 #line 0 "src/parser/transform/statement/transform_copy.cpp"
 #include "src/parser/transform/statement/transform_copy.cpp"
 
