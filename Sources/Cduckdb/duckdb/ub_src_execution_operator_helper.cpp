@@ -1,6 +1,9 @@
 #line 0 "src/execution/operator/helper/physical_batch_collector.cpp"
 #include "src/execution/operator/helper/physical_batch_collector.cpp"
 
+#line 0 "src/execution/operator/helper/physical_buffered_collector.cpp"
+#include "src/execution/operator/helper/physical_buffered_collector.cpp"
+
 #line 0 "src/execution/operator/helper/physical_create_secret.cpp"
 #include "src/execution/operator/helper/physical_create_secret.cpp"
 

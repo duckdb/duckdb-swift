@@ -112,6 +112,7 @@ let package = Package(
         "duckdb/ub_src_function_table_system.cpp",
         "duckdb/ub_src_function_table_version.cpp",
         "duckdb/ub_src_main.cpp",
+        "duckdb/ub_src_main_buffered_data.cpp",
         "duckdb/ub_src_main_capi.cpp",
         "duckdb/ub_src_main_capi_cast.cpp",
         "duckdb/ub_src_main_chunk_scan_state.cpp",
