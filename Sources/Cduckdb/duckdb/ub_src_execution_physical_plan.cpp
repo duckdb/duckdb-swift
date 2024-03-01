@@ -73,9 +73,6 @@
 #line 0 "src/execution/physical_plan/plan_limit.cpp"
 #include "src/execution/physical_plan/plan_limit.cpp"
 
-#line 0 "src/execution/physical_plan/plan_limit_percent.cpp"
-#include "src/execution/physical_plan/plan_limit_percent.cpp"
-
 #line 0 "src/execution/physical_plan/plan_order.cpp"
 #include "src/execution/physical_plan/plan_order.cpp"
 
