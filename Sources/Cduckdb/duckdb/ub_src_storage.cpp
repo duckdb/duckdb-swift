@@ -34,6 +34,9 @@
 #line 0 "src/storage/standard_buffer_manager.cpp"
 #include "src/storage/standard_buffer_manager.cpp"
 
+#line 0 "src/storage/temporary_file_manager.cpp"
+#include "src/storage/temporary_file_manager.cpp"
+
 #line 0 "src/storage/table_index_list.cpp"
 #include "src/storage/table_index_list.cpp"
 
