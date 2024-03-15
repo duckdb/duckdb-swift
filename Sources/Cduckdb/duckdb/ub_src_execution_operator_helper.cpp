@@ -55,3 +55,6 @@
 #line 0 "src/execution/operator/helper/physical_vacuum.cpp"
 #include "src/execution/operator/helper/physical_vacuum.cpp"
 
+#line 0 "src/execution/operator/helper/physical_verify_vector.cpp"
+#include "src/execution/operator/helper/physical_verify_vector.cpp"
+
