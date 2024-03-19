@@ -173,7 +173,6 @@ let package = Package(
         "duckdb/src/verification/statement_verifier.cpp",
         "duckdb/src/verification/unoptimized_statement_verifier.cpp",
         "duckdb/third_party/fmt/format.cc",
-        "duckdb/third_party/fsst/fsst_avx512.cpp",
         "duckdb/third_party/fsst/libfsst.cpp",
         "duckdb/third_party/miniz/miniz.cpp",
         "duckdb/third_party/re2/re2/bitstate.cc",
