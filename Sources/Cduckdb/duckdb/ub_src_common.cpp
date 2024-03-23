@@ -19,9 +19,6 @@
 #line 0 "src/common/checksum.cpp"
 #include "src/common/checksum.cpp"
 
-#line 0 "src/common/cycle_counter.cpp"
-#include "src/common/cycle_counter.cpp"
-
 #line 0 "src/common/exception.cpp"
 #include "src/common/exception.cpp"
 
