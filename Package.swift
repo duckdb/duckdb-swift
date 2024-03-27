@@ -175,6 +175,7 @@ let package = Package(
         "duckdb/third_party/fmt/format.cc",
         "duckdb/third_party/fsst/libfsst.cpp",
         "duckdb/third_party/miniz/miniz.cpp",
+        "duckdb/third_party/re2/re2/bitmap256.cc",
         "duckdb/third_party/re2/re2/bitstate.cc",
         "duckdb/third_party/re2/re2/compile.cc",
         "duckdb/third_party/re2/re2/dfa.cc",
