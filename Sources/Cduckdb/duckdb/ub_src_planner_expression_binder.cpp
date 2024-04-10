@@ -46,6 +46,9 @@
 #line 0 "src/planner/expression_binder/select_binder.cpp"
 #include "src/planner/expression_binder/select_binder.cpp"
 
+#line 0 "src/planner/expression_binder/select_bind_state.cpp"
+#include "src/planner/expression_binder/select_bind_state.cpp"
+
 #line 0 "src/planner/expression_binder/table_function_binder.cpp"
 #include "src/planner/expression_binder/table_function_binder.cpp"
 

@@ -25,6 +25,9 @@
 #line 0 "src/planner/expression/bound_constant_expression.cpp"
 #include "src/planner/expression/bound_constant_expression.cpp"
 
+#line 0 "src/planner/expression/bound_expanded_expression.cpp"
+#include "src/planner/expression/bound_expanded_expression.cpp"
+
 #line 0 "src/planner/expression/bound_function_expression.cpp"
 #include "src/planner/expression/bound_function_expression.cpp"
 
