@@ -121,6 +121,9 @@
 #line 0 "src/planner/operator/logical_update.cpp"
 #include "src/planner/operator/logical_update.cpp"
 
+#line 0 "src/planner/operator/logical_vacuum.cpp"
+#include "src/planner/operator/logical_vacuum.cpp"
+
 #line 0 "src/planner/operator/logical_window.cpp"
 #include "src/planner/operator/logical_window.cpp"
 

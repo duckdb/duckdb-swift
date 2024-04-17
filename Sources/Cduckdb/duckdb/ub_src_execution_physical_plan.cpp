@@ -115,6 +115,9 @@
 #line 0 "src/execution/physical_plan/plan_window.cpp"
 #include "src/execution/physical_plan/plan_window.cpp"
 
+#line 0 "src/execution/physical_plan/plan_vacuum.cpp"
+#include "src/execution/physical_plan/plan_vacuum.cpp"
+
 #line 0 "src/execution/physical_plan/plan_unnest.cpp"
 #include "src/execution/physical_plan/plan_unnest.cpp"
 
