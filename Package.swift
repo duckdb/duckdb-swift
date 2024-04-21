@@ -65,7 +65,6 @@ let package = Package(
         "duckdb/ub_src_core_functions_scalar_math.cpp",
         "duckdb/ub_src_core_functions_scalar_operators.cpp",
         "duckdb/ub_src_core_functions_scalar_random.cpp",
-        "duckdb/ub_src_core_functions_scalar_secret.cpp",
         "duckdb/ub_src_core_functions_scalar_string.cpp",
         "duckdb/ub_src_core_functions_scalar_struct.cpp",
         "duckdb/ub_src_core_functions_scalar_union.cpp",

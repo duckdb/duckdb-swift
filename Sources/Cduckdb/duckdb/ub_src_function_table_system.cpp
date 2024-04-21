@@ -34,6 +34,9 @@
 #line 0 "src/function/table/system/duckdb_secrets.cpp"
 #include "src/function/table/system/duckdb_secrets.cpp"
 
+#line 0 "src/function/table/system/duckdb_which_secret.cpp"
+#include "src/function/table/system/duckdb_which_secret.cpp"
+
 #line 0 "src/function/table/system/duckdb_sequences.cpp"
 #include "src/function/table/system/duckdb_sequences.cpp"
 
