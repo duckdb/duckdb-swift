@@ -10,6 +10,9 @@
 #line 0 "src/main/client_context.cpp"
 #include "src/main/client_context.cpp"
 
+#line 0 "src/main/client_context_wrapper.cpp"
+#include "src/main/client_context_wrapper.cpp"
+
 #line 0 "src/main/client_data.cpp"
 #include "src/main/client_data.cpp"
 
