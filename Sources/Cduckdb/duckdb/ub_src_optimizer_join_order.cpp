@@ -7,9 +7,6 @@
 #line 0 "src/optimizer/join_order/join_node.cpp"
 #include "src/optimizer/join_order/join_node.cpp"
 
-#line 0 "src/optimizer/join_order/estimated_properties.cpp"
-#include "src/optimizer/join_order/estimated_properties.cpp"
-
 #line 0 "src/optimizer/join_order/join_order_optimizer.cpp"
 #include "src/optimizer/join_order/join_order_optimizer.cpp"
 
