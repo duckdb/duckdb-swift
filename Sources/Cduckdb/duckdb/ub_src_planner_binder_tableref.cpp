@@ -7,6 +7,9 @@
 #line 0 "src/planner/binder/tableref/bind_expressionlistref.cpp"
 #include "src/planner/binder/tableref/bind_expressionlistref.cpp"
 
+#line 0 "src/planner/binder/tableref/bind_column_data_ref.cpp"
+#include "src/planner/binder/tableref/bind_column_data_ref.cpp"
+
 #line 0 "src/planner/binder/tableref/bind_joinref.cpp"
 #include "src/planner/binder/tableref/bind_joinref.cpp"
 
@@ -33,6 +36,9 @@
 
 #line 0 "src/planner/binder/tableref/plan_expressionlistref.cpp"
 #include "src/planner/binder/tableref/plan_expressionlistref.cpp"
+
+#line 0 "src/planner/binder/tableref/plan_column_data_ref.cpp"
+#include "src/planner/binder/tableref/plan_column_data_ref.cpp"
 
 #line 0 "src/planner/binder/tableref/plan_joinref.cpp"
 #include "src/planner/binder/tableref/plan_joinref.cpp"

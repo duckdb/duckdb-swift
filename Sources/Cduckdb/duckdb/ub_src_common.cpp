@@ -55,6 +55,9 @@
 #line 0 "src/common/local_file_system.cpp"
 #include "src/common/local_file_system.cpp"
 
+#line 0 "src/common/multi_file_list.cpp"
+#include "src/common/multi_file_list.cpp"
+
 #line 0 "src/common/multi_file_reader.cpp"
 #include "src/common/multi_file_reader.cpp"
 

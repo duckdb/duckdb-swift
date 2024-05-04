@@ -64,6 +64,9 @@
 #line 0 "src/main/relation/value_relation.cpp"
 #include "src/main/relation/value_relation.cpp"
 
+#line 0 "src/main/relation/materialized_relation.cpp"
+#include "src/main/relation/materialized_relation.cpp"
+
 #line 0 "src/main/relation/view_relation.cpp"
 #include "src/main/relation/view_relation.cpp"
 
