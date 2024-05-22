@@ -4,8 +4,14 @@
 #line 0 "src/storage/serialization/serialize_create_info.cpp"
 #include "src/storage/serialization/serialize_create_info.cpp"
 
+#line 0 "src/storage/serialization/serialize_dependency.cpp"
+#include "src/storage/serialization/serialize_dependency.cpp"
+
 #line 0 "src/storage/serialization/serialize_expression.cpp"
 #include "src/storage/serialization/serialize_expression.cpp"
+
+#line 0 "src/storage/serialization/serialize_extension_install_info.cpp"
+#include "src/storage/serialization/serialize_extension_install_info.cpp"
 
 #line 0 "src/storage/serialization/serialize_extra_drop_info.cpp"
 #include "src/storage/serialization/serialize_extra_drop_info.cpp"

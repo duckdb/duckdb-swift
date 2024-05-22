@@ -67,6 +67,9 @@
 #line 0 "src/parser/statement/update_statement.cpp"
 #include "src/parser/statement/update_statement.cpp"
 
+#line 0 "src/parser/statement/update_extensions_statement.cpp"
+#include "src/parser/statement/update_extensions_statement.cpp"
+
 #line 0 "src/parser/statement/vacuum_statement.cpp"
 #include "src/parser/statement/vacuum_statement.cpp"
 
