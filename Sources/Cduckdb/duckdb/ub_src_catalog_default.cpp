@@ -1,6 +1,9 @@
 #line 0 "src/catalog/default/default_functions.cpp"
 #include "src/catalog/default/default_functions.cpp"
 
+#line 0 "src/catalog/default/default_generator.cpp"
+#include "src/catalog/default/default_generator.cpp"
+
 #line 0 "src/catalog/default/default_schemas.cpp"
 #include "src/catalog/default/default_schemas.cpp"
 
