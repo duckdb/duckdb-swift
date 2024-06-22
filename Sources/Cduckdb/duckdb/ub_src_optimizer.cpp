@@ -1,3 +1,6 @@
+#line 0 "src/optimizer/build_probe_side_optimizer.cpp"
+#include "src/optimizer/build_probe_side_optimizer.cpp"
+
 #line 0 "src/optimizer/column_binding_replacer.cpp"
 #include "src/optimizer/column_binding_replacer.cpp"
 
@@ -48,6 +51,9 @@
 
 #line 0 "src/optimizer/statistics_propagator.cpp"
 #include "src/optimizer/statistics_propagator.cpp"
+
+#line 0 "src/optimizer/limit_pushdown.cpp"
+#include "src/optimizer/limit_pushdown.cpp"
 
 #line 0 "src/optimizer/topn_optimizer.cpp"
 #include "src/optimizer/topn_optimizer.cpp"

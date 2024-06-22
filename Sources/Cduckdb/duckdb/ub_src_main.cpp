@@ -4,6 +4,9 @@
 #line 0 "src/main/attached_database.cpp"
 #include "src/main/attached_database.cpp"
 
+#line 0 "src/main/client_config.cpp"
+#include "src/main/client_config.cpp"
+
 #line 0 "src/main/client_context_file_opener.cpp"
 #include "src/main/client_context_file_opener.cpp"
 
@@ -75,6 +78,9 @@
 
 #line 0 "src/main/stream_query_result.cpp"
 #include "src/main/stream_query_result.cpp"
+
+#line 0 "src/main/profiling_info.cpp"
+#include "src/main/profiling_info.cpp"
 
 #line 0 "src/main/valid_checker.cpp"
 #include "src/main/valid_checker.cpp"

@@ -40,8 +40,14 @@
 #line 0 "src/main/capi/result-c.cpp"
 #include "src/main/capi/result-c.cpp"
 
+#line 0 "src/main/capi/scalar_function-c.cpp"
+#include "src/main/capi/scalar_function-c.cpp"
+
 #line 0 "src/main/capi/stream-c.cpp"
 #include "src/main/capi/stream-c.cpp"
+
+#line 0 "src/main/capi/table_description-c.cpp"
+#include "src/main/capi/table_description-c.cpp"
 
 #line 0 "src/main/capi/table_function-c.cpp"
 #include "src/main/capi/table_function-c.cpp"

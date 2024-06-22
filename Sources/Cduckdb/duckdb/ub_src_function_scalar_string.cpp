@@ -4,6 +4,9 @@
 #line 0 "src/function/scalar/string/concat.cpp"
 #include "src/function/scalar/string/concat.cpp"
 
+#line 0 "src/function/scalar/string/concat_ws.cpp"
+#include "src/function/scalar/string/concat_ws.cpp"
+
 #line 0 "src/function/scalar/string/length.cpp"
 #include "src/function/scalar/string/length.cpp"
 

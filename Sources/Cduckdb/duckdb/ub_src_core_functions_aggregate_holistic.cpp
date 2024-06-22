@@ -1,6 +1,9 @@
 #line 0 "src/core_functions/aggregate/holistic/quantile.cpp"
 #include "src/core_functions/aggregate/holistic/quantile.cpp"
 
+#line 0 "src/core_functions/aggregate/holistic/mad.cpp"
+#include "src/core_functions/aggregate/holistic/mad.cpp"
+
 #line 0 "src/core_functions/aggregate/holistic/mode.cpp"
 #include "src/core_functions/aggregate/holistic/mode.cpp"
 

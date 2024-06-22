@@ -7,6 +7,9 @@
 #line 0 "src/function/compression_config.cpp"
 #include "src/function/compression_config.cpp"
 
+#line 0 "src/function/copy_function.cpp"
+#include "src/function/copy_function.cpp"
+
 #line 0 "src/function/function.cpp"
 #include "src/function/function.cpp"
 

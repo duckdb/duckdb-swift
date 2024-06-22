@@ -31,6 +31,9 @@
 #line 0 "src/optimizer/rule/in_clause_simplification_rule.cpp"
 #include "src/optimizer/rule/in_clause_simplification_rule.cpp"
 
+#line 0 "src/optimizer/rule/join_dependent_filter.cpp"
+#include "src/optimizer/rule/join_dependent_filter.cpp"
+
 #line 0 "src/optimizer/rule/like_optimizations.cpp"
 #include "src/optimizer/rule/like_optimizations.cpp"
 

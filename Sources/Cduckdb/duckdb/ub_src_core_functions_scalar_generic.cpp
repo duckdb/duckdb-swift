@@ -1,6 +1,9 @@
 #line 0 "src/core_functions/scalar/generic/alias.cpp"
 #include "src/core_functions/scalar/generic/alias.cpp"
 
+#line 0 "src/core_functions/scalar/generic/can_implicitly_cast.cpp"
+#include "src/core_functions/scalar/generic/can_implicitly_cast.cpp"
+
 #line 0 "src/core_functions/scalar/generic/current_setting.cpp"
 #include "src/core_functions/scalar/generic/current_setting.cpp"
 

@@ -28,3 +28,6 @@
 #line 0 "src/transaction/cleanup_state.cpp"
 #include "src/transaction/cleanup_state.cpp"
 
+#line 0 "src/transaction/wal_write_state.cpp"
+#include "src/transaction/wal_write_state.cpp"
+
