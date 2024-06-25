@@ -1,3 +1,6 @@
+#line 0 "src/core_functions/aggregate/holistic/approx_top_k.cpp"
+#include "src/core_functions/aggregate/holistic/approx_top_k.cpp"
+
 #line 0 "src/core_functions/aggregate/holistic/quantile.cpp"
 #include "src/core_functions/aggregate/holistic/quantile.cpp"
 
