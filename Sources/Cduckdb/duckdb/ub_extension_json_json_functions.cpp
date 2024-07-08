@@ -16,6 +16,9 @@
 #line 0 "extension/json/json_functions/json_merge_patch.cpp"
 #include "extension/json/json_functions/json_merge_patch.cpp"
 
+#line 0 "extension/json/json_functions/json_pretty.cpp"
+#include "extension/json/json_functions/json_pretty.cpp"
+
 #line 0 "extension/json/json_functions/json_structure.cpp"
 #include "extension/json/json_functions/json_structure.cpp"
 
