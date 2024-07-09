@@ -34,6 +34,9 @@
 #line 0 "src/main/capi/prepared-c.cpp"
 #include "src/main/capi/prepared-c.cpp"
 
+#line 0 "src/main/capi/profiling_info-c.cpp"
+#include "src/main/capi/profiling_info-c.cpp"
+
 #line 0 "src/main/capi/replacement_scan-c.cpp"
 #include "src/main/capi/replacement_scan-c.cpp"
 

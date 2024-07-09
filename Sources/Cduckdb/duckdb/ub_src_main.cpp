@@ -67,6 +67,9 @@
 #line 0 "src/main/prepared_statement_data.cpp"
 #include "src/main/prepared_statement_data.cpp"
 
+#line 0 "src/main/profiling_info.cpp"
+#include "src/main/profiling_info.cpp"
+
 #line 0 "src/main/relation.cpp"
 #include "src/main/relation.cpp"
 
@@ -78,9 +81,6 @@
 
 #line 0 "src/main/stream_query_result.cpp"
 #include "src/main/stream_query_result.cpp"
-
-#line 0 "src/main/profiling_info.cpp"
-#include "src/main/profiling_info.cpp"
 
 #line 0 "src/main/valid_checker.cpp"
 #include "src/main/valid_checker.cpp"
