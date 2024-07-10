@@ -37,6 +37,9 @@
 #line 0 "src/optimizer/in_clause_rewriter.cpp"
 #include "src/optimizer/in_clause_rewriter.cpp"
 
+#line 0 "src/optimizer/join_filter_pushdown_optimizer.cpp"
+#include "src/optimizer/join_filter_pushdown_optimizer.cpp"
+
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
