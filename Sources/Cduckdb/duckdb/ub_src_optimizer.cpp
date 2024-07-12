@@ -16,6 +16,9 @@
 #line 0 "src/optimizer/cse_optimizer.cpp"
 #include "src/optimizer/cse_optimizer.cpp"
 
+#line 0 "src/optimizer/cte_filter_pusher.cpp"
+#include "src/optimizer/cte_filter_pusher.cpp"
+
 #line 0 "src/optimizer/deliminator.cpp"
 #include "src/optimizer/deliminator.cpp"
 
