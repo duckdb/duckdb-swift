@@ -46,9 +46,6 @@
 #line 0 "src/common/hive_partitioning.cpp"
 #include "src/common/hive_partitioning.cpp"
 
-#line 0 "src/common/http_state.cpp"
-#include "src/common/http_state.cpp"
-
 #line 0 "src/common/pipe_file_system.cpp"
 #include "src/common/pipe_file_system.cpp"
 
@@ -81,6 +78,9 @@
 
 #line 0 "src/common/enum_util.cpp"
 #include "src/common/enum_util.cpp"
+
+#line 0 "src/common/render_tree.cpp"
+#include "src/common/render_tree.cpp"
 
 #line 0 "src/common/tree_renderer.cpp"
 #include "src/common/tree_renderer.cpp"
