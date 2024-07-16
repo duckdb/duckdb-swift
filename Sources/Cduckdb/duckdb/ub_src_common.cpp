@@ -19,6 +19,9 @@
 #line 0 "src/common/checksum.cpp"
 #include "src/common/checksum.cpp"
 
+#line 0 "src/common/encryption_state.cpp"
+#include "src/common/encryption_state.cpp"
+
 #line 0 "src/common/exception.cpp"
 #include "src/common/exception.cpp"
 
