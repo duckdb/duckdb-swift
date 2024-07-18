@@ -1,6 +1,9 @@
 #line 0 "src/parser/tableref/basetableref.cpp"
 #include "src/parser/tableref/basetableref.cpp"
 
+#line 0 "src/parser/tableref/delimgetref.cpp"
+#include "src/parser/tableref/delimgetref.cpp"
+
 #line 0 "src/parser/tableref/emptytableref.cpp"
 #include "src/parser/tableref/emptytableref.cpp"
 

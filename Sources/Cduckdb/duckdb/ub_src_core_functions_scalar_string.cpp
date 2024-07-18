@@ -58,6 +58,9 @@
 #line 0 "src/core_functions/scalar/string/reverse.cpp"
 #include "src/core_functions/scalar/string/reverse.cpp"
 
+#line 0 "src/core_functions/scalar/string/sha1.cpp"
+#include "src/core_functions/scalar/string/sha1.cpp"
+
 #line 0 "src/core_functions/scalar/string/sha256.cpp"
 #include "src/core_functions/scalar/string/sha256.cpp"
 

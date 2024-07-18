@@ -1,6 +1,9 @@
 #line 0 "src/planner/binder/tableref/bind_basetableref.cpp"
 #include "src/planner/binder/tableref/bind_basetableref.cpp"
 
+#line 0 "src/planner/binder/tableref/bind_delimgetref.cpp"
+#include "src/planner/binder/tableref/bind_delimgetref.cpp"
+
 #line 0 "src/planner/binder/tableref/bind_emptytableref.cpp"
 #include "src/planner/binder/tableref/bind_emptytableref.cpp"
 
@@ -30,6 +33,9 @@
 
 #line 0 "src/planner/binder/tableref/plan_basetableref.cpp"
 #include "src/planner/binder/tableref/plan_basetableref.cpp"
+
+#line 0 "src/planner/binder/tableref/plan_delimgetref.cpp"
+#include "src/planner/binder/tableref/plan_delimgetref.cpp"
 
 #line 0 "src/planner/binder/tableref/plan_dummytableref.cpp"
 #include "src/planner/binder/tableref/plan_dummytableref.cpp"

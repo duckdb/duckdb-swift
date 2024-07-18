@@ -13,6 +13,9 @@
 #line 0 "src/main/relation/delete_relation.cpp"
 #include "src/main/relation/delete_relation.cpp"
 
+#line 0 "src/main/relation/delim_get_relation.cpp"
+#include "src/main/relation/delim_get_relation.cpp"
+
 #line 0 "src/main/relation/distinct_relation.cpp"
 #include "src/main/relation/distinct_relation.cpp"
 
