@@ -46,6 +46,9 @@
 #line 0 "src/function/cast/uuid_casts.cpp"
 #include "src/function/cast/uuid_casts.cpp"
 
+#line 0 "src/function/cast/varint_casts.cpp"
+#include "src/function/cast/varint_casts.cpp"
+
 #line 0 "src/function/cast/vector_cast_helpers.cpp"
 #include "src/function/cast/vector_cast_helpers.cpp"
 
