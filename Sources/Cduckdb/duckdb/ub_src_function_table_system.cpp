@@ -52,6 +52,9 @@
 #line 0 "src/function/table/system/duckdb_types.cpp"
 #include "src/function/table/system/duckdb_types.cpp"
 
+#line 0 "src/function/table/system/duckdb_variables.cpp"
+#include "src/function/table/system/duckdb_variables.cpp"
+
 #line 0 "src/function/table/system/duckdb_views.cpp"
 #include "src/function/table/system/duckdb_views.cpp"
 
