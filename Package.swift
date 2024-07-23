@@ -33,6 +33,7 @@ let package = Package(
         "duckdb/ub_src_common_row_operations.cpp",
         "duckdb/ub_src_common_serializer.cpp",
         "duckdb/ub_src_common_sort.cpp",
+        "duckdb/ub_src_common_tree_renderer.cpp",
         "duckdb/ub_src_common_types.cpp",
         "duckdb/ub_src_common_types_column.cpp",
         "duckdb/ub_src_common_types_row.cpp",
