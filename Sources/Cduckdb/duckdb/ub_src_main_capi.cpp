@@ -1,3 +1,6 @@
+#line 0 "src/main/capi/aggregate_function-c.cpp"
+#include "src/main/capi/aggregate_function-c.cpp"
+
 #line 0 "src/main/capi/appender-c.cpp"
 #include "src/main/capi/appender-c.cpp"
 

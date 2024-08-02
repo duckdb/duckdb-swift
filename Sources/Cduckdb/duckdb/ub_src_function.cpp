@@ -1,3 +1,6 @@
+#line 0 "src/function/aggregate_function.cpp"
+#include "src/function/aggregate_function.cpp"
+
 #line 0 "src/function/built_in_functions.cpp"
 #include "src/function/built_in_functions.cpp"
 
