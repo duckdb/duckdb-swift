@@ -10,6 +10,9 @@
 #line 0 "src/core_functions/scalar/list/list_filter.cpp"
 #include "src/core_functions/scalar/list/list_filter.cpp"
 
+#line 0 "src/core_functions/scalar/list/list_has_all.cpp"
+#include "src/core_functions/scalar/list/list_has_all.cpp"
+
 #line 0 "src/core_functions/scalar/list/list_has_any.cpp"
 #include "src/core_functions/scalar/list/list_has_any.cpp"
 
