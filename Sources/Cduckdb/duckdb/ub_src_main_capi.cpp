@@ -7,6 +7,9 @@
 #line 0 "src/main/capi/arrow-c.cpp"
 #include "src/main/capi/arrow-c.cpp"
 
+#line 0 "src/main/capi/cast_function-c.cpp"
+#include "src/main/capi/cast_function-c.cpp"
+
 #line 0 "src/main/capi/config-c.cpp"
 #include "src/main/capi/config-c.cpp"
 
