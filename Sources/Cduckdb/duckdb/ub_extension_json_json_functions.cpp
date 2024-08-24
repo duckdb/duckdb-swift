@@ -7,6 +7,9 @@
 #line 0 "extension/json/json_functions/json_contains.cpp"
 #include "extension/json/json_functions/json_contains.cpp"
 
+#line 0 "extension/json/json_functions/json_exists.cpp"
+#include "extension/json/json_functions/json_exists.cpp"
+
 #line 0 "extension/json/json_functions/json_extract.cpp"
 #include "extension/json/json_functions/json_extract.cpp"
 
@@ -33,6 +36,9 @@
 
 #line 0 "extension/json/json_functions/json_valid.cpp"
 #include "extension/json/json_functions/json_valid.cpp"
+
+#line 0 "extension/json/json_functions/json_value.cpp"
+#include "extension/json/json_functions/json_value.cpp"
 
 #line 0 "extension/json/json_functions/json_serialize_plan.cpp"
 #include "extension/json/json_functions/json_serialize_plan.cpp"

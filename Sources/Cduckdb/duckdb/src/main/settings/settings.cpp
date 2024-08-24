@@ -1167,6 +1167,22 @@ Value LockConfigurationSetting::GetSetting(const ClientContext &context) {
 }
 
 //===--------------------------------------------------------------------===//
+// IEEE Floating Points
+//===--------------------------------------------------------------------===//
+void IEEEFloatingPointOpsSetting::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
+	config.options.ieee_floating_point_ops = BooleanValue::Get(input);
+}
+
+void IEEEFloatingPointOpsSetting::ResetGlobal(DatabaseInstance *db, DBConfig &config) {
+	config.options.ieee_floating_point_ops = DBConfig().options.ieee_floating_point_ops;
+}
+
+Value IEEEFloatingPointOpsSetting::GetSetting(const ClientContext &context) {
+	auto &config = DBConfig::GetConfig(context);
+	return Value::BOOLEAN(config.options.ieee_floating_point_ops);
+}
+
+//===--------------------------------------------------------------------===//
 // Immediate Transaction Mode
 //===--------------------------------------------------------------------===//
 void ImmediateTransactionModeSetting::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
@@ -1548,6 +1564,7 @@ Value ArrowOutputListView::GetSetting(const ClientContext &context) {
 	return Value::BOOLEAN(arrow_output_list_view);
 }
 
+//===--------------------------------------------------------------------===//
 // ProduceArrowStringView
 //===--------------------------------------------------------------------===//
 void ProduceArrowStringView::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
@@ -1560,6 +1577,21 @@ void ProduceArrowStringView::ResetGlobal(DatabaseInstance *db, DBConfig &config)
 
 Value ProduceArrowStringView::GetSetting(const ClientContext &context) {
 	return Value::BOOLEAN(DBConfig::GetConfig(context).options.produce_arrow_string_views);
+}
+
+//===--------------------------------------------------------------------===//
+// ScalarSubqueryErrorOnMultipleRows
+//===--------------------------------------------------------------------===//
+void ScalarSubqueryErrorOnMultipleRows::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
+	config.options.scalar_subquery_error_on_multiple_rows = input.GetValue<bool>();
+}
+
+void ScalarSubqueryErrorOnMultipleRows::ResetGlobal(DatabaseInstance *db, DBConfig &config) {
+	config.options.scalar_subquery_error_on_multiple_rows = DBConfig().options.scalar_subquery_error_on_multiple_rows;
+}
+
+Value ScalarSubqueryErrorOnMultipleRows::GetSetting(const ClientContext &context) {
+	return Value::BOOLEAN(DBConfig::GetConfig(context).options.scalar_subquery_error_on_multiple_rows);
 }
 
 //===--------------------------------------------------------------------===//
