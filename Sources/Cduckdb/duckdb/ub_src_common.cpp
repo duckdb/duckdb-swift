@@ -52,6 +52,9 @@
 #line 0 "src/common/hive_partitioning.cpp"
 #include "src/common/hive_partitioning.cpp"
 
+#line 0 "src/common/http_util.cpp"
+#include "src/common/http_util.cpp"
+
 #line 0 "src/common/pipe_file_system.cpp"
 #include "src/common/pipe_file_system.cpp"
 
