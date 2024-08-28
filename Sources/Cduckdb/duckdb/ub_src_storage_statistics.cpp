@@ -16,9 +16,6 @@
 #line 0 "src/storage/statistics/numeric_stats.cpp"
 #include "src/storage/statistics/numeric_stats.cpp"
 
-#line 0 "src/storage/statistics/numeric_stats_union.cpp"
-#include "src/storage/statistics/numeric_stats_union.cpp"
-
 #line 0 "src/storage/statistics/segment_statistics.cpp"
 #include "src/storage/statistics/segment_statistics.cpp"
 
