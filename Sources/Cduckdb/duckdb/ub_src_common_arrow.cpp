@@ -4,6 +4,9 @@
 #line 0 "src/common/arrow/arrow_converter.cpp"
 #include "src/common/arrow/arrow_converter.cpp"
 
+#line 0 "src/common/arrow/arrow_util.cpp"
+#include "src/common/arrow/arrow_util.cpp"
+
 #line 0 "src/common/arrow/arrow_merge_event.cpp"
 #include "src/common/arrow/arrow_merge_event.cpp"
 
