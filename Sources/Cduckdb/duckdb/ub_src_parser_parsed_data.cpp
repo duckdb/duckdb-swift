@@ -70,6 +70,9 @@
 #line 0 "src/parser/parsed_data/drop_info.cpp"
 #include "src/parser/parsed_data/drop_info.cpp"
 
+#line 0 "src/parser/parsed_data/exported_table_data.cpp"
+#include "src/parser/parsed_data/exported_table_data.cpp"
+
 #line 0 "src/parser/parsed_data/extra_drop_info.cpp"
 #include "src/parser/parsed_data/extra_drop_info.cpp"
 
