@@ -31,3 +31,6 @@
 #line 0 "src/execution/index/art/art.cpp"
 #include "src/execution/index/art/art.cpp"
 
+#line 0 "src/execution/index/art/plan_art.cpp"
+#include "src/execution/index/art/plan_art.cpp"
+
