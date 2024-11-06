@@ -25,6 +25,9 @@
 #line 0 "src/parser/parser.cpp"
 #include "src/parser/parser.cpp"
 
+#line 0 "src/parser/qualified_name.cpp"
+#include "src/parser/qualified_name.cpp"
+
 #line 0 "src/parser/query_error_context.cpp"
 #include "src/parser/query_error_context.cpp"
 

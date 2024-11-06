@@ -7,6 +7,9 @@
 #line 0 "src/optimizer/column_lifetime_analyzer.cpp"
 #include "src/optimizer/column_lifetime_analyzer.cpp"
 
+#line 0 "src/optimizer/empty_result_pullup.cpp"
+#include "src/optimizer/empty_result_pullup.cpp"
+
 #line 0 "src/optimizer/common_aggregate_optimizer.cpp"
 #include "src/optimizer/common_aggregate_optimizer.cpp"
 
@@ -66,4 +69,7 @@
 
 #line 0 "src/optimizer/unnest_rewriter.cpp"
 #include "src/optimizer/unnest_rewriter.cpp"
+
+#line 0 "src/optimizer/sampling_pushdown.cpp"
+#include "src/optimizer/sampling_pushdown.cpp"
 

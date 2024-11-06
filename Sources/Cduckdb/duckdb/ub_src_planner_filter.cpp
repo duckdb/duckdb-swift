@@ -10,3 +10,6 @@
 #line 0 "src/planner/filter/struct_filter.cpp"
 #include "src/planner/filter/struct_filter.cpp"
 
+#line 0 "src/planner/filter/optional_filter.cpp"
+#include "src/planner/filter/optional_filter.cpp"
+

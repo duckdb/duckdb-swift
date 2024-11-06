@@ -7,6 +7,9 @@
 #line 0 "src/transaction/meta_transaction.cpp"
 #include "src/transaction/meta_transaction.cpp"
 
+#line 0 "src/transaction/undo_buffer_allocator.cpp"
+#include "src/transaction/undo_buffer_allocator.cpp"
+
 #line 0 "src/transaction/undo_buffer.cpp"
 #include "src/transaction/undo_buffer.cpp"
 

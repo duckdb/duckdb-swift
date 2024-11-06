@@ -22,6 +22,9 @@
 #line 0 "src/parser/parsed_data/create_info.cpp"
 #include "src/parser/parsed_data/create_info.cpp"
 
+#line 0 "src/parser/parsed_data/create_function_info.cpp"
+#include "src/parser/parsed_data/create_function_info.cpp"
+
 #line 0 "src/parser/parsed_data/create_index_info.cpp"
 #include "src/parser/parsed_data/create_index_info.cpp"
 

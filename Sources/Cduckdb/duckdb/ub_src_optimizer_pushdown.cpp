@@ -40,3 +40,6 @@
 #line 0 "src/optimizer/pushdown/pushdown_window.cpp"
 #include "src/optimizer/pushdown/pushdown_window.cpp"
 
+#line 0 "src/optimizer/pushdown/pushdown_unnest.cpp"
+#include "src/optimizer/pushdown/pushdown_unnest.cpp"
+
