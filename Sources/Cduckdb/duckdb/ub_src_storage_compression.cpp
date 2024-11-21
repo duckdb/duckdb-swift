@@ -28,6 +28,9 @@
 #line 0 "src/storage/compression/patas.cpp"
 #include "src/storage/compression/patas.cpp"
 
+#line 0 "src/storage/compression/zstd.cpp"
+#include "src/storage/compression/zstd.cpp"
+
 #line 0 "src/storage/compression/alprd.cpp"
 #include "src/storage/compression/alprd.cpp"
 
