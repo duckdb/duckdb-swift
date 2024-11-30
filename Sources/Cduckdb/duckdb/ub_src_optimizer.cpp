@@ -73,3 +73,6 @@
 #line 0 "src/optimizer/sampling_pushdown.cpp"
 #include "src/optimizer/sampling_pushdown.cpp"
 
+#line 0 "src/optimizer/sum_rewriter.cpp"
+#include "src/optimizer/sum_rewriter.cpp"
+
