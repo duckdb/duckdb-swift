@@ -28,6 +28,9 @@
 #line 0 "src/function/window/window_executor.cpp"
 #include "src/function/window/window_executor.cpp"
 
+#line 0 "src/function/window/window_index_tree.cpp"
+#include "src/function/window/window_index_tree.cpp"
+
 #line 0 "src/function/window/window_naive_aggregator.cpp"
 #include "src/function/window/window_naive_aggregator.cpp"
 
