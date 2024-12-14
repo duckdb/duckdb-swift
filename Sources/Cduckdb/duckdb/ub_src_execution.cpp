@@ -31,6 +31,3 @@
 #line 0 "src/execution/radix_partitioned_hashtable.cpp"
 #include "src/execution/radix_partitioned_hashtable.cpp"
 
-#line 0 "src/execution/reservoir_sample.cpp"
-#include "src/execution/reservoir_sample.cpp"
-
