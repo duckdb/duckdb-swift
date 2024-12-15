@@ -85,6 +85,9 @@
 #line 0 "src/common/random_engine.cpp"
 #include "src/common/random_engine.cpp"
 
+#line 0 "src/common/stacktrace.cpp"
+#include "src/common/stacktrace.cpp"
+
 #line 0 "src/common/string_util.cpp"
 #include "src/common/string_util.cpp"
 
