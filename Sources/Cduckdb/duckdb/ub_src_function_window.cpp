@@ -31,6 +31,9 @@
 #line 0 "src/function/window/window_index_tree.cpp"
 #include "src/function/window/window_index_tree.cpp"
 
+#line 0 "src/function/window/window_merge_sort_tree.cpp"
+#include "src/function/window/window_merge_sort_tree.cpp"
+
 #line 0 "src/function/window/window_naive_aggregator.cpp"
 #include "src/function/window/window_naive_aggregator.cpp"
 
@@ -45,6 +48,9 @@
 
 #line 0 "src/function/window/window_shared_expressions.cpp"
 #include "src/function/window/window_shared_expressions.cpp"
+
+#line 0 "src/function/window/window_token_tree.cpp"
+#include "src/function/window/window_token_tree.cpp"
 
 #line 0 "src/function/window/window_value_function.cpp"
 #include "src/function/window/window_value_function.cpp"
