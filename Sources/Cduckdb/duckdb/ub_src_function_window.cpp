@@ -19,9 +19,6 @@
 #line 0 "src/function/window/window_custom_aggregator.cpp"
 #include "src/function/window/window_custom_aggregator.cpp"
 
-#line 0 "src/function/window/window_cumedist_function.cpp"
-#include "src/function/window/window_cumedist_function.cpp"
-
 #line 0 "src/function/window/window_distinct_aggregator.cpp"
 #include "src/function/window/window_distinct_aggregator.cpp"
 
