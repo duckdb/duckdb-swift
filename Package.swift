@@ -95,6 +95,7 @@ let package = Package(
         "duckdb/ub_src_function_table_system.cpp",
         "duckdb/ub_src_function_table_version.cpp",
         "duckdb/ub_src_function_window.cpp",
+        "duckdb/ub_src_logging.cpp",
         "duckdb/ub_src_main.cpp",
         "duckdb/ub_src_main_buffered_data.cpp",
         "duckdb/ub_src_main_capi.cpp",
