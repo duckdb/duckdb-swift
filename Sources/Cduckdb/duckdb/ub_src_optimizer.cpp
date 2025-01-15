@@ -46,6 +46,9 @@
 #line 0 "src/optimizer/join_filter_pushdown_optimizer.cpp"
 #include "src/optimizer/join_filter_pushdown_optimizer.cpp"
 
+#line 0 "src/optimizer/late_materialization.cpp"
+#include "src/optimizer/late_materialization.cpp"
+
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
