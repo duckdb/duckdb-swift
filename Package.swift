@@ -334,6 +334,7 @@ let package = Package(
         "duckdb/third_party/brotli/enc/utf8_util.cpp",
         "duckdb/extension/icu/./icu-timebucket.cpp",
         "duckdb/extension/icu/./icu-datetrunc.cpp",
+        "duckdb/extension/icu/./icu-current.cpp",
         "duckdb/extension/icu/./icu-makedate.cpp",
         "duckdb/extension/icu/./icu-list-range.cpp",
         "duckdb/extension/icu/./icu-datepart.cpp",
