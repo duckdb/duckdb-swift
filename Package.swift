@@ -295,6 +295,7 @@ let package = Package(
         "duckdb/extension/parquet/parquet_metadata.cpp",
         "duckdb/extension/parquet/column_reader.cpp",
         "duckdb/ub_extension_parquet_reader.cpp",
+        "duckdb/ub_extension_parquet_writer.cpp",
         "duckdb/ub_extension_parquet_decoder.cpp",
         "duckdb/third_party/parquet/parquet_types.cpp",
         "duckdb/third_party/thrift/thrift/protocol/TProtocol.cpp",
