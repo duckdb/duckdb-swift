@@ -284,6 +284,7 @@ let package = Package(
         "duckdb/ub_extension_core_functions_scalar_array.cpp",
         "duckdb/extension/parquet/parquet_crypto.cpp",
         "duckdb/extension/parquet/geo_parquet.cpp",
+        "duckdb/extension/parquet/parquet_float16.cpp",
         "duckdb/extension/parquet/serialize_parquet.cpp",
         "duckdb/extension/parquet/zstd_file_system.cpp",
         "duckdb/extension/parquet/parquet_timestamp.cpp",
