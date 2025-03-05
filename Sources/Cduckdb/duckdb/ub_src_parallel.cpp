@@ -40,6 +40,9 @@
 #line 0 "src/parallel/task_executor.cpp"
 #include "src/parallel/task_executor.cpp"
 
+#line 0 "src/parallel/task_notifier.cpp"
+#include "src/parallel/task_notifier.cpp"
+
 #line 0 "src/parallel/task_scheduler.cpp"
 #include "src/parallel/task_scheduler.cpp"
 
