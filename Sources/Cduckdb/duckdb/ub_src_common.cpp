@@ -13,6 +13,9 @@
 #line 0 "src/common/cgroups.cpp"
 #include "src/common/cgroups.cpp"
 
+#line 0 "src/common/complex_json.cpp"
+#include "src/common/complex_json.cpp"
+
 #line 0 "src/common/compressed_file_system.cpp"
 #include "src/common/compressed_file_system.cpp"
 
