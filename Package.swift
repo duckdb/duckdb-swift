@@ -380,7 +380,6 @@ let package = Package(
         .headerSearchPath("duckdb/third_party/brotli/common"),
         .headerSearchPath("duckdb/third_party/brotli/dec"),
         .headerSearchPath("duckdb/third_party/brotli/enc"),
-        .headerSearchPath("duckdb/third_party/mbedtls"),
         .headerSearchPath("duckdb/third_party/mbedtls/include"),
         .headerSearchPath("duckdb/third_party/mbedtls/library"),
         .headerSearchPath("duckdb/third_party/miniz"),
