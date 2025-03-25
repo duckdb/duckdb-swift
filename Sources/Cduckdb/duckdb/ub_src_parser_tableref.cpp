@@ -1,3 +1,6 @@
+#line 0 "src/parser/tableref/at_clause.cpp"
+#include "src/parser/tableref/at_clause.cpp"
+
 #line 0 "src/parser/tableref/basetableref.cpp"
 #include "src/parser/tableref/basetableref.cpp"
 
