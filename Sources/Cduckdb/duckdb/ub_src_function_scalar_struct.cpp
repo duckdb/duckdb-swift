@@ -1,3 +1,6 @@
+#line 0 "src/function/scalar/struct/remap_struct.cpp"
+#include "src/function/scalar/struct/remap_struct.cpp"
+
 #line 0 "src/function/scalar/struct/struct_extract.cpp"
 #include "src/function/scalar/struct/struct_extract.cpp"
 
