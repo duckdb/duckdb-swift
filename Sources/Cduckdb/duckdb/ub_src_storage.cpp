@@ -4,6 +4,9 @@
 #line 0 "src/storage/buffer_manager.cpp"
 #include "src/storage/buffer_manager.cpp"
 
+#line 0 "src/storage/caching_file_system.cpp"
+#include "src/storage/caching_file_system.cpp"
+
 #line 0 "src/storage/checkpoint_manager.cpp"
 #include "src/storage/checkpoint_manager.cpp"
 
@@ -18,6 +21,9 @@
 
 #line 0 "src/storage/data_table.cpp"
 #include "src/storage/data_table.cpp"
+
+#line 0 "src/storage/external_file_cache.cpp"
+#include "src/storage/external_file_cache.cpp"
 
 #line 0 "src/storage/index.cpp"
 #include "src/storage/index.cpp"
