@@ -4,6 +4,9 @@
 #line 0 "extension/core_functions/scalar/generic/binning.cpp"
 #include "extension/core_functions/scalar/generic/binning.cpp"
 
+#line 0 "extension/core_functions/scalar/generic/cast_to_type.cpp"
+#include "extension/core_functions/scalar/generic/cast_to_type.cpp"
+
 #line 0 "extension/core_functions/scalar/generic/can_implicitly_cast.cpp"
 #include "extension/core_functions/scalar/generic/can_implicitly_cast.cpp"
 
