@@ -7,6 +7,9 @@
 #line 0 "src/planner/filter/dynamic_filter.cpp"
 #include "src/planner/filter/dynamic_filter.cpp"
 
+#line 0 "src/planner/filter/expression_filter.cpp"
+#include "src/planner/filter/expression_filter.cpp"
+
 #line 0 "src/planner/filter/in_filter.cpp"
 #include "src/planner/filter/in_filter.cpp"
 
