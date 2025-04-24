@@ -30,7 +30,8 @@ final class DataChunk: Sendable {
   var count: DBInt { duckdb_data_chunk_get_size(ptr.pointee) }
   var columnCount: DBInt { duckdb_data_chunk_get_column_count(ptr.pointee) }
   
-  private let ptr = UnsafeMutablePointer<duckdb_data_chunk?>.allocate(capacity: 1)
+  // TODO: Review the safety of applying `nonisolated(unsafe)` here
+  private nonisolated(unsafe) let ptr = UnsafeMutablePointer<duckdb_data_chunk?>.allocate(capacity: 1)
   
   init(cresult: duckdb_result, index: DBInt) {
     self.ptr.pointee = duckdb_result_get_chunk(cresult, index)!

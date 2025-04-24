@@ -63,7 +63,8 @@ public final class Database: Sendable {
     case inMemory
   }
   
-  private let ptr = UnsafeMutablePointer<duckdb_database?>.allocate(capacity: 1)
+  // TODO: Review the safety of applying `nonisolated(unsafe)` here
+  private nonisolated(unsafe) let ptr = UnsafeMutablePointer<duckdb_database?>.allocate(capacity: 1)
   
   /// Creates a Duck DB database
   ///

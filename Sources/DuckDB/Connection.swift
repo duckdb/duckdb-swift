@@ -48,7 +48,8 @@
 public final class Connection: Sendable {
 
   private let database: Database
-  private let ptr = UnsafeMutablePointer<duckdb_connection?>.allocate(capacity: 1)
+  // TODO: Review the safety of applying `nonisolated(unsafe)` here
+  private nonisolated(unsafe) let ptr = UnsafeMutablePointer<duckdb_connection?>.allocate(capacity: 1)
 
   /// Creates a new connection
   ///

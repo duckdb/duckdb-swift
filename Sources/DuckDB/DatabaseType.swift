@@ -36,7 +36,7 @@
 /// within Swift using ``Column/cast(to:)-4376d``. It is also possible to
 /// define database types as arbitrary structs (`ROW(i INTEGER, j VARCHAR)`),
 /// which can be cast to their `Decodable` matching Swift type in the same way.
-public struct DatabaseType: RawRepresentable, Hashable, Equatable {
+public struct DatabaseType: RawRepresentable, Hashable, Equatable, Sendable {
   public let rawValue: UInt32
   public init(rawValue: UInt32) {
     self.rawValue = rawValue

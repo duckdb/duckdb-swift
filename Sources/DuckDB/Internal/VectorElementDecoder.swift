@@ -27,7 +27,7 @@ import Foundation
 
 // MARK: - Top Level Decoder
 
-final class VectorElementDecoder {
+final class VectorElementDecoder: Sendable {
   
   static let `default` = VectorElementDecoder()
   

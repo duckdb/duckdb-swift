@@ -182,7 +182,8 @@ fileprivate final class ResultStorage: Sendable {
   
   let columnCount: DBInt
   
-  private let ptr = UnsafeMutablePointer<duckdb_result>.allocate(capacity: 1)
+  // TODO: Review the safety of applying `nonisolated(unsafe)` here
+  private nonisolated(unsafe) let ptr = UnsafeMutablePointer<duckdb_result>.allocate(capacity: 1)
   
   init(connection: Connection, sql: String) throws {
     let status = sql.withCString { [ptr] queryStrPtr in

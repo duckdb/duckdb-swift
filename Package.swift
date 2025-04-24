@@ -1,14 +1,37 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.0
 
 import PackageDescription
 
 let package = Package(
 
   name: "DuckDB",
+  platforms: [
+    .iOS(.v13),
+    .macOS(.v10_15),
+    .tvOS(.v13),
+  ],
   products: [
     .library(name: "DuckDB", targets: ["DuckDB"]),
   ],
+  dependencies: [
+    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.18.3"),
+    .package(url: "https://github.com/pointfreeco/swift-structured-queries.git", branch: "main"),
+  ],
   targets: [
+    .target(
+        name: "SwiftDuckDB",
+        dependencies: [
+            "DuckDB",
+            .product(name: "StructuredQueries", package: "swift-structured-queries"),
+        ]
+    ),
+    .testTarget(
+      name: "SwiftDuckDBTests",
+      dependencies: [
+        "SwiftDuckDB",
+        .product(name: "IssueReporting", package: "xctest-dynamic-overlay"),
+      ]
+    ),
     .target(
       name: "DuckDB",
       dependencies: ["Cduckdb"]
