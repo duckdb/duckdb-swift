@@ -3,8 +3,17 @@ import Foundation
 @_exported import DuckDB
 @_exported import StructuredQueries
 
-public extension Database {
+public extension Connection {
     
+    func execute<T: Table>(_ insert: Insert<T, ()>) throws {
+//        let sql = insert.query.string
+//        try execute(sql)
+    }
+
+    func query(_ select: any SelectStatement) throws -> ResultSet {
+        let sql = select.query.string
+        return try query(sql)
+    }
 }
 
 //public struct Database {
