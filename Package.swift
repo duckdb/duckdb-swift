@@ -296,6 +296,7 @@ let package = Package(
         "duckdb/extension/parquet/parquet_writer.cpp",
         "duckdb/extension/parquet/parquet_float16.cpp",
         "duckdb/extension/parquet/parquet_crypto.cpp",
+        "duckdb/extension/parquet/parquet_multi_file_info.cpp",
         "duckdb/extension/parquet/parquet_metadata.cpp",
         "duckdb/extension/parquet/parquet_statistics.cpp",
         "duckdb/ub_extension_parquet_decoder.cpp",
