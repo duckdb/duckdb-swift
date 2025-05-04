@@ -286,6 +286,7 @@ let package = Package(
         "duckdb/ub_extension_core_functions_aggregate_nested.cpp",
         "duckdb/ub_extension_core_functions_aggregate_distributive.cpp",
         "duckdb/extension/parquet/parquet_extension.cpp",
+        "duckdb/extension/parquet/parquet_file_metadata_cache.cpp",
         "duckdb/extension/parquet/geo_parquet.cpp",
         "duckdb/extension/parquet/column_reader.cpp",
         "duckdb/extension/parquet/parquet_timestamp.cpp",
