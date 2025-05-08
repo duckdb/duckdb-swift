@@ -37,6 +37,9 @@
 #line 0 "src/storage/compression/fsst.cpp"
 #include "src/storage/compression/fsst.cpp"
 
+#line 0 "src/storage/compression/dict_fsst.cpp"
+#include "src/storage/compression/dict_fsst.cpp"
+
 #line 0 "src/storage/compression/empty_validity.cpp"
 #include "src/storage/compression/empty_validity.cpp"
 
