@@ -107,6 +107,7 @@ let package = Package(
         "duckdb/src/main/extension/extension_install.cpp",
         "duckdb/src/main/extension/extension_load.cpp",
         "duckdb/src/main/extension/extension_util.cpp",
+        "duckdb/ub_src_main_http.cpp",
         "duckdb/ub_src_main_relation.cpp",
         "duckdb/ub_src_main_secret.cpp",
         "duckdb/ub_src_main_settings.cpp",
