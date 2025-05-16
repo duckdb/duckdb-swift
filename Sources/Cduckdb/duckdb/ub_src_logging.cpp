@@ -10,3 +10,6 @@
 #line 0 "src/logging/logging.cpp"
 #include "src/logging/logging.cpp"
 
+#line 0 "src/logging/log_types.cpp"
+#include "src/logging/log_types.cpp"
+
