@@ -22,6 +22,9 @@
 #line 0 "src/optimizer/cte_filter_pusher.cpp"
 #include "src/optimizer/cte_filter_pusher.cpp"
 
+#line 0 "src/optimizer/cte_inlining.cpp"
+#include "src/optimizer/cte_inlining.cpp"
+
 #line 0 "src/optimizer/deliminator.cpp"
 #include "src/optimizer/deliminator.cpp"
 
