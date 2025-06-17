@@ -1,6 +1,9 @@
 #line 0 "src/execution/index/art/art_key.cpp"
 #include "src/execution/index/art/art_key.cpp"
 
+#line 0 "src/execution/index/art/art_merger.cpp"
+#include "src/execution/index/art/art_merger.cpp"
+
 #line 0 "src/execution/index/art/node.cpp"
 #include "src/execution/index/art/node.cpp"
 

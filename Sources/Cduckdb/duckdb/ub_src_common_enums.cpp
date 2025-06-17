@@ -13,6 +13,9 @@
 #line 0 "src/common/enums/file_compression_type.cpp"
 #include "src/common/enums/file_compression_type.cpp"
 
+#line 0 "src/common/enums/http_status_code.cpp"
+#include "src/common/enums/http_status_code.cpp"
+
 #line 0 "src/common/enums/join_type.cpp"
 #include "src/common/enums/join_type.cpp"
 

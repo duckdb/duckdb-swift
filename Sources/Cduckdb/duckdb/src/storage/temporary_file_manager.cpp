@@ -5,6 +5,7 @@
 #include "duckdb/parallel/task_scheduler.hpp"
 #include "duckdb/storage/buffer/temporary_file_information.hpp"
 #include "duckdb/storage/standard_buffer_manager.hpp"
+#include "duckdb/main/database.hpp"
 #include "zstd.h"
 
 namespace duckdb {
@@ -227,9 +228,9 @@ void TemporaryFileHandle::WriteTemporaryBuffer(FileBuffer &buffer, const idx_t b
 	// We group DEFAULT_BLOCK_ALLOC_SIZE blocks into the same file.
 	D_ASSERT(buffer.AllocSize() == BufferManager::GetBufferManager(db).GetBlockAllocSize());
 	if (identifier.size == TemporaryBufferSize::DEFAULT) {
-		buffer.Write(*handle, GetPositionInFile(block_index));
+		buffer.Write(nullptr, *handle, GetPositionInFile(block_index));
 	} else {
-		handle->Write(compressed_buffer.get(), TemporaryBufferSizeToSize(identifier.size),
+		handle->Write(nullptr, compressed_buffer.get(), TemporaryBufferSizeToSize(identifier.size),
 		              GetPositionInFile(block_index));
 	}
 }
@@ -268,6 +269,9 @@ void TemporaryFileHandle::CreateFileIfNotExists(TemporaryFileLock &) {
 	}
 	auto &fs = FileSystem::GetFileSystem(db);
 	auto open_flags = FileFlags::FILE_FLAGS_READ | FileFlags::FILE_FLAGS_WRITE | FileFlags::FILE_FLAGS_FILE_CREATE;
+	if (db.config.options.use_direct_io) {
+		open_flags |= FileFlags::FILE_FLAGS_DIRECT_IO;
+	}
 	handle = fs.OpenFile(path, open_flags);
 }
 

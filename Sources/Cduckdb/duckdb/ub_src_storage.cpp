@@ -49,6 +49,9 @@
 #line 0 "src/storage/write_ahead_log.cpp"
 #include "src/storage/write_ahead_log.cpp"
 
+#line 0 "src/storage/open_file_storage_extension.cpp"
+#include "src/storage/open_file_storage_extension.cpp"
+
 #line 0 "src/storage/optimistic_data_writer.cpp"
 #include "src/storage/optimistic_data_writer.cpp"
 
