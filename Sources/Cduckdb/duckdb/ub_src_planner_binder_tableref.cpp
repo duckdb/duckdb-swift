@@ -1,6 +1,9 @@
 #line 0 "src/planner/binder/tableref/bind_basetableref.cpp"
 #include "src/planner/binder/tableref/bind_basetableref.cpp"
 
+#line 0 "src/planner/binder/tableref/bind_bound_table_ref.cpp"
+#include "src/planner/binder/tableref/bind_bound_table_ref.cpp"
+
 #line 0 "src/planner/binder/tableref/bind_delimgetref.cpp"
 #include "src/planner/binder/tableref/bind_delimgetref.cpp"
 

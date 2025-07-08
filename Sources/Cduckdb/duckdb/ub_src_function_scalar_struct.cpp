@@ -10,3 +10,6 @@
 #line 0 "src/function/scalar/struct/struct_concat.cpp"
 #include "src/function/scalar/struct/struct_concat.cpp"
 
+#line 0 "src/function/scalar/struct/struct_contains.cpp"
+#include "src/function/scalar/struct/struct_contains.cpp"
+

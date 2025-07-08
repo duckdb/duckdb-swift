@@ -73,6 +73,9 @@
 #line 0 "src/planner/operator/logical_limit.cpp"
 #include "src/planner/operator/logical_limit.cpp"
 
+#line 0 "src/planner/operator/logical_merge_into.cpp"
+#include "src/planner/operator/logical_merge_into.cpp"
+
 #line 0 "src/planner/operator/logical_order.cpp"
 #include "src/planner/operator/logical_order.cpp"
 

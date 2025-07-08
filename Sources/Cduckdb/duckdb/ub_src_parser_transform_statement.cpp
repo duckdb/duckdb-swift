@@ -64,6 +64,9 @@
 #line 0 "src/parser/transform/statement/transform_load.cpp"
 #include "src/parser/transform/statement/transform_load.cpp"
 
+#line 0 "src/parser/transform/statement/transform_merge_into.cpp"
+#include "src/parser/transform/statement/transform_merge_into.cpp"
+
 #line 0 "src/parser/transform/statement/transform_pragma.cpp"
 #include "src/parser/transform/statement/transform_pragma.cpp"
 

@@ -38,7 +38,13 @@ LogicalIndex TableCatalogEntry::GetColumnIndex(string &column_name, bool if_exis
 		if (if_exists) {
 			return entry;
 		}
-		throw BinderException("Table \"%s\" does not have a column with name \"%s\"", name, column_name);
+		vector<string> column_names;
+		for (auto &col : columns.Logical()) {
+			column_names.push_back(col.Name());
+		}
+		auto candidates = StringUtil::CandidatesErrorMessage(column_names, column_name, "Did you mean");
+		throw BinderException("Table \"%s\" does not have a column with name \"%s\"\n%s", name, column_name,
+		                      candidates);
 	}
 	return entry;
 }
@@ -79,7 +85,7 @@ unique_ptr<CreateInfo> TableCatalogEntry::GetInfo() const {
 }
 
 string TableCatalogEntry::ColumnsToSQL(const ColumnList &columns, const vector<unique_ptr<Constraint>> &constraints) {
-	std::stringstream ss;
+	duckdb::stringstream ss;
 
 	ss << "(";
 
@@ -185,7 +191,7 @@ string TableCatalogEntry::ColumnNamesToSQL(const ColumnList &columns) {
 		return "";
 	}
 
-	std::stringstream ss;
+	duckdb::stringstream ss;
 	ss << "(";
 
 	for (auto &column : columns.Logical()) {
@@ -299,7 +305,7 @@ void TableCatalogEntry::BindUpdateConstraints(Binder &binder, LogicalGet &get, L
 				break;
 			}
 		}
-	};
+	}
 
 	// we also convert any updates on LIST columns into delete + insert
 	for (auto &col_index : update.columns) {

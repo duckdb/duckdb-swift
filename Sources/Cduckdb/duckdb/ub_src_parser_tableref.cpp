@@ -4,6 +4,9 @@
 #line 0 "src/parser/tableref/basetableref.cpp"
 #include "src/parser/tableref/basetableref.cpp"
 
+#line 0 "src/parser/tableref/bound_ref_wrapper.cpp"
+#include "src/parser/tableref/bound_ref_wrapper.cpp"
+
 #line 0 "src/parser/tableref/delimgetref.cpp"
 #include "src/parser/tableref/delimgetref.cpp"
 

@@ -412,7 +412,7 @@ void ColumnReader::DecompressInternal(CompressionCodec::type codec, const_data_p
 	}
 
 	default: {
-		std::stringstream codec_name;
+		duckdb::stringstream codec_name;
 		codec_name << codec;
 		throw std::runtime_error("Unsupported compression codec \"" + codec_name.str() +
 		                         "\". Supported options are uncompressed, brotli, gzip, lz4_raw, snappy or zstd");
@@ -834,11 +834,22 @@ unique_ptr<ColumnReader> ColumnReader::CreateReader(ParquetReader &reader, const
 	case LogicalTypeId::TIME:
 		switch (schema.type_info) {
 		case ParquetExtraTypeInfo::UNIT_MS:
-			return make_uniq<CallbackColumnReader<int32_t, dtime_t, ParquetIntToTimeMs>>(reader, schema);
+			return make_uniq<CallbackColumnReader<int32_t, dtime_t, ParquetMsIntToTime>>(reader, schema);
 		case ParquetExtraTypeInfo::UNIT_MICROS:
 			return make_uniq<CallbackColumnReader<int64_t, dtime_t, ParquetIntToTime>>(reader, schema);
 		case ParquetExtraTypeInfo::UNIT_NS:
-			return make_uniq<CallbackColumnReader<int64_t, dtime_t, ParquetIntToTimeNs>>(reader, schema);
+			return make_uniq<CallbackColumnReader<int64_t, dtime_t, ParquetNsIntToTime>>(reader, schema);
+		default:
+			throw InternalException("TIME requires type info");
+		}
+	case LogicalTypeId::TIME_NS:
+		switch (schema.type_info) {
+		case ParquetExtraTypeInfo::UNIT_MS:
+			return make_uniq<CallbackColumnReader<int32_t, dtime_ns_t, ParquetMsIntToTimeNs>>(reader, schema);
+		case ParquetExtraTypeInfo::UNIT_MICROS:
+			return make_uniq<CallbackColumnReader<int64_t, dtime_ns_t, ParquetUsIntToTimeNs>>(reader, schema);
+		case ParquetExtraTypeInfo::UNIT_NS:
+			return make_uniq<CallbackColumnReader<int64_t, dtime_ns_t, ParquetIntToTimeNs>>(reader, schema);
 		default:
 			throw InternalException("TIME requires type info");
 		}

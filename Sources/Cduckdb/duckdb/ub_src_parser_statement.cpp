@@ -43,6 +43,9 @@
 #line 0 "src/parser/statement/load_statement.cpp"
 #include "src/parser/statement/load_statement.cpp"
 
+#line 0 "src/parser/statement/merge_into_statement.cpp"
+#include "src/parser/statement/merge_into_statement.cpp"
+
 #line 0 "src/parser/statement/multi_statement.cpp"
 #include "src/parser/statement/multi_statement.cpp"
 
