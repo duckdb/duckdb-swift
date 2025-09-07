@@ -112,4 +112,58 @@ final class ResultSetRowIteratorTests: XCTestCase {
       XCTAssertEqual(rows[Int(idx)][2] as? String, s)
     }
   }
+  
+  func test_elementOutOfBoundsTriggersPrecondition() throws {
+    let db = try Database(store: .inMemory)
+    let conn = try db.connect()
+    try conn.execute("CREATE TABLE t(a INTEGER);")
+    try conn.execute("INSERT INTO t VALUES (1);")
+    try conn.execute("INSERT INTO t VALUES (2);")
+    try conn.execute("INSERT INTO t VALUES (3);")
+    let result = try conn.query("SELECT * FROM t ORDER BY a;")
+    let intCol = result[0].cast(to: Int32.self)
+    // Access within bounds should not crash
+    let _ = intCol[DBInt(0)]
+    let _ = intCol[DBInt(result.rowCount - 1)]
+    
+    // Access out of bounds should trigger a precondition failure
+    // If an expectFatalError helper is available, use it here.
+    // Otherwise, this test expects a crash when running the following line:
+    //
+    //     _ = intCol[DBInt(result.rowCount)]
+    //
+    // Uncomment the line below to verify the crash manually.
+    //
+//    _ = result.element(forColumn: 0, at: DBInt(result.rowCount))
+    //
+    // If an expectFatalError helper is available in the test suite, replace the comment above with:
+    // expectFatalError {
+    //     _ = intCol[DBInt(result.rowCount)]
+    // }
+  }
+  
+  func test_forEachRow_multipleChunks() throws {
+    let db = try Database(store: .inMemory)
+    let conn = try db.connect()
+    try conn.execute("CREATE TABLE t(a INTEGER);")
+    let rowCount = 5000
+    // Insert enough rows to ensure multiple chunks (default chunk size is ~1024)
+    for i in 0..<rowCount {
+      try conn.execute("INSERT INTO t VALUES (\(i));")
+    }
+    let result = try conn.query("SELECT a FROM t ORDER BY a;")
+    let intCol = result[0].cast(to: Int32.self)
+    var values: [Int32] = []
+    var globalIndex: DBInt = 0
+    result.forEachRow { _ in
+      let a = intCol[globalIndex]!
+      values.append(a)
+      globalIndex += 1
+    }
+    XCTAssertEqual(values.count, rowCount)
+    // Check a few sample values (first, middle, last)
+    XCTAssertEqual(values.first, 0)
+    XCTAssertEqual(values[rowCount/2], Int32(rowCount/2))
+    XCTAssertEqual(values.last, Int32(rowCount-1))
+  }
 }

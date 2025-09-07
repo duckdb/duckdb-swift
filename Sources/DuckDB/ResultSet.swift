@@ -106,8 +106,13 @@ public struct ResultSet: Sendable {
   
   func element(forColumn columnIndex: DBInt, at index: DBInt) -> Vector.Element {
     let (range, chunk) = chunkStorage.chunkInfo(forRow: index)
+    
+    precondition(range.contains(index), "Row index \(index) is out of bounds for chunk range \(range)")
+    let localIndex = Int(index &- range.lowerBound)
+    
     return chunk.withVector(at: columnIndex) { vector in
-      vector[Int(index - range.lowerBound)]
+      //      vector[Int(index - range.lowerBound)]
+      vector[localIndex]
     }
   }
 }
@@ -249,37 +254,44 @@ fileprivate final class ChunkStorage: Sendable {
   }
   
   func chunkInfo(forRow index: DBInt) -> (Range<DBInt>, DataChunk) {
+    // Precondition bounds check: ensure the requested row index is within the total number of rows
+    precondition(index < totalRowCount, "Row index \(index) is out of bounds. Valid range is 0..<\(totalRowCount)")
+    
+    // Cache fast-path: if the requested index falls within the cached range,
+    // return the cached chunk and range directly to avoid repeated searching
     if cachedRange.contains(index) {
       let chunk = chunks[Int(cachedChunkIndex)]
       return (cachedRange, chunk)
     }
     
-    // binary search over chunk offsets
+    // Upper-bound binary search over `rowOffsets` to find the chunk containing the row index
+    // `rowOffsets` holds the starting row index of each chunk, with an extra element at the end
+    // representing the total row count.
+    let offs = rowOffsets
     var low = 0
-    var high = rowOffsets.count - 1
-    
+    var high = offs.count
     while low < high {
-      let mid = (low + high) / 2
-      if rowOffsets[mid] <= index {
-        if mid + 1 < rowOffsets.count && index < rowOffsets[mid + 1] {
-          let range = rowOffsets[mid]..<rowOffsets[mid + 1]
-          cachedChunkIndex = DBInt(mid)
-          cachedRange = range
-          let chunk = chunks[mid]
-          return (cachedRange, chunk)
-        } else {
-          low = mid + 1
-        }
+      let mid = (low + high) >> 1
+      if offs[mid] <= index {
+        low = mid + 1
       } else {
-        high = mid - 1
+        high = mid
       }
     }
-    // fallback to last chunk if not found
-    let lastIndex = rowOffsets.count - 2
-    let range = rowOffsets[lastIndex]..<rowOffsets[lastIndex + 1]
-    cachedChunkIndex = DBInt(lastIndex)
+    
+    // Deriving chunk index `j`: the chunk that contains the row index is at position `low - 1`
+    let j = low - 1
+    precondition(j >= 0 && j < chunks.count, "Invalid chunk index \(j) for row index \(index)")
+    
+    // The range for the chunk is from offs[j] up to offs[j + 1] (exclusive)
+    let range = offs[j]..<offs[j + 1]
+    
+    // Update the cache with the found chunk index and range for future fast access
+    cachedChunkIndex = DBInt(j)
     cachedRange = range
-    let chunk = chunks[lastIndex]
+    
+    // Return the range and the corresponding chunk
+    let chunk = chunks[j]
     return (cachedRange, chunk)
   }
   
