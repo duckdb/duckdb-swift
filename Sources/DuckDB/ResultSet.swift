@@ -39,6 +39,8 @@ import Foundation
 /// for further discussion.
 public struct ResultSet: Sendable {
   
+  typealias ElementValue = Vector.Element
+  
   /// The number of chunks in the result set
   public var chunkCount: DBInt { chunkStorage.chunkCount }
   /// The number of columns in the result set
@@ -97,28 +99,16 @@ public struct ResultSet: Sendable {
   func columnDataType(at index: DBInt) -> DatabaseType {
     storage.columnDataType(at: index)
   }
-
+  
   func columnLogicalType(at index: DBInt) -> LogicalType {
     storage.columnLogicalType(at: index)
   }
   
   func element(forColumn columnIndex: DBInt, at index: DBInt) -> Vector.Element {
-    var chunkIndex = DBInt.zero
-    var chunkRowOffset = DBInt.zero
-    while chunkIndex < chunkCount {
-      let chunk = chunkStorage[Int(chunkIndex)]
-      let chunkCount = chunk.count
-      if index < chunkRowOffset + chunkCount {
-        return chunk.withVector(at: columnIndex) { vector in
-          vector[Int(index - chunkRowOffset)]
-        }
-      }
-      else {
-        chunkIndex += 1
-        chunkRowOffset += chunkCount
-      }
+    let (range, chunk) = chunkStorage.chunkInfo(forRow: index)
+    return chunk.withVector(at: columnIndex) { vector in
+      vector[Int(index - range.lowerBound)]
     }
-    preconditionFailure("item out of bounds")
   }
 }
 
@@ -212,7 +202,7 @@ fileprivate final class ResultStorage: Sendable {
     let dataType = duckdb_column_type(ptr, index)
     return DatabaseType(rawValue: dataType.rawValue)
   }
-
+  
   func columnLogicalType(at index: DBInt) -> LogicalType {
     return LogicalType { duckdb_column_logical_type(ptr, index) }
   }
@@ -233,19 +223,99 @@ fileprivate final class ChunkStorage: Sendable {
   let totalRowCount: DBInt
   private let chunks: [DataChunk]
   
+  private let rowOffsets: [DBInt]
+  private var cachedChunkIndex: DBInt = 0
+  private var cachedRange: Range<DBInt> = 0..<0
+  
   init(resultStorage: ResultStorage) {
     let chunkCount = resultStorage.withCResult { duckdb_result_chunk_count($0) }
     var chunks = [DataChunk]()
     var totalRowCount = DBInt(0)
+    
+    var offsets = [DBInt]()
+    offsets.reserveCapacity(Int(chunkCount) + 1)
+    offsets.append(0)
+    
     for i in 0 ..< chunkCount {
       let chunk = resultStorage.withCResult { DataChunk(cresult: $0, index: i) }
       chunks.append(chunk)
       totalRowCount += chunk.count
+      offsets.append(totalRowCount)
     }
     self.chunks = chunks
     self.chunkCount = chunkCount
     self.totalRowCount = totalRowCount
+    self.rowOffsets = offsets
+  }
+  
+  func chunkInfo(forRow index: DBInt) -> (Range<DBInt>, DataChunk) {
+    if cachedRange.contains(index) {
+      let chunk = chunks[Int(cachedChunkIndex)]
+      return (cachedRange, chunk)
+    }
+    
+    // binary search over chunk offsets
+    var low = 0
+    var high = rowOffsets.count - 1
+    
+    while low < high {
+      let mid = (low + high) / 2
+      if rowOffsets[mid] <= index {
+        if mid + 1 < rowOffsets.count && index < rowOffsets[mid + 1] {
+          let range = rowOffsets[mid]..<rowOffsets[mid + 1]
+          cachedChunkIndex = DBInt(mid)
+          cachedRange = range
+          let chunk = chunks[mid]
+          return (cachedRange, chunk)
+        } else {
+          low = mid + 1
+        }
+      } else {
+        high = mid - 1
+      }
+    }
+    // fallback to last chunk if not found
+    let lastIndex = rowOffsets.count - 2
+    let range = rowOffsets[lastIndex]..<rowOffsets[lastIndex + 1]
+    cachedChunkIndex = DBInt(lastIndex)
+    cachedRange = range
+    let chunk = chunks[lastIndex]
+    return (cachedRange, chunk)
   }
   
   subscript(position: Int) -> DataChunk { chunks[position] }
+  
+  internal var allChunks: [DataChunk] {
+    return chunks
+  }
+}
+
+// MARK: - Row-level Iteration API
+
+extension ResultSet {
+  /// A lightweight cursor for a single row within a DataChunk.
+  public struct RowCursor {
+    internal let chunk: DataChunk
+    public let rowInChunk: Int
+    
+    /// Returns the value for a given column index at this row.
+    func value(forColumn columnIndex: DBInt) -> ResultSet.ElementValue {
+      chunk.withVector(at: columnIndex) { vector in
+        vector[rowInChunk]
+      }
+    }
+  }
+  
+  /// Iterates over each row in the result set, providing a RowCursor for direct column access.
+  ///
+  /// - Parameter body: Closure called for each row with a RowCursor.
+  public func forEachRow(_ body: (RowCursor) -> Void) {
+    for chunk in chunkStorage.allChunks {
+      let rowCount = Int(chunk.count)
+      for rowInChunk in 0..<rowCount {
+        let cursor = RowCursor(chunk: chunk, rowInChunk: rowInChunk)
+        body(cursor)
+      }
+    }
+  }
 }
