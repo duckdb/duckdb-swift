@@ -220,7 +220,11 @@ extension VectorElementDataDecoder {
     func decode(_ type: Interval.Type) throws -> Interval {
       try attemptDecode { try element.unwrap(type) }
     }
-    
+
+		func decode(_ type: Bool.Type) throws -> Bool {
+			try attemptDecode { try element.unwrap(type) }
+		}
+
     // Generic decode
     
     func decode<T: Decodable>(_ type: T.Type) throws -> T {
@@ -245,6 +249,8 @@ extension VectorElementDataDecoder {
         return try decode(Interval.self) as! T
       case is TimeTz.Type:
         return try decode(TimeTz.self) as! T
+			case is Bool.Type:
+				return try decode(Bool.self) as! T
       default:
         return try T(from: decoder)
       }
