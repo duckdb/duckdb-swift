@@ -4,12 +4,14 @@
 #include "duckdb/execution/execution_context.hpp"
 #include "duckdb/storage/statistics/base_statistics.hpp"
 #include "duckdb/planner/expression/list.hpp"
+#include "duckdb/main/settings.hpp"
+#include "duckdb/function/cast/cast_function_set.hpp"
+#include "duckdb/common/type_visitor.hpp"
 
 namespace duckdb {
 
 ExpressionExecutor::ExpressionExecutor(ClientContext &context) : context(&context) {
-	auto &config = DBConfig::GetConfig(context);
-	debug_vector_verification = config.options.debug_verify_vector;
+	debug_vector_verification = DBConfig::GetSetting<DebugVerifyVectorSetting>(context);
 }
 
 ExpressionExecutor::ExpressionExecutor(ClientContext &context, const Expression *expression)
@@ -156,6 +158,38 @@ void ExpressionExecutor::Verify(const Expression &expr, Vector &vector, idx_t co
 	}
 	if (debug_vector_verification == DebugVectorVerification::DICTIONARY_EXPRESSION) {
 		Vector::DebugTransformToDictionary(vector, count);
+	}
+	if (debug_vector_verification == DebugVectorVerification::VARIANT_VECTOR) {
+		if (TypeVisitor::Contains(vector.GetType(), [](const LogicalType &type) {
+			    if (type.IsJSONType() || type.id() == LogicalTypeId::VARIANT || type.id() == LogicalTypeId::UNION ||
+			        type.id() == LogicalTypeId::ENUM || type.id() == LogicalTypeId::AGGREGATE_STATE) {
+				    return true;
+			    }
+			    if (type.id() == LogicalTypeId::STRUCT && StructType::IsUnnamed(type)) {
+				    return true;
+			    }
+			    return false;
+		    })) {
+			return;
+		}
+
+		Vector intermediate(LogicalType::VARIANT(), true, false, count);
+
+		//! First cast to VARIANT
+		if (HasContext()) {
+			VectorOperations::Cast(GetContext(), vector, intermediate, count, true);
+		} else {
+			VectorOperations::DefaultCast(vector, intermediate, count, true);
+		}
+
+		Vector result(vector.GetType(), true, false, count);
+		//! Then cast back into the original type
+		if (HasContext()) {
+			VectorOperations::Cast(GetContext(), intermediate, result, count, true);
+		} else {
+			VectorOperations::DefaultCast(intermediate, result, count, true);
+		}
+		vector.Reference(result);
 	}
 }
 

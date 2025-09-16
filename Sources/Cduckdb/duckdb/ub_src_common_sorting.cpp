@@ -1,3 +1,6 @@
+#line 0 "src/common/sorting/hashed_sort.cpp"
+#include "src/common/sorting/hashed_sort.cpp"
+
 #line 0 "src/common/sorting/sort.cpp"
 #include "src/common/sorting/sort.cpp"
 

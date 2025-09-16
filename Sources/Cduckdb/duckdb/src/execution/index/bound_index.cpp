@@ -135,8 +135,12 @@ bool BoundIndex::IndexIsUpdated(const vector<PhysicalIndex> &column_ids_p) const
 	return false;
 }
 
-IndexStorageInfo BoundIndex::GetStorageInfo(const case_insensitive_map_t<Value> &options, const bool to_wal) {
-	throw NotImplementedException("The implementation of this index serialization does not exist.");
+IndexStorageInfo BoundIndex::SerializeToDisk(QueryContext context, const case_insensitive_map_t<Value> &options) {
+	throw NotImplementedException("The implementation of this index disk serialization does not exist.");
+}
+
+IndexStorageInfo BoundIndex::SerializeToWAL(const case_insensitive_map_t<Value> &options) {
+	throw NotImplementedException("The implementation of this index WAL serialization does not exist.");
 }
 
 string BoundIndex::AppendRowError(DataChunk &input, idx_t index) {
@@ -148,6 +152,32 @@ string BoundIndex::AppendRowError(DataChunk &input, idx_t index) {
 		error += input.GetValue(c, index).ToString();
 	}
 	return error;
+}
+
+void BoundIndex::ApplyBufferedAppends(const vector<LogicalType> &table_types, ColumnDataCollection &buffered_appends,
+                                      const vector<StorageIndex> &mapped_column_ids) {
+	IndexAppendInfo index_append_info(IndexAppendMode::INSERT_DUPLICATES, nullptr);
+
+	ColumnDataScanState state;
+	buffered_appends.InitializeScan(state);
+
+	DataChunk scan_chunk;
+	buffered_appends.InitializeScanChunk(scan_chunk);
+	DataChunk table_chunk;
+	table_chunk.InitializeEmpty(table_types);
+
+	while (buffered_appends.Scan(state, scan_chunk)) {
+		for (idx_t i = 0; i < scan_chunk.ColumnCount() - 1; i++) {
+			auto col_id = mapped_column_ids[i].GetPrimaryIndex();
+			table_chunk.data[col_id].Reference(scan_chunk.data[i]);
+		}
+		table_chunk.SetCardinality(scan_chunk.size());
+
+		auto error = Append(table_chunk, scan_chunk.data.back(), index_append_info);
+		if (error.HasError()) {
+			throw InternalException("error while applying buffered appends: " + error.Message());
+		}
+	}
 }
 
 } // namespace duckdb

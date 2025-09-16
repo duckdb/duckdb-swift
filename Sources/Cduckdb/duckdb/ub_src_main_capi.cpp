@@ -28,6 +28,9 @@
 #line 0 "src/main/capi/error_data-c.cpp"
 #include "src/main/capi/error_data-c.cpp"
 
+#line 0 "src/main/capi/expression-c.cpp"
+#include "src/main/capi/expression-c.cpp"
+
 #line 0 "src/main/capi/helper-c.cpp"
 #include "src/main/capi/helper-c.cpp"
 

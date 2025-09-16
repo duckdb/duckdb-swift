@@ -52,3 +52,6 @@
 #line 0 "src/function/udf_function.cpp"
 #include "src/function/udf_function.cpp"
 
+#line 0 "src/function/copy_blob.cpp"
+#include "src/function/copy_blob.cpp"
+
