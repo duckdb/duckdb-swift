@@ -16,3 +16,6 @@
 #line 0 "extension/parquet/reader/struct_column_reader.cpp"
 #include "extension/parquet/reader/struct_column_reader.cpp"
 
+#line 0 "extension/parquet/reader/variant_column_reader.cpp"
+#include "extension/parquet/reader/variant_column_reader.cpp"
+

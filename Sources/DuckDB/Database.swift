@@ -80,11 +80,15 @@ public final class Database: Sendable {
   public convenience init(
     store: Store = .inMemory, configuration: Configuration? = nil
   ) throws {
-    let path: String? = {
-        guard case .file(let url) = store else { return nil }
-        return url.path
-    }()
-    try self.init(path: path, config: configuration)
+    var fileURL: URL?
+    if case .file(let url) = store {
+      guard url.isFileURL else {
+        throw DatabaseError.databaseFailedToInitialize(
+          reason: "provided URL for database store file must be local")
+      }
+      fileURL = url
+    }
+    try self.init(path: fileURL?.path, config: configuration)
   }
   
   private init(path: String?, config: Configuration?) throws {

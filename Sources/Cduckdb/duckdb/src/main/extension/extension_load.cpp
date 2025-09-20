@@ -8,6 +8,7 @@
 #include "duckdb/main/error_manager.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckdb/main/extension_manager.hpp"
+#include "duckdb/main/settings.hpp"
 #include "mbedtls_wrapper.hpp"
 
 #ifndef DUCKDB_NO_THREADS
@@ -404,7 +405,7 @@ bool ExtensionHelper::TryInitialLoad(DatabaseInstance &db, FileSystem &fs, const
 		if (!signature_valid) {
 			throw IOException(db.config.error_manager->FormatException(ErrorType::UNSIGNED_EXTENSION, filename));
 		}
-	} else if (!db.config.options.allow_extensions_metadata_mismatch) {
+	} else if (!DBConfig::GetSetting<AllowExtensionsMetadataMismatchSetting>(db)) {
 		if (!metadata_mismatch_error.empty()) {
 			// Unsigned extensions AND configuration allowing n, loading allowed, mainly for
 			// debugging purposes
@@ -521,6 +522,17 @@ void ExtensionHelper::LoadExternalExtension(DatabaseInstance &db, FileSystem &fs
 	if (!info) {
 		return;
 	}
+	try {
+		LoadExternalExtensionInternal(db, fs, extension, *info);
+	} catch (std::exception &ex) {
+		ErrorData error(ex);
+		info->LoadFail(error);
+		throw;
+	}
+}
+
+void ExtensionHelper::LoadExternalExtensionInternal(DatabaseInstance &db, FileSystem &fs, const string &extension,
+                                                    ExtensionActiveLoad &info) {
 #ifdef DUCKDB_DISABLE_EXTENSION_LOAD
 	throw PermissionException("Loading external extensions is disabled through a compile time flag");
 #else
@@ -537,7 +549,7 @@ void ExtensionHelper::LoadExternalExtension(DatabaseInstance &db, FileSystem &fs
 		}
 
 		try {
-			ExtensionLoader loader(*info);
+			ExtensionLoader loader(info);
 			(*init_fun)(loader);
 			loader.FinalizeLoad();
 		} catch (std::exception &e) {
@@ -548,7 +560,7 @@ void ExtensionHelper::LoadExternalExtension(DatabaseInstance &db, FileSystem &fs
 
 		D_ASSERT(extension_init_result.install_info);
 
-		info->FinishLoad(*extension_init_result.install_info);
+		info.FinishLoad(*extension_init_result.install_info);
 		return;
 	}
 
@@ -588,7 +600,7 @@ void ExtensionHelper::LoadExternalExtension(DatabaseInstance &db, FileSystem &fs
 
 		D_ASSERT(extension_init_result.install_info);
 
-		info->FinishLoad(*extension_init_result.install_info);
+		info.FinishLoad(*extension_init_result.install_info);
 		return;
 	}
 

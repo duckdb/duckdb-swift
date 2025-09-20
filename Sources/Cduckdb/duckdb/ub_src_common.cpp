@@ -13,6 +13,9 @@
 #line 0 "src/common/cgroups.cpp"
 #include "src/common/cgroups.cpp"
 
+#line 0 "src/common/csv_writer.cpp"
+#include "src/common/csv_writer.cpp"
+
 #line 0 "src/common/complex_json.cpp"
 #include "src/common/complex_json.cpp"
 
@@ -102,6 +105,9 @@
 
 #line 0 "src/common/types.cpp"
 #include "src/common/types.cpp"
+
+#line 0 "src/common/bignum.cpp"
+#include "src/common/bignum.cpp"
 
 #line 0 "src/common/virtual_file_system.cpp"
 #include "src/common/virtual_file_system.cpp"

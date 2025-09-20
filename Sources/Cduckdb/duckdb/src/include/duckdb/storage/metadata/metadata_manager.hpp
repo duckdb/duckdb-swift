@@ -11,6 +11,7 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/storage/block.hpp"
 #include "duckdb/storage/block_manager.hpp"
+#include "duckdb/common/atomic.hpp"
 #include "duckdb/common/set.hpp"
 #include "duckdb/storage/buffer/buffer_handle.hpp"
 
@@ -19,15 +20,27 @@ class DatabaseInstance;
 struct MetadataBlockInfo;
 
 struct MetadataBlock {
+	MetadataBlock();
+	// disable copy constructors
+	MetadataBlock(const MetadataBlock &other) = delete;
+	MetadataBlock &operator=(const MetadataBlock &) = delete;
+	//! enable move constructors
+	DUCKDB_API MetadataBlock(MetadataBlock &&other) noexcept;
+	DUCKDB_API MetadataBlock &operator=(MetadataBlock &&) noexcept;
+
 	shared_ptr<BlockHandle> block;
 	block_id_t block_id;
 	vector<uint8_t> free_blocks;
+	atomic<bool> dirty;
 
 	void Write(WriteStream &sink);
 	static MetadataBlock Read(ReadStream &source);
 
 	idx_t FreeBlocksToInteger();
 	void FreeBlocksFromInteger(idx_t blocks);
+	static vector<uint8_t> BlocksFromInteger(idx_t free_list);
+
+	string ToString() const;
 };
 
 struct MetadataPointer {
@@ -51,6 +64,8 @@ public:
 
 	MetadataHandle AllocateHandle();
 	MetadataHandle Pin(const MetadataPointer &pointer);
+
+	MetadataHandle Pin(QueryContext context, const MetadataPointer &pointer);
 
 	MetaBlockPointer GetDiskPointer(const MetadataPointer &pointer, uint32_t offset = 0);
 	MetadataPointer FromDiskPointer(MetaBlockPointer pointer);

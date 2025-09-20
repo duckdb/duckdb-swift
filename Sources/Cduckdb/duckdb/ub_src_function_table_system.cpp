@@ -1,3 +1,6 @@
+#line 0 "src/function/table/system/duckdb_approx_database_count.cpp"
+#include "src/function/table/system/duckdb_approx_database_count.cpp"
+
 #line 0 "src/function/table/system/duckdb_columns.cpp"
 #include "src/function/table/system/duckdb_columns.cpp"
 
@@ -72,6 +75,9 @@
 
 #line 0 "src/function/table/system/duckdb_views.cpp"
 #include "src/function/table/system/duckdb_views.cpp"
+
+#line 0 "src/function/table/system/logging_utils.cpp"
+#include "src/function/table/system/logging_utils.cpp"
 
 #line 0 "src/function/table/system/pragma_collations.cpp"
 #include "src/function/table/system/pragma_collations.cpp"

@@ -35,8 +35,8 @@ static void CreateColumnDependencyManager(BoundCreateTableInfo &info) {
 	}
 }
 
-static void VerifyCompressionType(optional_ptr<StorageManager> storage_manager, DBConfig &config,
-                                  BoundCreateTableInfo &info) {
+static void VerifyCompressionType(ClientContext &context, optional_ptr<StorageManager> storage_manager,
+                                  DBConfig &config, BoundCreateTableInfo &info) {
 	auto &base = info.base->Cast<CreateTableInfo>();
 	for (auto &col : base.columns.Logical()) {
 		auto compression_type = col.CompressionType();
@@ -45,7 +45,15 @@ static void VerifyCompressionType(optional_ptr<StorageManager> storage_manager, 
 			                      "and only has decompress support",
 			                      CompressionTypeToString(compression_type));
 		}
-		const auto &logical_type = col.GetType();
+		auto logical_type = col.GetType();
+		if (logical_type.id() == LogicalTypeId::USER && logical_type.HasAlias()) {
+			// Resolve user type if possible
+			const auto type_entry = Catalog::GetEntry<TypeCatalogEntry>(
+			    context, INVALID_CATALOG, INVALID_SCHEMA, logical_type.GetAlias(), OnEntryNotFound::RETURN_NULL);
+			if (type_entry) {
+				logical_type = type_entry->user_type;
+			}
+		}
 		auto physical_type = logical_type.InternalType();
 		if (compression_type == CompressionType::COMPRESSION_AUTO) {
 			continue;
@@ -551,13 +559,15 @@ static void BindCreateTableConstraints(CreateTableInfo &create_info, CatalogEntr
 		FindMatchingPrimaryKeyColumns(pk_table_entry_ptr.GetColumns(), pk_table_entry_ptr.GetConstraints(), fk);
 		FindForeignKeyIndexes(pk_table_entry_ptr.GetColumns(), fk.pk_columns, fk.info.pk_keys);
 		CheckForeignKeyTypes(pk_table_entry_ptr.GetColumns(), create_info.columns, fk);
-		auto &storage = pk_table_entry_ptr.GetStorage();
+		if (pk_table_entry_ptr.IsDuckTable()) {
+			auto &storage = pk_table_entry_ptr.GetStorage();
 
-		if (!storage.HasForeignKeyIndex(fk.info.pk_keys, ForeignKeyType::FK_TYPE_PRIMARY_KEY_TABLE)) {
-			auto fk_column_names = StringUtil::Join(fk.pk_columns, ",");
-			throw BinderException("Failed to create foreign key on %s(%s): no UNIQUE or PRIMARY KEY constraint "
-			                      "present on these columns",
-			                      pk_table_entry_ptr.name, fk_column_names);
+			if (!storage.HasForeignKeyIndex(fk.info.pk_keys, ForeignKeyType::FK_TYPE_PRIMARY_KEY_TABLE)) {
+				auto fk_column_names = StringUtil::Join(fk.pk_columns, ",");
+				throw BinderException("Failed to create foreign key on %s(%s): no UNIQUE or PRIMARY KEY constraint "
+				                      "present on these columns",
+				                      pk_table_entry_ptr.name, fk_column_names);
+			}
 		}
 
 		D_ASSERT(fk.info.pk_keys.size() == fk.info.fk_keys.size());
@@ -630,7 +640,7 @@ unique_ptr<BoundCreateTableInfo> Binder::BindCreateTableInfo(unique_ptr<CreateIn
 		});
 
 		auto &config = DBConfig::Get(catalog.GetAttached());
-		VerifyCompressionType(storage_manager, config, *result);
+		VerifyCompressionType(context, storage_manager, config, *result);
 		CreateColumnDependencyManager(*result);
 		// bind the generated column expressions
 		BindGeneratedColumns(*result);

@@ -1,6 +1,9 @@
 #line 0 "src/parser/transform/statement/transform_alter_table.cpp"
 #include "src/parser/transform/statement/transform_alter_table.cpp"
 
+#line 0 "src/parser/transform/statement/transform_alter_database.cpp"
+#include "src/parser/transform/statement/transform_alter_database.cpp"
+
 #line 0 "src/parser/transform/statement/transform_attach.cpp"
 #include "src/parser/transform/statement/transform_attach.cpp"
 

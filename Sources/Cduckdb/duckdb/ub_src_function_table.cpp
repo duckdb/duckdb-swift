@@ -7,6 +7,9 @@
 #line 0 "src/function/table/checkpoint.cpp"
 #include "src/function/table/checkpoint.cpp"
 
+#line 0 "src/function/table/direct_file_reader.cpp"
+#include "src/function/table/direct_file_reader.cpp"
+
 #line 0 "src/function/table/glob.cpp"
 #include "src/function/table/glob.cpp"
 

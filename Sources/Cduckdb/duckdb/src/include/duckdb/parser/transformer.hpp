@@ -116,6 +116,8 @@ private:
 	unique_ptr<SelectStatement> TransformSelectStmt(duckdb_libpgquery::PGNode &node, bool is_select = true);
 	//! Transform a Postgres T_AlterStmt node into a AlterStatement
 	unique_ptr<AlterStatement> TransformAlter(duckdb_libpgquery::PGAlterTableStmt &stmt);
+	//! Transform a Postgres T_AlterDatabaseStmt node into a AlterStatement
+	unique_ptr<AlterStatement> TransformAlterDatabase(duckdb_libpgquery::PGAlterDatabaseStmt &stmt);
 	//! Transform a Postgres duckdb_libpgquery::T_PGRenameStmt node into a RenameStatement
 	unique_ptr<AlterStatement> TransformRename(duckdb_libpgquery::PGRenameStmt &stmt);
 	//! Transform a Postgres duckdb_libpgquery::T_PGCreateStmt node into a CreateStatement
@@ -376,8 +378,6 @@ private:
 
 	unique_ptr<MacroFunction> TransformMacroFunction(duckdb_libpgquery::PGFunctionDefinition &function);
 
-	void ParseGenericOptionListEntry(case_insensitive_map_t<vector<Value>> &result_options, string &name,
-	                                 duckdb_libpgquery::PGNode *arg);
 	vector<string> TransformNameList(duckdb_libpgquery::PGList &list);
 
 public:

@@ -67,8 +67,8 @@
 #line 0 "src/common/types/value.cpp"
 #include "src/common/types/value.cpp"
 
-#line 0 "src/common/types/varint.cpp"
-#include "src/common/types/varint.cpp"
+#line 0 "src/common/types/bignum.cpp"
+#include "src/common/types/bignum.cpp"
 
 #line 0 "src/common/types/vector_buffer.cpp"
 #include "src/common/types/vector_buffer.cpp"

@@ -25,6 +25,9 @@
 #line 0 "src/optimizer/pushdown/pushdown_mark_join.cpp"
 #include "src/optimizer/pushdown/pushdown_mark_join.cpp"
 
+#line 0 "src/optimizer/pushdown/pushdown_outer_join.cpp"
+#include "src/optimizer/pushdown/pushdown_outer_join.cpp"
+
 #line 0 "src/optimizer/pushdown/pushdown_projection.cpp"
 #include "src/optimizer/pushdown/pushdown_projection.cpp"
 

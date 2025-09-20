@@ -46,8 +46,8 @@
 #line 0 "src/function/cast/uuid_casts.cpp"
 #include "src/function/cast/uuid_casts.cpp"
 
-#line 0 "src/function/cast/varint_casts.cpp"
-#include "src/function/cast/varint_casts.cpp"
+#line 0 "src/function/cast/bignum_casts.cpp"
+#include "src/function/cast/bignum_casts.cpp"
 
 #line 0 "src/function/cast/nested_to_varchar_cast.cpp"
 #include "src/function/cast/nested_to_varchar_cast.cpp"

@@ -37,6 +37,9 @@
 #line 0 "src/main/database.cpp"
 #include "src/main/database.cpp"
 
+#line 0 "src/main/database_file_path_manager.cpp"
+#include "src/main/database_file_path_manager.cpp"
+
 #line 0 "src/main/database_path_and_type.cpp"
 #include "src/main/database_path_and_type.cpp"
 
