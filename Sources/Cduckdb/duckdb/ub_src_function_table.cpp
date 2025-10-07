@@ -31,6 +31,9 @@
 #line 0 "src/function/table/read_csv.cpp"
 #include "src/function/table/read_csv.cpp"
 
+#line 0 "src/function/table/read_duckdb.cpp"
+#include "src/function/table/read_duckdb.cpp"
+
 #line 0 "src/function/table/sniff_csv.cpp"
 #include "src/function/table/sniff_csv.cpp"
 

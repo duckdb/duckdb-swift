@@ -13,6 +13,9 @@
 #line 0 "src/optimizer/common_aggregate_optimizer.cpp"
 #include "src/optimizer/common_aggregate_optimizer.cpp"
 
+#line 0 "src/optimizer/common_subplan_optimizer.cpp"
+#include "src/optimizer/common_subplan_optimizer.cpp"
+
 #line 0 "src/optimizer/compressed_materialization.cpp"
 #include "src/optimizer/compressed_materialization.cpp"
 

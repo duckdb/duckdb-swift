@@ -100,6 +100,65 @@ struct CorrelatedColumnInfo {
 	}
 };
 
+struct CorrelatedColumns {
+private:
+	using container_type = vector<CorrelatedColumnInfo>;
+
+public:
+	CorrelatedColumns() : delim_index(1ULL << 63) {
+	}
+
+	void AddColumn(container_type::value_type info) {
+		// Add to beginning
+		correlated_columns.insert(correlated_columns.begin(), std::move(info));
+		delim_index++;
+	}
+
+	void SetDelimIndexToZero() {
+		delim_index = 0;
+	}
+
+	idx_t GetDelimIndex() const {
+		return delim_index;
+	}
+
+	const container_type::value_type &operator[](const idx_t &index) const {
+		return correlated_columns.at(index);
+	}
+
+	idx_t size() const { // NOLINT: match stl case
+		return correlated_columns.size();
+	}
+
+	bool empty() const { // NOLINT: match stl case
+		return correlated_columns.empty();
+	}
+
+	void clear() { // NOLINT: match stl case
+		correlated_columns.clear();
+	}
+
+	container_type::iterator begin() { // NOLINT: match stl case
+		return correlated_columns.begin();
+	}
+
+	container_type::iterator end() { // NOLINT: match stl case
+		return correlated_columns.end();
+	}
+
+	container_type::const_iterator begin() const { // NOLINT: match stl case
+		return correlated_columns.begin();
+	}
+
+	container_type::const_iterator end() const { // NOLINT: match stl case
+		return correlated_columns.end();
+	}
+
+private:
+	container_type correlated_columns;
+	idx_t delim_index;
+};
+
 //! Bind the parsed query tree to the actual columns present in the catalog.
 /*!
   The binder is responsible for binding tables and columns to actual physical
@@ -117,14 +176,12 @@ public:
 	//! The client context
 	ClientContext &context;
 	//! A mapping of names to common table expressions
-	case_insensitive_map_t<reference<CommonTableExpressionInfo>> CTE_bindings; // NOLINT
-	//! The CTEs that have already been bound
-	reference_set_t<CommonTableExpressionInfo> bound_ctes;
+	case_insensitive_set_t CTE_bindings; // NOLINT
 	//! The bind context
 	BindContext bind_context;
 	//! The set of correlated columns bound by this binder (FIXME: this should probably be an unordered_set and not a
 	//! vector)
-	vector<CorrelatedColumnInfo> correlated_columns;
+	CorrelatedColumns correlated_columns;
 	//! The set of parameter expressions bound by this binder
 	optional_ptr<BoundParameterMap> parameters;
 	//! The alias for the currently processing subquery, if it exists
@@ -183,11 +240,11 @@ public:
 	                                           const EntryLookupInfo &lookup_info, OnEntryNotFound on_entry_not_found);
 
 	//! Add a common table expression to the binder
-	void AddCTE(const string &name, CommonTableExpressionInfo &cte);
+	void AddCTE(const string &name);
 	//! Find all candidate common table expression by name; returns empty vector if none exists
-	vector<reference<CommonTableExpressionInfo>> FindCTE(const string &name, bool skip = false);
+	vector<reference<Binding>> FindCTE(const string &name, bool skip = false);
 
-	bool CTEIsAlreadyBound(CommonTableExpressionInfo &cte);
+	bool CTEExists(const string &name);
 
 	//! Add the view to the set of currently bound views - used for detecting recursive view definitions
 	void AddBoundView(ViewCatalogEntry &view);
@@ -200,7 +257,7 @@ public:
 
 	vector<reference<ExpressionBinder>> &GetActiveBinders();
 
-	void MergeCorrelatedColumns(vector<CorrelatedColumnInfo> &other);
+	void MergeCorrelatedColumns(CorrelatedColumns &other);
 	//! Add a correlated column to this binder (if it does not exist)
 	void AddCorrelatedColumn(const CorrelatedColumnInfo &info);
 
@@ -367,7 +424,7 @@ private:
 	unique_ptr<BoundTableRef> Bind(BaseTableRef &ref);
 	unique_ptr<BoundTableRef> Bind(BoundRefWrapper &ref);
 	unique_ptr<BoundTableRef> Bind(JoinRef &ref);
-	unique_ptr<BoundTableRef> Bind(SubqueryRef &ref, optional_ptr<CommonTableExpressionInfo> cte = nullptr);
+	unique_ptr<BoundTableRef> Bind(SubqueryRef &ref);
 	unique_ptr<BoundTableRef> Bind(TableFunctionRef &ref);
 	unique_ptr<BoundTableRef> Bind(EmptyTableRef &ref);
 	unique_ptr<BoundTableRef> Bind(DelimGetRef &ref);
@@ -428,7 +485,7 @@ private:
 	void PlanSubqueries(unique_ptr<Expression> &expr, unique_ptr<LogicalOperator> &root);
 	unique_ptr<Expression> PlanSubquery(BoundSubqueryExpression &expr, unique_ptr<LogicalOperator> &root);
 	unique_ptr<LogicalOperator> PlanLateralJoin(unique_ptr<LogicalOperator> left, unique_ptr<LogicalOperator> right,
-	                                            vector<CorrelatedColumnInfo> &correlated_columns,
+	                                            CorrelatedColumns &correlated_columns,
 	                                            JoinType join_type = JoinType::INNER,
 	                                            unique_ptr<Expression> condition = nullptr);
 

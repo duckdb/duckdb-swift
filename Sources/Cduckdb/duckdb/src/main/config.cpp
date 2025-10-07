@@ -168,21 +168,23 @@ static const ConfigurationOption internal_options[] = {
     DUCKDB_LOCAL(SchemaSetting),
     DUCKDB_LOCAL(SearchPathSetting),
     DUCKDB_GLOBAL(SecretDirectorySetting),
+    DUCKDB_SETTING_CALLBACK(StorageBlockPrefetchSetting),
     DUCKDB_GLOBAL(StorageCompatibilityVersionSetting),
     DUCKDB_LOCAL(StreamingBufferSizeSetting),
     DUCKDB_GLOBAL(TempDirectorySetting),
     DUCKDB_GLOBAL(TempFileEncryptionSetting),
     DUCKDB_GLOBAL(ThreadsSetting),
     DUCKDB_GLOBAL(UsernameSetting),
+    DUCKDB_SETTING(WriteBufferRowGroupCountSetting),
     DUCKDB_GLOBAL(ZstdMinStringLengthSetting),
     FINAL_SETTING};
 
 static const ConfigurationAlias setting_aliases[] = {DUCKDB_SETTING_ALIAS("memory_limit", 83),
                                                      DUCKDB_SETTING_ALIAS("null_order", 33),
                                                      DUCKDB_SETTING_ALIAS("profiling_output", 102),
-                                                     DUCKDB_SETTING_ALIAS("user", 116),
+                                                     DUCKDB_SETTING_ALIAS("user", 117),
                                                      DUCKDB_SETTING_ALIAS("wal_autocheckpoint", 20),
-                                                     DUCKDB_SETTING_ALIAS("worker_threads", 115),
+                                                     DUCKDB_SETTING_ALIAS("worker_threads", 116),
                                                      FINAL_ALIAS};
 
 vector<ConfigurationOption> DBConfig::GetOptions() {
@@ -539,6 +541,10 @@ idx_t DBConfig::GetSystemMaxThreads(FileSystem &fs) {
 }
 
 idx_t DBConfig::GetSystemAvailableMemory(FileSystem &fs) {
+	// System memory detection
+	auto memory = FileSystem::GetAvailableMemory();
+	auto available_memory = memory.IsValid() ? memory.GetIndex() : DBConfigOptions().maximum_memory;
+
 #ifdef __linux__
 	// Check SLURM environment variables first
 	const char *slurm_mem_per_node = getenv("SLURM_MEM_PER_NODE");
@@ -560,16 +566,12 @@ idx_t DBConfig::GetSystemAvailableMemory(FileSystem &fs) {
 	// Check cgroup memory limit
 	auto cgroup_memory_limit = CGroups::GetMemoryLimit(fs);
 	if (cgroup_memory_limit.IsValid()) {
-		return cgroup_memory_limit.GetIndex();
+		auto cgroup_memory_limit_value = cgroup_memory_limit.GetIndex();
+		return std::min(cgroup_memory_limit_value, available_memory);
 	}
 #endif
 
-	// System memory detection
-	auto memory = FileSystem::GetAvailableMemory();
-	if (!memory.IsValid()) {
-		return DBConfigOptions().maximum_memory;
-	}
-	return memory.GetIndex();
+	return available_memory;
 }
 
 idx_t DBConfig::ParseMemoryLimit(const string &arg) {

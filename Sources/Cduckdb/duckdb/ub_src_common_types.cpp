@@ -82,3 +82,6 @@
 #line 0 "src/common/types/vector_constants.cpp"
 #include "src/common/types/vector_constants.cpp"
 
+#line 0 "src/common/types/geometry.cpp"
+#include "src/common/types/geometry.cpp"
+

@@ -19,6 +19,9 @@
 #line 0 "src/function/cast/enum_casts.cpp"
 #include "src/function/cast/enum_casts.cpp"
 
+#line 0 "src/function/cast/geo_casts.cpp"
+#include "src/function/cast/geo_casts.cpp"
+
 #line 0 "src/function/cast/list_casts.cpp"
 #include "src/function/cast/list_casts.cpp"
 
