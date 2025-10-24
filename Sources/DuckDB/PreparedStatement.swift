@@ -55,7 +55,7 @@ import Foundation
 ///   // executes 'SELECT last_name from employees'
 ///   let result = try statement.execute()
 /// ```
-public final class PreparedStatement {
+public final class PreparedStatement: @unchecked Sendable {
   
   /// The number of parameters to which values can be bound
   public var parameterCount: Int { Int(duckdb_nparams(ptr.pointee)) }
