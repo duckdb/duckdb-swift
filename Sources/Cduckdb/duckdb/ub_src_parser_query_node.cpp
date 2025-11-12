@@ -10,3 +10,6 @@
 #line 0 "src/parser/query_node/set_operation_node.cpp"
 #include "src/parser/query_node/set_operation_node.cpp"
 
+#line 0 "src/parser/query_node/statement_node.cpp"
+#include "src/parser/query_node/statement_node.cpp"
+

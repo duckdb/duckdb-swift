@@ -85,6 +85,9 @@
 #line 0 "src/main/query_result.cpp"
 #include "src/main/query_result.cpp"
 
+#line 0 "src/main/result_set_manager.cpp"
+#include "src/main/result_set_manager.cpp"
+
 #line 0 "src/main/stream_query_result.cpp"
 #include "src/main/stream_query_result.cpp"
 

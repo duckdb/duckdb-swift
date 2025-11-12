@@ -55,6 +55,9 @@
 #line 0 "src/optimizer/late_materialization.cpp"
 #include "src/optimizer/late_materialization.cpp"
 
+#line 0 "src/optimizer/late_materialization_helper.cpp"
+#include "src/optimizer/late_materialization_helper.cpp"
+
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
@@ -75,6 +78,9 @@
 
 #line 0 "src/optimizer/topn_optimizer.cpp"
 #include "src/optimizer/topn_optimizer.cpp"
+
+#line 0 "src/optimizer/topn_window_elimination.cpp"
+#include "src/optimizer/topn_window_elimination.cpp"
 
 #line 0 "src/optimizer/unnest_rewriter.cpp"
 #include "src/optimizer/unnest_rewriter.cpp"

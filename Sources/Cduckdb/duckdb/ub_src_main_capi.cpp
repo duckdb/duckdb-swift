@@ -13,6 +13,12 @@
 #line 0 "src/main/capi/config-c.cpp"
 #include "src/main/capi/config-c.cpp"
 
+#line 0 "src/main/capi/config_options-c.cpp"
+#include "src/main/capi/config_options-c.cpp"
+
+#line 0 "src/main/capi/copy_function-c.cpp"
+#include "src/main/capi/copy_function-c.cpp"
+
 #line 0 "src/main/capi/data_chunk-c.cpp"
 #include "src/main/capi/data_chunk-c.cpp"
 

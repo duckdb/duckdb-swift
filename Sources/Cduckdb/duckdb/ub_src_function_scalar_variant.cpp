@@ -7,3 +7,6 @@
 #line 0 "src/function/scalar/variant/variant_typeof.cpp"
 #include "src/function/scalar/variant/variant_typeof.cpp"
 
+#line 0 "src/function/scalar/variant/variant_normalize.cpp"
+#include "src/function/scalar/variant/variant_normalize.cpp"
+

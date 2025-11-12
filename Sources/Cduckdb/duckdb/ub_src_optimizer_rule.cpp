@@ -55,3 +55,6 @@
 #line 0 "src/optimizer/rule/timestamp_comparison.cpp"
 #include "src/optimizer/rule/timestamp_comparison.cpp"
 
+#line 0 "src/optimizer/rule/constant_order_normalization.cpp"
+#include "src/optimizer/rule/constant_order_normalization.cpp"
+

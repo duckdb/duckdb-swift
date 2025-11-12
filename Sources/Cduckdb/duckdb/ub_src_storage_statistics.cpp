@@ -25,3 +25,6 @@
 #line 0 "src/storage/statistics/struct_stats.cpp"
 #include "src/storage/statistics/struct_stats.cpp"
 
+#line 0 "src/storage/statistics/geometry_stats.cpp"
+#include "src/storage/statistics/geometry_stats.cpp"
+

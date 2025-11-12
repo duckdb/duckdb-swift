@@ -1,3 +1,6 @@
+#line 0 "src/parallel/async_result.cpp"
+#include "src/parallel/async_result.cpp"
+
 #line 0 "src/parallel/base_pipeline_event.cpp"
 #include "src/parallel/base_pipeline_event.cpp"
 
