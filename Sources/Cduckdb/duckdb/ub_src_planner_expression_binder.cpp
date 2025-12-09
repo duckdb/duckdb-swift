@@ -37,6 +37,9 @@
 #line 0 "src/planner/expression_binder/order_binder.cpp"
 #include "src/planner/expression_binder/order_binder.cpp"
 
+#line 0 "src/planner/expression_binder/try_operator_binder.cpp"
+#include "src/planner/expression_binder/try_operator_binder.cpp"
+
 #line 0 "src/planner/expression_binder/projection_binder.cpp"
 #include "src/planner/expression_binder/projection_binder.cpp"
 

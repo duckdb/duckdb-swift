@@ -37,6 +37,9 @@
 #line 0 "src/storage/table/row_group_collection.cpp"
 #include "src/storage/table/row_group_collection.cpp"
 
+#line 0 "src/storage/table/row_group_reorderer.cpp"
+#include "src/storage/table/row_group_reorderer.cpp"
+
 #line 0 "src/storage/table/row_version_manager.cpp"
 #include "src/storage/table/row_version_manager.cpp"
 
@@ -54,4 +57,7 @@
 
 #line 0 "src/storage/table/validity_column_data.cpp"
 #include "src/storage/table/validity_column_data.cpp"
+
+#line 0 "src/storage/table/variant_column_data.cpp"
+#include "src/storage/table/variant_column_data.cpp"
 

@@ -13,18 +13,19 @@ namespace duckdb {
 using ValidityBytes = TupleDataLayout::ValidityBytes;
 
 TupleDataCollection::TupleDataCollection(BufferManager &buffer_manager, shared_ptr<TupleDataLayout> layout_ptr_p,
-                                         shared_ptr<ArenaAllocator> stl_allocator_p)
+                                         MemoryTag tag_p, shared_ptr<ArenaAllocator> stl_allocator_p)
     : stl_allocator(stl_allocator_p ? std::move(stl_allocator_p)
                                     : make_shared_ptr<ArenaAllocator>(buffer_manager.GetBufferAllocator())),
-      layout_ptr(std::move(layout_ptr_p)), layout(*layout_ptr),
-      allocator(make_shared_ptr<TupleDataAllocator>(buffer_manager, layout_ptr, stl_allocator)),
+      layout_ptr(std::move(layout_ptr_p)), layout(*layout_ptr), tag(tag_p),
+      allocator(make_shared_ptr<TupleDataAllocator>(buffer_manager, layout_ptr, tag, stl_allocator)),
       segments(*stl_allocator), scatter_functions(*stl_allocator), gather_functions(*stl_allocator) {
 	Initialize();
 }
 
-TupleDataCollection::TupleDataCollection(ClientContext &context, shared_ptr<TupleDataLayout> layout_ptr,
+TupleDataCollection::TupleDataCollection(ClientContext &context, shared_ptr<TupleDataLayout> layout_ptr, MemoryTag tag,
                                          shared_ptr<ArenaAllocator> stl_allocator)
-    : TupleDataCollection(BufferManager::GetBufferManager(context), std::move(layout_ptr), std::move(stl_allocator)) {
+    : TupleDataCollection(BufferManager::GetBufferManager(context), std::move(layout_ptr), tag,
+                          std::move(stl_allocator)) {
 }
 
 TupleDataCollection::~TupleDataCollection() {
@@ -49,7 +50,7 @@ void TupleDataCollection::Initialize() {
 }
 
 unique_ptr<TupleDataCollection> TupleDataCollection::CreateUnique() const {
-	return make_uniq<TupleDataCollection>(allocator->GetBufferManager(), layout_ptr);
+	return make_uniq<TupleDataCollection>(allocator->GetBufferManager(), layout_ptr, tag);
 }
 
 void GetAllColumnIDsInternal(vector<column_t> &column_ids, const idx_t column_count) {
@@ -621,6 +622,43 @@ bool TupleDataCollection::Scan(TupleDataParallelScanState &gstate, TupleDataLoca
 	ScanAtIndex(lstate.pin_state, lstate.chunk_state, gstate.scan_state.chunk_state.column_ids, lstate.segment_index,
 	            lstate.chunk_index, result);
 	return true;
+}
+
+idx_t TupleDataCollection::Seek(TupleDataScanState &state, const idx_t target_chunk) {
+	D_ASSERT(state.pin_state.properties == TupleDataPinProperties::UNPIN_AFTER_DONE);
+	state.pin_state.row_handles.clear();
+	state.pin_state.heap_handles.clear();
+
+	// early return for empty collection
+	if (segments.empty()) {
+		return 0;
+	}
+
+	idx_t current_chunk = 0;
+	idx_t total_rows = 0;
+	for (idx_t seg_idx = 0; seg_idx < segments.size(); seg_idx++) {
+		auto &segment = segments[seg_idx];
+		idx_t chunk_count = segment->ChunkCount();
+
+		if (current_chunk + chunk_count <= target_chunk) {
+			total_rows += segment->count;
+			current_chunk += chunk_count;
+		} else {
+			idx_t chunk_idx_in_segment = target_chunk - current_chunk;
+			for (idx_t chunk_idx = 0; chunk_idx < chunk_idx_in_segment; chunk_idx++) {
+				total_rows += segment->chunks[chunk_idx]->count;
+			}
+			current_chunk += chunk_count;
+
+			// reset scan state to target segment
+			state.segment_index = seg_idx;
+			state.chunk_index = chunk_idx_in_segment;
+			break;
+		}
+	}
+
+	D_ASSERT(target_chunk < current_chunk);
+	return total_rows;
 }
 
 bool TupleDataCollection::ScanComplete(const TupleDataScanState &state) const {

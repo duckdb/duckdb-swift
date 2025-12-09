@@ -100,6 +100,9 @@
 #line 0 "src/common/render_tree.cpp"
 #include "src/common/render_tree.cpp"
 
+#line 0 "src/common/thread_util.cpp"
+#include "src/common/thread_util.cpp"
+
 #line 0 "src/common/tree_renderer.cpp"
 #include "src/common/tree_renderer.cpp"
 

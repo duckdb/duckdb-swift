@@ -49,9 +49,9 @@ class TupleDataCollection {
 
 public:
 	//! Constructs a TupleDataCollection with the specified layout
-	TupleDataCollection(BufferManager &buffer_manager, shared_ptr<TupleDataLayout> layout_ptr,
+	TupleDataCollection(BufferManager &buffer_manager, shared_ptr<TupleDataLayout> layout_ptr, MemoryTag tag,
 	                    shared_ptr<ArenaAllocator> stl_allocator = nullptr);
-	TupleDataCollection(ClientContext &context, shared_ptr<TupleDataLayout> layout_ptr,
+	TupleDataCollection(ClientContext &context, shared_ptr<TupleDataLayout> layout_ptr, MemoryTag tag,
 	                    shared_ptr<ArenaAllocator> stl_allocator = nullptr);
 
 	~TupleDataCollection();
@@ -196,6 +196,8 @@ public:
 	bool Scan(TupleDataParallelScanState &gstate, TupleDataLocalScanState &lstate, DataChunk &result);
 	//! Whether the last scan has been completed on this TupleDataCollection
 	bool ScanComplete(const TupleDataScanState &state) const;
+	//! Seeks to the specified chunk index, returning the total row count before it
+	idx_t Seek(TupleDataScanState &state, const idx_t target_chunk);
 
 	//! Gathers a DataChunk from the TupleDataCollection, given the specific row locations (requires full pin)
 	void Gather(Vector &row_locations, const SelectionVector &scan_sel, const idx_t scan_count, DataChunk &result,
@@ -270,6 +272,8 @@ private:
 	//! The layout of the TupleDataCollection
 	shared_ptr<TupleDataLayout> layout_ptr;
 	const TupleDataLayout &layout;
+	//! Memory tag (for keeping track what the allocated memory belongs to)
+	const MemoryTag tag;
 	//! The TupleDataAllocator
 	shared_ptr<TupleDataAllocator> allocator;
 	//! The number of entries stored in the TupleDataCollection

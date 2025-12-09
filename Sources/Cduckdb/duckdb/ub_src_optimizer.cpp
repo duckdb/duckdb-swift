@@ -61,6 +61,9 @@
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
+#line 0 "src/optimizer/join_elimination.cpp"
+#include "src/optimizer/join_elimination.cpp"
+
 #line 0 "src/optimizer/regex_range_filter.cpp"
 #include "src/optimizer/regex_range_filter.cpp"
 
@@ -69,6 +72,9 @@
 
 #line 0 "src/optimizer/remove_unused_columns.cpp"
 #include "src/optimizer/remove_unused_columns.cpp"
+
+#line 0 "src/optimizer/row_group_pruner.cpp"
+#include "src/optimizer/row_group_pruner.cpp"
 
 #line 0 "src/optimizer/statistics_propagator.cpp"
 #include "src/optimizer/statistics_propagator.cpp"

@@ -76,6 +76,9 @@
 #line 0 "src/main/profiling_info.cpp"
 #include "src/main/profiling_info.cpp"
 
+#line 0 "src/main/profiling_utils.cpp"
+#include "src/main/profiling_utils.cpp"
+
 #line 0 "src/main/relation.cpp"
 #include "src/main/relation.cpp"
 

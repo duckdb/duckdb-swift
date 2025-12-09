@@ -1,3 +1,6 @@
+#line 0 "src/planner/filter/bloom_filter.cpp"
+#include "src/planner/filter/bloom_filter.cpp"
+
 #line 0 "src/planner/filter/conjunction_filter.cpp"
 #include "src/planner/filter/conjunction_filter.cpp"
 
@@ -21,4 +24,7 @@
 
 #line 0 "src/planner/filter/optional_filter.cpp"
 #include "src/planner/filter/optional_filter.cpp"
+
+#line 0 "src/planner/filter/selectivity_optional_filter.cpp"
+#include "src/planner/filter/selectivity_optional_filter.cpp"
 

@@ -10,6 +10,9 @@
 #line 0 "src/main/capi/cast_function-c.cpp"
 #include "src/main/capi/cast_function-c.cpp"
 
+#line 0 "src/main/capi/catalog-c.cpp"
+#include "src/main/capi/catalog-c.cpp"
+
 #line 0 "src/main/capi/config-c.cpp"
 #include "src/main/capi/config-c.cpp"
 
@@ -45,6 +48,9 @@
 
 #line 0 "src/main/capi/hugeint-c.cpp"
 #include "src/main/capi/hugeint-c.cpp"
+
+#line 0 "src/main/capi/logging-c.cpp"
+#include "src/main/capi/logging-c.cpp"
 
 #line 0 "src/main/capi/logical_types-c.cpp"
 #include "src/main/capi/logical_types-c.cpp"

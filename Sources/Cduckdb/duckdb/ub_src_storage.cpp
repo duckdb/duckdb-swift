@@ -7,6 +7,9 @@
 #line 0 "src/storage/caching_file_system.cpp"
 #include "src/storage/caching_file_system.cpp"
 
+#line 0 "src/storage/caching_file_system_wrapper.cpp"
+#include "src/storage/caching_file_system_wrapper.cpp"
+
 #line 0 "src/storage/checkpoint_manager.cpp"
 #include "src/storage/checkpoint_manager.cpp"
 
@@ -15,6 +18,9 @@
 
 #line 0 "src/storage/block.cpp"
 #include "src/storage/block.cpp"
+
+#line 0 "src/storage/block_allocator.cpp"
+#include "src/storage/block_allocator.cpp"
 
 #line 0 "src/storage/data_pointer.cpp"
 #include "src/storage/data_pointer.cpp"

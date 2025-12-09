@@ -28,3 +28,6 @@
 #line 0 "src/storage/statistics/geometry_stats.cpp"
 #include "src/storage/statistics/geometry_stats.cpp"
 
+#line 0 "src/storage/statistics/variant_stats.cpp"
+#include "src/storage/statistics/variant_stats.cpp"
+
