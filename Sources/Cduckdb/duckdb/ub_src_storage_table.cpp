@@ -13,6 +13,9 @@
 #line 0 "src/storage/table/column_segment.cpp"
 #include "src/storage/table/column_segment.cpp"
 
+#line 0 "src/storage/table/geo_column_data.cpp"
+#include "src/storage/table/geo_column_data.cpp"
+
 #line 0 "src/storage/table/array_column_data.cpp"
 #include "src/storage/table/array_column_data.cpp"
 

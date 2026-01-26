@@ -52,6 +52,9 @@
 #line 0 "extension/core_functions/scalar/string/format_bytes.cpp"
 #include "extension/core_functions/scalar/string/format_bytes.cpp"
 
+#line 0 "extension/core_functions/scalar/string/parse_formatted_bytes.cpp"
+#include "extension/core_functions/scalar/string/parse_formatted_bytes.cpp"
+
 #line 0 "extension/core_functions/scalar/string/hex.cpp"
 #include "extension/core_functions/scalar/string/hex.cpp"
 

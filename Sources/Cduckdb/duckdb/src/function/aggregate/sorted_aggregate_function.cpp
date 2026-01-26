@@ -24,7 +24,7 @@ struct SortedAggregateBindData : public FunctionData {
 	SortedAggregateBindData(ClientContext &context, Expressions &children, AggregateFunction &aggregate,
 	                        BindInfoPtr &bind_info, OrderBys &order_bys)
 	    : context(context), function(aggregate), bind_info(std::move(bind_info)),
-	      threshold(DBConfig::GetSetting<OrderedAggregateThresholdSetting>(context)) {
+	      threshold(Settings::Get<OrderedAggregateThresholdSetting>(context)) {
 		//	Describe the arguments.
 		for (const auto &child : children) {
 			buffered_cols.emplace_back(buffered_cols.size());
@@ -676,14 +676,15 @@ struct SortedAggregateFunction {
 } // namespace
 
 void FunctionBinder::BindSortedAggregate(ClientContext &context, BoundAggregateExpression &expr,
-                                         const vector<unique_ptr<Expression>> &groups) {
+                                         const vector<unique_ptr<Expression>> &groups,
+                                         optional_ptr<vector<GroupingSet>> grouping_sets) {
 	if (!expr.order_bys || expr.order_bys->orders.empty() || expr.children.empty()) {
 		// not a sorted aggregate: return
 		return;
 	}
 	// Remove unnecessary ORDER BY clauses and return if nothing remains
 	if (context.config.enable_optimizer) {
-		if (expr.order_bys->Simplify(groups)) {
+		if (expr.order_bys->Simplify(groups, grouping_sets)) {
 			expr.order_bys.reset();
 			return;
 		}
@@ -741,7 +742,7 @@ void FunctionBinder::BindSortedAggregate(ClientContext &context, BoundWindowExpr
 	}
 	// Remove unnecessary ORDER BY clauses and return if nothing remains
 	if (context.config.enable_optimizer) {
-		if (BoundOrderModifier::Simplify(expr.arg_orders, expr.partitions)) {
+		if (BoundOrderModifier::Simplify(expr.arg_orders, expr.partitions, nullptr)) {
 			expr.arg_orders.clear();
 			return;
 		}

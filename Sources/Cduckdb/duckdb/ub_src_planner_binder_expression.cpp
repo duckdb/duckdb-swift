@@ -52,6 +52,9 @@
 #line 0 "src/planner/binder/expression/bind_subquery_expression.cpp"
 #include "src/planner/binder/expression/bind_subquery_expression.cpp"
 
+#line 0 "src/planner/binder/expression/bind_type_expression.cpp"
+#include "src/planner/binder/expression/bind_type_expression.cpp"
+
 #line 0 "src/planner/binder/expression/bind_unnest_expression.cpp"
 #include "src/planner/binder/expression/bind_unnest_expression.cpp"
 

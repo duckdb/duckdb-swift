@@ -9,15 +9,14 @@
 #include "duckdb/catalog/catalog_entry/type_catalog_entry.hpp"
 #include "duckdb/catalog/catalog_entry/view_catalog_entry.hpp"
 #include "duckdb/catalog/duck_catalog.hpp"
+#include "duckdb/common/enums/checkpoint_abort.hpp"
 #include "duckdb/common/serializer/binary_deserializer.hpp"
 #include "duckdb/common/serializer/binary_serializer.hpp"
 #include "duckdb/execution/index/art/art.hpp"
 #include "duckdb/execution/index/unbound_index.hpp"
 #include "duckdb/main/attached_database.hpp"
 #include "duckdb/main/client_context.hpp"
-#include "duckdb/main/config.hpp"
 #include "duckdb/main/connection.hpp"
-#include "duckdb/main/database.hpp"
 #include "duckdb/transaction/duck_transaction_manager.hpp"
 #include "duckdb/parser/parsed_data/create_schema_info.hpp"
 #include "duckdb/parser/parsed_data/create_view_info.hpp"
@@ -28,10 +27,8 @@
 #include "duckdb/storage/checkpoint/table_data_writer.hpp"
 #include "duckdb/storage/metadata/metadata_reader.hpp"
 #include "duckdb/storage/table/column_checkpoint_state.hpp"
-#include "duckdb/transaction/meta_transaction.hpp"
 #include "duckdb/transaction/transaction_manager.hpp"
 #include "duckdb/catalog/dependency_manager.hpp"
-#include "duckdb/common/serializer/memory_stream.hpp"
 #include "duckdb/main/settings.hpp"
 #include "duckdb/common/thread.hpp"
 
@@ -161,7 +158,7 @@ void SingleFileCheckpointWriter::CreateCheckpoint() {
 	ActiveCheckpointWrapper active_checkpoint(transaction_manager);
 	auto has_wal = storage_manager.WALStartCheckpoint(meta_block, options);
 
-	auto checkpoint_sleep_ms = DBConfig::GetSetting<DebugCheckpointSleepMsSetting>(db.GetDatabase());
+	auto checkpoint_sleep_ms = Settings::Get<DebugCheckpointSleepMsSetting>(db.GetDatabase());
 	if (checkpoint_sleep_ms > 0) {
 		ThreadUtil::SleepMs(checkpoint_sleep_ms);
 	}
@@ -209,7 +206,7 @@ void SingleFileCheckpointWriter::CreateCheckpoint() {
 	metadata_writer->Flush();
 	table_metadata_writer->Flush();
 
-	auto debug_checkpoint_abort = DBConfig::GetSetting<DebugCheckpointAbortSetting>(db.GetDatabase());
+	auto debug_checkpoint_abort = Settings::Get<DebugCheckpointAbortSetting>(db.GetDatabase());
 	if (debug_checkpoint_abort == CheckpointAbort::DEBUG_ABORT_BEFORE_HEADER) {
 		throw FatalException("Checkpoint aborted before header write because of PRAGMA checkpoint_abort flag");
 	}
@@ -221,7 +218,7 @@ void SingleFileCheckpointWriter::CreateCheckpoint() {
 	header.vector_size = STANDARD_VECTOR_SIZE;
 	block_manager.WriteHeader(context, header);
 
-	auto debug_verify_blocks = DBConfig::GetSetting<DebugVerifyBlocksSetting>(db.GetDatabase());
+	auto debug_verify_blocks = Settings::Get<DebugVerifyBlocksSetting>(db.GetDatabase());
 	if (debug_verify_blocks) {
 		// extend verify_block_usage_count
 		auto metadata_info = storage_manager.GetMetadataInfo();
@@ -263,8 +260,36 @@ void SingleFileCheckpointWriter::CreateCheckpoint() {
 	}
 
 	// truncate the WAL
+	unique_ptr<lock_guard<mutex>> wal_lock;
 	if (has_wal) {
-		storage_manager.WALFinishCheckpoint();
+		wal_lock = storage_manager.GetWALLock();
+		storage_manager.WALFinishCheckpoint(*wal_lock);
+	}
+
+	// FIXME: hold the WAL lock while we are merging checkpoint deltas
+	// this prevents any commits from happening while this is going on
+	// this is currently required because of the way that "deletes + inserts" of the same row are processed
+	// currently we FIRST append the new (duplicate) insert, THEN delete the old value
+	// if we append the duplicate value, then call MergeCheckpointDeltas, that will fail with a duplicate entry error
+	// we can fix this and stop holding the WAL lock once we fix / remove that order of operations in the commit
+
+	// for any indexes that were appended to while checkpointing, merge the delta back into the main index
+	// FIXME: we only clean up appends made to tables that are part of this checkpoint
+	// Currently, that is correct, since we don't allow creating tables DURING a checkpoint
+	// In the future, we will allow this
+	// When that happens, we should ensure the delta indexes are NOT used for tables created DURING a checkpoint
+	// this is also not necessary - if we are not checkpointing a table, we are not checkpointing its indexes
+	// ergo we don't need the delta indexes
+	for (auto &entry_ref : catalog_entries) {
+		auto &entry = entry_ref.get();
+		if (entry.type != CatalogType::TABLE_ENTRY) {
+			continue;
+		}
+		auto &table = entry.Cast<DuckTableEntry>();
+		auto &storage = table.GetStorage();
+		auto &table_info = storage.GetDataTableInfo();
+		auto &index_list = table_info->GetIndexes();
+		index_list.MergeCheckpointDeltas(storage, options.transaction_id);
 	}
 }
 
@@ -550,6 +575,15 @@ void SingleFileCheckpointWriter::WriteTable(TableCatalogEntry &table, Serializer
 	// Write the table metadata
 	serializer.WriteProperty(100, "table", &table);
 
+	// If there is a context available, bind indexes before serialization.
+	// This is necessary so that buffered index operations are replayed before we checkpoint, otherwise
+	// we would lose them if there was a restart after this.
+	if (context && context->transaction.HasActiveTransaction()) {
+		auto &info = table.GetStorage().GetDataTableInfo();
+		info->BindIndexes(*context);
+	}
+	// FIXME: If we do not have a context, however, the unbound indexes have to be serialized to disk.
+
 	// Write the table data
 	auto table_lock = table.GetStorage().GetCheckpointLock();
 	auto writer = GetTableDataWriter(table);
@@ -604,11 +638,13 @@ void CheckpointReader::ReadTableData(CatalogTransaction transaction, Deserialize
 	auto &binary_deserializer = dynamic_cast<BinaryDeserializer &>(deserializer);
 	auto &reader = dynamic_cast<MetadataReader &>(binary_deserializer.GetStream());
 
-	MetadataReader table_data_reader(reader.GetMetadataManager(), table_pointer);
+	vector<MetaBlockPointer> read_pointers;
+	MetadataReader table_data_reader(reader.GetMetadataManager(), table_pointer, read_pointers);
 	TableDataReader data_reader(table_data_reader, bound_info, table_pointer);
 	data_reader.ReadTableData();
 
 	bound_info.data->total_rows = total_rows;
+	bound_info.data->read_metadata_pointers = read_pointers;
 }
 
 } // namespace duckdb

@@ -4,6 +4,9 @@
 #line 0 "src/execution/index/art/art.cpp"
 #include "src/execution/index/art/art.cpp"
 
+#line 0 "src/execution/index/art/art_index.cpp"
+#include "src/execution/index/art/art_index.cpp"
+
 #line 0 "src/execution/index/art/art_key.cpp"
 #include "src/execution/index/art/art_key.cpp"
 
@@ -34,9 +37,12 @@
 #line 0 "src/execution/index/art/node48.cpp"
 #include "src/execution/index/art/node48.cpp"
 
-#line 0 "src/execution/index/art/plan_art.cpp"
-#include "src/execution/index/art/plan_art.cpp"
-
 #line 0 "src/execution/index/art/prefix.cpp"
 #include "src/execution/index/art/prefix.cpp"
+
+#line 0 "src/execution/index/art/prefix_handle.cpp"
+#include "src/execution/index/art/prefix_handle.cpp"
+
+#line 0 "src/execution/index/art/const_prefix_handle.cpp"
+#include "src/execution/index/art/const_prefix_handle.cpp"
 

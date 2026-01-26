@@ -90,10 +90,19 @@ Transaction &DuckTransactionManager::StartTransaction(ClientContext &context) {
 	return transaction_ref;
 }
 
-ActiveCheckpointWrapper::ActiveCheckpointWrapper(DuckTransactionManager &manager) : manager(manager) {
+ActiveCheckpointWrapper::ActiveCheckpointWrapper(DuckTransactionManager &manager)
+    : manager(manager), is_cleared(false) {
 }
 
 ActiveCheckpointWrapper::~ActiveCheckpointWrapper() {
+	Clear();
+}
+
+void ActiveCheckpointWrapper::Clear() {
+	if (is_cleared) {
+		return;
+	}
+	is_cleared = true;
 	manager.ResetCheckpointId();
 }
 
@@ -121,6 +130,15 @@ DuckTransactionManager::CheckpointDecision::CheckpointDecision(CheckpointType ty
 DuckTransactionManager::CheckpointDecision::~CheckpointDecision() {
 }
 
+bool DuckTransactionManager::HasOtherTransactions(DuckTransaction &transaction) {
+	for (auto &active_transaction : active_transactions) {
+		if (!RefersToSameObject(*active_transaction, transaction)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 DuckTransactionManager::CheckpointDecision
 DuckTransactionManager::CanCheckpoint(DuckTransaction &transaction, unique_ptr<StorageLockKey> &lock,
                                       const UndoBufferProperties &undo_properties) {
@@ -137,7 +155,7 @@ DuckTransactionManager::CanCheckpoint(DuckTransaction &transaction, unique_ptr<S
 	if (!transaction.AutomaticCheckpoint(db, undo_properties)) {
 		return CheckpointDecision("no reason to automatically checkpoint");
 	}
-	if (DBConfig::GetSetting<DebugSkipCheckpointOnCommitSetting>(db.GetDatabase())) {
+	if (Settings::Get<DebugSkipCheckpointOnCommitSetting>(db.GetDatabase())) {
 		return CheckpointDecision("checkpointing on commit disabled through configuration");
 	}
 	// try to lock the checkpoint lock
@@ -147,13 +165,7 @@ DuckTransactionManager::CanCheckpoint(DuckTransaction &transaction, unique_ptr<S
 		                          "another read transaction relies on data that is not yet committed");
 	}
 	auto checkpoint_type = CheckpointType::FULL_CHECKPOINT;
-	bool has_other_transactions = false;
-	for (auto &active_transaction : active_transactions) {
-		if (!RefersToSameObject(*active_transaction, transaction)) {
-			has_other_transactions = true;
-			break;
-		}
-	}
+	bool has_other_transactions = HasOtherTransactions(transaction);
 	if (has_other_transactions) {
 		if (undo_properties.has_updates || undo_properties.has_dropped_entries) {
 			// if we have made updates/catalog changes in this transaction we cannot checkpoint
@@ -228,9 +240,7 @@ void DuckTransactionManager::Checkpoint(ClientContext &context, bool force) {
 		lock_guard<mutex> start_lock(start_transaction_lock);
 		// wait until any active transactions are finished
 		while (!lock) {
-			if (context.interrupted) {
-				throw InterruptException();
-			}
+			context.InterruptCheck();
 			lock = checkpoint_lock.TryGetExclusiveLock();
 		}
 	}
@@ -253,6 +263,14 @@ unique_ptr<StorageLockKey> DuckTransactionManager::TryUpgradeCheckpointLock(Stor
 
 unique_ptr<StorageLockKey> DuckTransactionManager::TryGetCheckpointLock() {
 	return checkpoint_lock.TryGetExclusiveLock();
+}
+
+unique_ptr<StorageLockKey> DuckTransactionManager::SharedVacuumLock() {
+	return vacuum_lock.GetSharedLock();
+}
+
+unique_ptr<StorageLockKey> DuckTransactionManager::TryGetVacuumLock() {
+	return vacuum_lock.TryGetExclusiveLock();
 }
 
 transaction_t DuckTransactionManager::GetCommitTimestamp() {
@@ -304,15 +322,21 @@ ErrorData DuckTransactionManager::CommitTransaction(ClientContext &context, Tran
 		}
 	}
 	// obtain a commit id for the transaction
-	transaction_t commit_id = GetCommitTimestamp();
+	CommitInfo info;
+	info.commit_id = GetCommitTimestamp();
 
 	// commit the UndoBuffer of the transaction
 	if (!error.HasError()) {
-		error = transaction.Commit(db, commit_id, std::move(commit_state));
+		if (HasOtherTransactions(transaction)) {
+			info.active_transactions = ActiveTransactionState::OTHER_TRANSACTIONS;
+		} else {
+			info.active_transactions = ActiveTransactionState::NO_OTHER_TRANSACTIONS;
+		}
+		error = transaction.Commit(db, info, std::move(commit_state));
 	}
 
 	if (error.HasError()) {
-		DUCKDB_LOG(context, TransactionLogType, db, "Rollback (after failed commit)", commit_id);
+		DUCKDB_LOG(context, TransactionLogType, db, "Rollback (after failed commit)", info.commit_id);
 
 		// COMMIT not successful: ROLLBACK.
 		checkpoint_decision = CheckpointDecision(error.Message());
@@ -325,8 +349,8 @@ ErrorData DuckTransactionManager::CommitTransaction(ClientContext &context, Tran
 			    error.Message(), rollback_error.Message());
 		}
 	} else {
-		DUCKDB_LOG(context, TransactionLogType, db, "Commit", commit_id);
-		last_commit = commit_id;
+		DUCKDB_LOG(context, TransactionLogType, db, "Commit", info.commit_id);
+		last_commit = info.commit_id;
 
 		// check if catalog changes were made
 		if (transaction.catalog_version >= TRANSACTION_ID_START) {

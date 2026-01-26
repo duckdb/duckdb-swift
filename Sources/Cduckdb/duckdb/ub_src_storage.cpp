@@ -31,6 +31,9 @@
 #line 0 "src/storage/external_file_cache.cpp"
 #include "src/storage/external_file_cache.cpp"
 
+#line 0 "src/storage/external_file_cache_util.cpp"
+#include "src/storage/external_file_cache_util.cpp"
+
 #line 0 "src/storage/index.cpp"
 #include "src/storage/index.cpp"
 

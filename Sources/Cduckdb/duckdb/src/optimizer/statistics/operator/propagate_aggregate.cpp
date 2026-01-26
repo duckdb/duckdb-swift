@@ -1,6 +1,6 @@
 #include "duckdb/common/assert.hpp"
+#include "duckdb/common/column_index.hpp"
 #include "duckdb/common/enums/expression_type.hpp"
-#include "duckdb/common/enums/tuple_data_layout_enums.hpp"
 #include "duckdb/common/helper.hpp"
 #include "duckdb/common/numeric_utils.hpp"
 #include "duckdb/common/types.hpp"
@@ -18,6 +18,7 @@
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/storage/statistics/base_statistics.hpp"
 #include "duckdb/storage/statistics/string_stats.hpp"
+#include "duckdb/storage/storage_index.hpp"
 
 namespace duckdb {
 
@@ -67,13 +68,13 @@ unique_ptr<ValueComparator> GetComparator(const string &fun_name, const LogicalT
 	return nullptr;
 }
 
-bool TryGetValueFromStats(const PartitionStatistics &stats, const column_t column_index,
+bool TryGetValueFromStats(const PartitionStatistics &stats, const StorageIndex &storage_index,
                           const ValueComparator &comparator, Value &result) {
 	if (!stats.partition_row_group) {
 		return false;
 	}
-	auto column_stats = stats.partition_row_group->GetColumnStatistics(column_index);
-	if (!stats.partition_row_group->MinMaxIsExact(*column_stats)) {
+	auto column_stats = stats.partition_row_group->GetColumnStatistics(storage_index);
+	if (!stats.partition_row_group->MinMaxIsExact(*column_stats, storage_index)) {
 		return false;
 	}
 	if (column_stats->GetStatsType() == StatisticsType::NUMERIC_STATS) {
@@ -158,10 +159,6 @@ void StatisticsPropagator::TryExecuteAggregates(LogicalAggregate &aggr, unique_p
 		// GET does not support getting the partition stats
 		return;
 	}
-	if (!get.table_filters.filters.empty()) {
-		// we cannot do this if the GET has filters
-		return;
-	}
 	if (get.extra_info.sample_options) {
 		// only use row group statistics if we query the whole table
 		return;
@@ -175,23 +172,87 @@ void StatisticsPropagator::TryExecuteAggregates(LogicalAggregate &aggr, unique_p
 		return;
 	}
 
+	vector<StorageIndex> min_max_storage_indexes(min_max_bindings.size());
+	for (idx_t i = 0; i < min_max_bindings.size(); i++) {
+		auto &binding = min_max_bindings[i];
+		auto &column_index = get.GetColumnIds()[binding.column_index];
+		if (!get.TryGetStorageIndex(column_index, min_max_storage_indexes[i])) {
+			//! Can't get a storage index for this column, so it doesn't have stats we can use
+			//! This happens when we're dealing with a generated column for example
+			return;
+		}
+	}
+
 	vector<LogicalType> types;
 	vector<unique_ptr<Expression>> agg_results;
+	// we can keep execute eager aggregate if all partitions could be either filtered entirely or remained entirely
+	if (!get.table_filters.filters.empty()) {
+		map<StorageIndex, reference<unique_ptr<TableFilter>>> filter_storage_index_map;
+		for (auto &entry : get.table_filters.filters) {
+			auto col_idx = entry.first;
+			auto &filter = entry.second;
+			auto column_index = ColumnIndex(col_idx);
+			StorageIndex storage_index;
+			if (!get.TryGetStorageIndex(column_index, storage_index)) {
+				return;
+			}
+			filter_storage_index_map.emplace(storage_index, filter);
+		}
+		vector<PartitionStatistics> remaining_partition_stats;
+		for (auto &stats : partition_stats) {
+			if (!stats.partition_row_group) {
+				return;
+			}
+			auto filter_result = FilterPropagateResult::FILTER_ALWAYS_TRUE;
+			for (auto &entry : filter_storage_index_map) {
+				auto &storage_index = entry.first;
+				auto &filter = entry.second;
+				auto prg = stats.partition_row_group;
+				if (!prg) {
+					return;
+				}
+				auto column_stats = prg->GetColumnStatistics(storage_index);
+				if (!column_stats) {
+					return;
+				}
+				auto col_filter_result = filter.get()->CheckStatistics(*column_stats);
+				if (col_filter_result == FilterPropagateResult::FILTER_ALWAYS_FALSE) {
+					// all data in this partition is filtered out, remove this partition entirely
+					filter_result = FilterPropagateResult::FILTER_ALWAYS_FALSE;
+					break;
+				}
+				if (col_filter_result != FilterPropagateResult::FILTER_ALWAYS_TRUE) {
+					filter_result = col_filter_result;
+				}
+			}
+			switch (filter_result) {
+			case FilterPropagateResult::FILTER_ALWAYS_TRUE:
+				// all filters passed - this partition should keep execute eager aggregate
+				remaining_partition_stats.push_back(std::move(stats));
+				break;
+			case FilterPropagateResult::FILTER_ALWAYS_FALSE:
+				break;
+			default:
+				// any filter that is not always true/false - bail
+				return;
+			}
+		}
+		partition_stats = std::move(remaining_partition_stats);
+	}
 
 	if (!min_max_bindings.empty()) {
 		// Execute min/max aggregates on partition statistics
-		for (idx_t agg_idx = 0; agg_idx < min_max_bindings.size(); agg_idx++) {
-			const auto &binding = min_max_bindings[agg_idx];
-			const column_t column_index = get.GetColumnIds()[binding.column_index].GetPrimaryIndex();
+		for (idx_t agg_idx = 0; agg_idx < min_max_storage_indexes.size(); agg_idx++) {
+			const auto &storage_index = min_max_storage_indexes[agg_idx];
 			auto &comparator = comparators[agg_idx];
 
 			Value agg_result;
-			if (!TryGetValueFromStats(partition_stats[0], column_index, *comparator, agg_result)) {
+			if (!TryGetValueFromStats(partition_stats[0], storage_index, *comparator, agg_result)) {
 				return;
 			}
 			for (idx_t partition_idx = 1; partition_idx < partition_stats.size(); partition_idx++) {
 				Value rhs;
-				if (!TryGetValueFromStats(partition_stats[partition_idx], column_index, *comparator, rhs)) {
+				if (!TryGetValueFromStats(partition_stats[partition_idx], storage_index, *comparator, rhs)) {
 					return;
 				}
 				if (!comparator->Compare(agg_result, rhs)) {

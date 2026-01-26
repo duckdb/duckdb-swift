@@ -55,6 +55,9 @@
 #line 0 "src/main/extension.cpp"
 #include "src/main/extension.cpp"
 
+#line 0 "src/main/extension_callback_manager.cpp"
+#include "src/main/extension_callback_manager.cpp"
+
 #line 0 "src/main/extension_install_info.cpp"
 #include "src/main/extension_install_info.cpp"
 
@@ -93,6 +96,9 @@
 
 #line 0 "src/main/stream_query_result.cpp"
 #include "src/main/stream_query_result.cpp"
+
+#line 0 "src/main/user_settings.cpp"
+#include "src/main/user_settings.cpp"
 
 #line 0 "src/main/valid_checker.cpp"
 #include "src/main/valid_checker.cpp"

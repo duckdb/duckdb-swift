@@ -49,6 +49,9 @@
 #line 0 "src/parser/expression/subquery_expression.cpp"
 #include "src/parser/expression/subquery_expression.cpp"
 
+#line 0 "src/parser/expression/type_expression.cpp"
+#include "src/parser/expression/type_expression.cpp"
+
 #line 0 "src/parser/expression/window_expression.cpp"
 #include "src/parser/expression/window_expression.cpp"
 

@@ -1,3 +1,6 @@
+#line 0 "src/catalog/catalog_entry/aggregate_function_catalog_entry.cpp"
+#include "src/catalog/catalog_entry/aggregate_function_catalog_entry.cpp"
+
 #line 0 "src/catalog/catalog_entry/copy_function_catalog_entry.cpp"
 #include "src/catalog/catalog_entry/copy_function_catalog_entry.cpp"
 

@@ -16,6 +16,9 @@
 #line 0 "extension/core_functions/scalar/map/map_concat.cpp"
 #include "extension/core_functions/scalar/map/map_concat.cpp"
 
+#line 0 "extension/core_functions/scalar/map/switch.cpp"
+#include "extension/core_functions/scalar/map/switch.cpp"
+
 #line 0 "extension/core_functions/scalar/map/cardinality.cpp"
 #include "extension/core_functions/scalar/map/cardinality.cpp"
 

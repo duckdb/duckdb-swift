@@ -43,6 +43,9 @@
 #line 0 "src/function/cast/time_casts.cpp"
 #include "src/function/cast/time_casts.cpp"
 
+#line 0 "src/function/cast/type_cast.cpp"
+#include "src/function/cast/type_cast.cpp"
+
 #line 0 "src/function/cast/union_casts.cpp"
 #include "src/function/cast/union_casts.cpp"
 

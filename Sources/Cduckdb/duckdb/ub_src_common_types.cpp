@@ -58,6 +58,9 @@
 #line 0 "src/common/types/timestamp.cpp"
 #include "src/common/types/timestamp.cpp"
 
+#line 0 "src/common/types/type_manager.cpp"
+#include "src/common/types/type_manager.cpp"
+
 #line 0 "src/common/types/time.cpp"
 #include "src/common/types/time.cpp"
 
@@ -84,4 +87,7 @@
 
 #line 0 "src/common/types/geometry.cpp"
 #include "src/common/types/geometry.cpp"
+
+#line 0 "src/common/types/geometry_crs.cpp"
+#include "src/common/types/geometry_crs.cpp"
 

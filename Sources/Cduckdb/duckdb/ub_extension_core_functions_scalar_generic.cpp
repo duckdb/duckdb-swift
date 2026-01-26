@@ -25,8 +25,8 @@
 #line 0 "extension/core_functions/scalar/generic/stats.cpp"
 #include "extension/core_functions/scalar/generic/stats.cpp"
 
-#line 0 "extension/core_functions/scalar/generic/typeof.cpp"
-#include "extension/core_functions/scalar/generic/typeof.cpp"
+#line 0 "extension/core_functions/scalar/generic/type_functions.cpp"
+#include "extension/core_functions/scalar/generic/type_functions.cpp"
 
 #line 0 "extension/core_functions/scalar/generic/system_functions.cpp"
 #include "extension/core_functions/scalar/generic/system_functions.cpp"
