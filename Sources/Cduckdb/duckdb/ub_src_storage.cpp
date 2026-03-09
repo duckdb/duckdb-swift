@@ -70,6 +70,9 @@
 #line 0 "src/storage/single_file_block_manager.cpp"
 #include "src/storage/single_file_block_manager.cpp"
 
+#line 0 "src/storage/storage_index.cpp"
+#include "src/storage/storage_index.cpp"
+
 #line 0 "src/storage/storage_info.cpp"
 #include "src/storage/storage_info.cpp"
 

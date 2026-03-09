@@ -23,6 +23,7 @@
 #include "duckdb/parser/parsed_expression_iterator.hpp"
 #include "duckdb/storage/data_table.hpp"
 #include "duckdb/storage/storage_manager.hpp"
+#include "duckdb/common/type_visitor.hpp"
 
 namespace duckdb {
 
@@ -67,7 +68,7 @@ static void VerifyCompressionType(ClientContext &context, optional_ptr<StorageMa
 		if (compression_type == CompressionType::COMPRESSION_AUTO) {
 			continue;
 		}
-		auto compression_method = config.GetCompressionFunction(compression_type, physical_type);
+		auto compression_method = config.TryGetCompressionFunction(compression_type, physical_type);
 		if (!compression_method) {
 			throw BinderException(
 			    "Can't compress column \"%s\" with type '%s' (physical: %s) using compression type '%s'", col.Name(),
@@ -317,14 +318,7 @@ void Binder::BindDefaultValues(const ColumnList &columns, vector<unique_ptr<Expr
 		schema_name = DEFAULT_SCHEMA;
 	}
 
-	vector<CatalogSearchEntry> defaults_search_path;
-	defaults_search_path.emplace_back(catalog_name, schema_name);
-	if (schema_name != DEFAULT_SCHEMA) {
-		defaults_search_path.emplace_back(catalog_name, DEFAULT_SCHEMA);
-	}
-
-	auto default_binder = Binder::CreateBinder(context, *this);
-	default_binder->entry_retriever.SetSearchPath(std::move(defaults_search_path));
+	auto default_binder = CreateBinderWithSearchPath(catalog_name, schema_name);
 
 	for (auto &column : columns.Physical()) {
 		unique_ptr<Expression> bound_default;
@@ -568,6 +562,7 @@ static void BindCreateTableConstraints(CreateTableInfo &create_info, CatalogEntr
 		}
 
 		auto &pk_table_entry_ptr = table_entry->Cast<TableCatalogEntry>();
+		fk.info.schema = pk_table_entry_ptr.schema.name;
 		if (&pk_table_entry_ptr.schema != &schema) {
 			throw BinderException("Creating foreign keys across different schemas or catalogs is not supported");
 		}

@@ -37,6 +37,9 @@
 #line 0 "src/common/encryption_state.cpp"
 #include "src/common/encryption_state.cpp"
 
+#line 0 "src/common/encryption_types.cpp"
+#include "src/common/encryption_types.cpp"
+
 #line 0 "src/common/exception.cpp"
 #include "src/common/exception.cpp"
 

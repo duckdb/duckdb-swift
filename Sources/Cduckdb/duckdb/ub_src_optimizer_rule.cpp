@@ -43,6 +43,9 @@
 #line 0 "src/optimizer/rule/like_optimizations.cpp"
 #include "src/optimizer/rule/like_optimizations.cpp"
 
+#line 0 "src/optimizer/rule/list_comprehension_rewrite.cpp"
+#include "src/optimizer/rule/list_comprehension_rewrite.cpp"
+
 #line 0 "src/optimizer/rule/move_constants.cpp"
 #include "src/optimizer/rule/move_constants.cpp"
 

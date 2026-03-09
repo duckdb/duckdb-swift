@@ -10,6 +10,9 @@
 #line 0 "src/function/table/system/duckdb_constraints.cpp"
 #include "src/function/table/system/duckdb_constraints.cpp"
 
+#line 0 "src/function/table/system/duckdb_coordinate_systems.cpp"
+#include "src/function/table/system/duckdb_coordinate_systems.cpp"
+
 #line 0 "src/function/table/system/duckdb_databases.cpp"
 #include "src/function/table/system/duckdb_databases.cpp"
 
@@ -39,6 +42,9 @@
 
 #line 0 "src/function/table/system/duckdb_memory.cpp"
 #include "src/function/table/system/duckdb_memory.cpp"
+
+#line 0 "src/function/table/system/duckdb_eviction_queues.cpp"
+#include "src/function/table/system/duckdb_eviction_queues.cpp"
 
 #line 0 "src/function/table/system/duckdb_optimizers.cpp"
 #include "src/function/table/system/duckdb_optimizers.cpp"

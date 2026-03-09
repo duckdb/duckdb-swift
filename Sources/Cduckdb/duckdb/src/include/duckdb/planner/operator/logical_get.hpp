@@ -10,7 +10,7 @@
 
 #include "duckdb/function/table_function.hpp"
 #include "duckdb/planner/logical_operator.hpp"
-#include "duckdb/planner/table_filter.hpp"
+#include "duckdb/planner/table_filter_set.hpp"
 #include "duckdb/common/extra_operator_info.hpp"
 
 namespace duckdb {
@@ -60,6 +60,8 @@ public:
 	shared_ptr<DynamicTableFilterSet> dynamic_filters;
 	//! Information for WITH ORDINALITY
 	optional_idx ordinality_idx;
+	//! Row group order options (if set)
+	unique_ptr<RowGroupOrderOptions> row_group_order_options;
 
 	string GetName() const override;
 	InsertionOrderPreservingMap<string> ParamsToString() const override;
@@ -81,6 +83,7 @@ public:
 	vector<ColumnBinding> GetColumnBindings() override;
 	idx_t EstimateCardinality(ClientContext &context) override;
 	bool TryGetStorageIndex(const ColumnIndex &column_index, StorageIndex &out_index) const;
+	void SetScanOrder(unique_ptr<RowGroupOrderOptions> options);
 
 	vector<idx_t> GetTableIndex() const override;
 	//! Skips the serialization check in VerifyPlan

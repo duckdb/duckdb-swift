@@ -94,8 +94,15 @@ BoundStatement Binder::BindCopyTo(CopyStatement &stmt, const CopyFunction &funct
 
 	auto &copy_info = *stmt.info;
 	// bind the select statement
+	// preserve SQLNULL types from table functions (e.g. JSON reader null columns)
+	// so file writers that support it can emit the correct null type (e.g. parquet UNKNOWN/NullType)
+	auto prev_can_contain_nulls = can_contain_nulls;
+	if (function.supports_sql_null) {
+		can_contain_nulls = true;
+	}
 	auto node_copy = copy_info.select_statement->Copy();
 	auto select_node = Bind(*node_copy);
+	can_contain_nulls = prev_can_contain_nulls;
 
 	if (!function.copy_to_bind) {
 		throw NotImplementedException("COPY TO is not supported for FORMAT \"%s\"", stmt.info->format);
@@ -422,10 +429,21 @@ vector<Value> BindCopyOption(ClientContext &context, TableFunctionBinder &option
 			return result;
 		}
 	}
+	const bool is_partition_by = StringUtil::CIEquals(name, "partition_by");
+
+	if (is_partition_by) {
+		//! When binding the 'partition_by' option, we don't want to resolve a column reference to a SQLValueFunction
+		//! (like 'user')
+		option_binder.DisableSQLValueFunctions();
+	}
 	auto bound_expr = option_binder.Bind(expr);
 	if (bound_expr->HasParameter()) {
 		throw ParameterNotResolvedException();
 	}
+	if (is_partition_by) {
+		option_binder.EnableSQLValueFunctions();
+	}
+
 	auto val = ExpressionExecutor::EvaluateScalar(context, *bound_expr, true);
 	if (val.IsNull()) {
 		throw BinderException("NULL is not supported as a valid option for COPY option \"" + name + "\"");

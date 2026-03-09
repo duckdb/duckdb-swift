@@ -1,3 +1,6 @@
+#line 0 "src/catalog/default/default_coordinate_systems.cpp"
+#include "src/catalog/default/default_coordinate_systems.cpp"
+
 #line 0 "src/catalog/default/default_functions.cpp"
 #include "src/catalog/default/default_functions.cpp"
 

@@ -1,3 +1,6 @@
+#line 0 "src/optimizer/aggregate_function_rewriter.cpp"
+#include "src/optimizer/aggregate_function_rewriter.cpp"
+
 #line 0 "src/optimizer/build_probe_side_optimizer.cpp"
 #include "src/optimizer/build_probe_side_optimizer.cpp"
 
@@ -61,6 +64,9 @@
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
+#line 0 "src/optimizer/outer_join_simplification.cpp"
+#include "src/optimizer/outer_join_simplification.cpp"
+
 #line 0 "src/optimizer/join_elimination.cpp"
 #include "src/optimizer/join_elimination.cpp"
 
@@ -97,6 +103,6 @@
 #line 0 "src/optimizer/sampling_pushdown.cpp"
 #include "src/optimizer/sampling_pushdown.cpp"
 
-#line 0 "src/optimizer/sum_rewriter.cpp"
-#include "src/optimizer/sum_rewriter.cpp"
+#line 0 "src/optimizer/projection_pullup.cpp"
+#include "src/optimizer/projection_pullup.cpp"
 
