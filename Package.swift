@@ -769,5 +769,5 @@ let package = Package(
       dependencies: ["DuckDB"]
     )
   ],
-  cxxLanguageStandard: .cxx11
+  cxxLanguageStandard: .cxx17
 )

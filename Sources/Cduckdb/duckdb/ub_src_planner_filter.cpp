@@ -28,6 +28,9 @@
 #line 0 "src/planner/filter/perfect_hash_join_filter.cpp"
 #include "src/planner/filter/perfect_hash_join_filter.cpp"
 
+#line 0 "src/planner/filter/prefix_range_filter.cpp"
+#include "src/planner/filter/prefix_range_filter.cpp"
+
 #line 0 "src/planner/filter/selectivity_optional_filter.cpp"
 #include "src/planner/filter/selectivity_optional_filter.cpp"
 

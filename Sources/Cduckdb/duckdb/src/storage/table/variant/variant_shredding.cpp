@@ -1,3 +1,9 @@
+#include "duckdb/common/vector/flat_vector.hpp"
+#include "duckdb/common/vector/list_vector.hpp"
+#include "duckdb/common/vector/map_vector.hpp"
+#include "duckdb/common/vector/string_vector.hpp"
+#include "duckdb/common/vector/variant_vector.hpp"
+#include "duckdb/common/vector/struct_vector.hpp"
 #include "duckdb/storage/table/variant_column_data.hpp"
 #include "duckdb/common/types/variant.hpp"
 #include "duckdb/common/types/variant_visitor.hpp"
@@ -389,7 +395,8 @@ static LogicalType SetShreddedType(const LogicalType &typed_value, bool fully_co
 	return LogicalType::STRUCT(child_types);
 }
 
-bool VariantShreddingStats::GetShreddedTypeInternal(const VariantColumnStatsData &column, LogicalType &out_type) const {
+bool VariantShreddingStats::GetShreddedTypeInternal(const VariantColumnStatsData &column, LogicalType &out_type,
+                                                    optional_idx parent_count) const {
 	idx_t max_count = 0;
 	uint8_t type_index = 0;
 	if (column.type_counts[0] == column.total_count) {
@@ -414,20 +421,26 @@ bool VariantShreddingStats::GetShreddedTypeInternal(const VariantColumnStatsData
 	if (!max_count) {
 		return false;
 	}
+	if (parent_count.IsValid() && column.total_count > parent_count.GetIndex()) {
+		throw InternalException("Column count is larger than parent count - this should not be possible");
+	}
 
-	bool fully_consistent = max_count == column.total_count;
+	auto total_value_count = parent_count.IsValid() ? parent_count.GetIndex() : column.total_count;
+	bool fully_consistent = max_count == total_value_count;
 	if (type_index == static_cast<uint8_t>(VariantLogicalType::OBJECT)) {
 		child_list_t<LogicalType> child_types;
 		for (auto &entry : column.field_stats) {
 			auto &child_column = GetColumnStats(entry.second);
 			LogicalType child_type;
-			if (GetShreddedTypeInternal(child_column, child_type)) {
+			if (GetShreddedTypeInternal(child_column, child_type, total_value_count)) {
 				child_types.emplace_back(entry.first, child_type);
 			}
 		}
 		if (child_types.empty()) {
 			return false;
 		}
+		// always set objects as not being fully consistent
+		fully_consistent = false;
 		auto shredded_type = LogicalType::STRUCT(child_types);
 		out_type = SetShreddedType(shredded_type, fully_consistent);
 		return true;
@@ -628,10 +641,10 @@ void DuckDBVariantShredding::WriteVariantValues(UnifiedVariantVectorData &varian
 		auto &child_types = StructType::GetChildTypes(result_type);
 		D_ASSERT(child_types.size() == child_vectors.size());
 #endif
-		typed_value_ref = *child_vectors[VariantColumnData::TYPED_VALUE_INDEX];
+		typed_value_ref = child_vectors[VariantColumnData::TYPED_VALUE_INDEX];
 		if (child_vectors.size() > 1) {
 			D_ASSERT(child_vectors.size() == 2);
-			untyped_value_index = *child_vectors[VariantColumnData::UNTYPED_VALUE_INDEX];
+			untyped_value_index = child_vectors[VariantColumnData::UNTYPED_VALUE_INDEX];
 		}
 	}
 	auto &typed_value = typed_value_ref.get();
@@ -670,10 +683,10 @@ void VariantColumnData::ShredVariantData(Vector &input, Vector &output, idx_t co
 
 	//! First traverse the Variant to write the shredded values and collect the 'untyped_value_index'es
 	DuckDBVariantShredding shredding(count);
-	shredding.WriteVariantValues(variant, *child_vectors[1], nullptr, nullptr, nullptr, count);
+	shredding.WriteVariantValues(variant, child_vectors[1], nullptr, nullptr, nullptr, count);
 
 	//! Now we can write the unshredded values
-	auto &unshredded = *child_vectors[0];
+	auto &unshredded = child_vectors[0];
 	auto original_keys_size = ListVector::GetListSize(VariantVector::GetKeys(input));
 	auto original_children_size = ListVector::GetListSize(VariantVector::GetChildren(input));
 	auto original_values_size = ListVector::GetListSize(VariantVector::GetValues(input));

@@ -13,6 +13,9 @@
 #line 0 "src/common/cgroups.cpp"
 #include "src/common/cgroups.cpp"
 
+#line 0 "src/common/column_index.cpp"
+#include "src/common/column_index.cpp"
+
 #line 0 "src/common/csv_writer.cpp"
 #include "src/common/csv_writer.cpp"
 
@@ -58,6 +61,9 @@
 #line 0 "src/common/filename_pattern.cpp"
 #include "src/common/filename_pattern.cpp"
 
+#line 0 "src/common/path.cpp"
+#include "src/common/path.cpp"
+
 #line 0 "src/common/fsst.cpp"
 #include "src/common/fsst.cpp"
 
@@ -99,6 +105,9 @@
 
 #line 0 "src/common/enum_util.cpp"
 #include "src/common/enum_util.cpp"
+
+#line 0 "src/common/serialization_compatibility.cpp"
+#include "src/common/serialization_compatibility.cpp"
 
 #line 0 "src/common/render_tree.cpp"
 #include "src/common/render_tree.cpp"

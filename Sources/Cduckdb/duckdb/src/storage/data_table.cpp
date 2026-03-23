@@ -1131,20 +1131,6 @@ void DataTable::MergeStorage(RowGroupCollection &data, optional_ptr<StorageCommi
 	row_groups->Verify();
 }
 
-static void GatherBlockIds(WriteAheadLog &log, const PersistentColumnData &column_data,
-                           unordered_set<block_id_t> &block_ids) {
-	for (const auto &pointer : column_data.pointers) {
-		const auto block_id = pointer.block_pointer.block_id;
-		if (block_id != INVALID_BLOCK && log.NewBlockInUse(block_id)) {
-			block_ids.insert(block_id);
-		}
-	}
-	// Recurse into the children.
-	for (const auto &child_column_data : column_data.child_columns) {
-		GatherBlockIds(log, child_column_data, block_ids);
-	}
-}
-
 void DataTable::WriteToLog(DuckTransaction &transaction, WriteAheadLog &log, idx_t row_start, idx_t count,
                            optional_ptr<StorageCommitState> commit_state) {
 	log.WriteSetTable(info->schema, info->table);
@@ -1167,13 +1153,6 @@ void DataTable::WriteToLog(DuckTransaction &transaction, WriteAheadLog &log, idx
 		throw InternalException(
 		    "Optimistically written count cannot exceed actual count (got %llu, but expected count is %llu)",
 		    optimistic_count, count);
-	}
-
-	// Get all the blocks that need to be kept alive as long as the WAL is alive.
-	for (const auto &row_group_data : entry->row_group_data) {
-		for (const auto &column_data : row_group_data.column_data) {
-			GatherBlockIds(log, column_data, commit_state->GetBlockIdsInUse());
-		}
 	}
 
 	// Write any remaining (non-optimistically written) rows to the WAL.
@@ -1767,7 +1746,7 @@ void DataTable::AddIndex(const ColumnList &columns, const vector<LogicalIndex> &
 	vector<unique_ptr<Expression>> expressions;
 
 	for (const auto column_index : column_indexes) {
-		auto binding = ColumnBinding(0, physical_ids.size());
+		auto binding = ColumnBinding(TableIndex(0), ProjectionIndex(physical_ids.size()));
 		auto &col = columns.GetColumn(column_index);
 		auto ref = make_uniq<BoundColumnRefExpression>(col.Name(), col.Type(), binding);
 		expressions.push_back(std::move(ref));

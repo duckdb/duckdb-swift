@@ -10,6 +10,9 @@
 #line 0 "src/planner/collation_binding.cpp"
 #include "src/planner/collation_binding.cpp"
 
+#line 0 "src/planner/column_binding.cpp"
+#include "src/planner/column_binding.cpp"
+
 #line 0 "src/planner/expression_iterator.cpp"
 #include "src/planner/expression_iterator.cpp"
 

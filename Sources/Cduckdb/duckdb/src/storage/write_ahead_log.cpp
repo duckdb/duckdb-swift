@@ -21,6 +21,7 @@
 #include "duckdb/storage/storage_manager.hpp"
 #include "duckdb/storage/table/column_data.hpp"
 #include "duckdb/storage/table/data_table_info.hpp"
+#include "duckdb/storage/data_table.hpp"
 
 namespace duckdb {
 
@@ -480,6 +481,12 @@ void WriteAheadLog::WriteRowGroupData(const PersistentCollectionData &data) {
 	WriteAheadLogSerializer serializer(*this, WALType::ROW_GROUP_DATA);
 	serializer.WriteProperty(101, "row_group_data", data);
 	serializer.End();
+
+	// mark written blocks as checkpointed
+	auto &block_manager = GetDatabase().GetStorageManager().GetBlockManager();
+	for (auto &block_id : data.GetBlockIds()) {
+		block_manager.MarkBlockAsCheckpointed(block_id);
+	}
 }
 
 void WriteAheadLog::WriteDelete(DataChunk &chunk) {
@@ -549,13 +556,6 @@ void WriteAheadLog::Flush() {
 
 void WriteAheadLog::IncrementWALEntriesCount() {
 	storage_manager.IncrementWALEntriesCount();
-}
-
-void WriteAheadLog::MarkBlocksInUseAsModified() {
-	auto &block_manager = storage_manager.GetBlockManager();
-	for (const block_id_t block_id : blocks_in_use) {
-		block_manager.MarkBlockAsModified(block_id);
-	}
 }
 
 } // namespace duckdb

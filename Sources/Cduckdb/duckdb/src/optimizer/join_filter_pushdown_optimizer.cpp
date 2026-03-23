@@ -19,7 +19,7 @@ namespace duckdb {
 JoinFilterPushdownOptimizer::JoinFilterPushdownOptimizer(Optimizer &optimizer) : optimizer(optimizer) {
 }
 
-bool PushdownJoinFilterExpression(Expression &expr, JoinFilterPushdownColumn &filter) {
+bool PushdownJoinFilterExpression(const Expression &expr, JoinFilterPushdownColumn &filter) {
 	if (expr.GetExpressionType() != ExpressionType::BOUND_COLUMN_REF) {
 		// not a simple column ref - bail-out
 		return false;
@@ -114,7 +114,7 @@ void JoinFilterPushdownOptimizer::GetPushdownFilterTargets(LogicalOperator &op,
 				// index does not belong to this projection - bail-out
 				return;
 			}
-			auto &expr = *proj.expressions[filter.probe_column_index.column_index];
+			auto &expr = proj.GetExpression(filter.probe_column_index);
 			if (!PushdownJoinFilterExpression(expr, filter)) {
 				// cannot push through this expression - bail-out
 				return;
@@ -131,7 +131,7 @@ void JoinFilterPushdownOptimizer::GetPushdownFilterTargets(LogicalOperator &op,
 				// index does not refer to a group - bail-out
 				return;
 			}
-			auto &expr = *aggr.groups[filter.probe_column_index.column_index];
+			auto &expr = aggr.GetExpression(filter.probe_column_index);
 			if (!PushdownJoinFilterExpression(expr, filter)) {
 				// cannot push through this expression - bail-out
 				return;

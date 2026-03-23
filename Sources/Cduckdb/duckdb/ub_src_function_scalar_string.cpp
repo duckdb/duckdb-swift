@@ -22,6 +22,9 @@
 #line 0 "src/function/scalar/string/regexp.cpp"
 #include "src/function/scalar/string/regexp.cpp"
 
+#line 0 "src/function/scalar/string/path_join.cpp"
+#include "src/function/scalar/string/path_join.cpp"
+
 #line 0 "src/function/scalar/string/substring.cpp"
 #include "src/function/scalar/string/substring.cpp"
 
