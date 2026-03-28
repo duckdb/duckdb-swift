@@ -98,18 +98,10 @@ public struct ResultSet: Sendable {
     return nil
   }
   
-  /// The underlying database type for the given column index
-  ///
-  /// - Parameter index: the index of the column in the result set
-  /// - Returns: the database type of the column
   public func columnDataType(at index: DBInt) -> DatabaseType {
     storage.columnDataType(at: index)
   }
 
-  /// The underlying logical type for the given column index
-  ///
-  /// - Parameter index: the index of the column in the result set
-  /// - Returns: the logical type of the column
   public func columnLogicalType(at index: DBInt) -> LogicalType {
     storage.columnLogicalType(at: index)
   }
