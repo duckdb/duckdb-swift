@@ -387,9 +387,8 @@ struct ICUDatePart : public ICUDateFunc {
 			result.SetVectorType(VectorType::CONSTANT_VECTOR);
 
 			if (ConstantVector::IsNull(input)) {
-				ConstantVector::SetNull(result, true);
+				ConstantVector::SetNull(result);
 			} else {
-				ConstantVector::SetNull(result, false);
 				auto tdata = ConstantVector::GetData<INPUT_TYPE>(input);
 				auto micros = SetTime(calendar, tdata[0]);
 				const auto is_finite = Timestamp::IsFinite(*tdata);
@@ -397,7 +396,6 @@ struct ICUDatePart : public ICUDateFunc {
 				for (size_t col = 0; col < child_entries.size(); ++col) {
 					auto &child_entry = child_entries[col];
 					if (is_finite) {
-						ConstantVector::SetNull(child_entry, false);
 						if (IsBigintDatepart(info.part_codes[col])) {
 							auto pdata = ConstantVector::GetData<int64_t>(child_entry);
 							auto adapter = info.bigints[col];
@@ -408,16 +406,12 @@ struct ICUDatePart : public ICUDateFunc {
 							pdata[0] = adapter(calendar, micros);
 						}
 					} else {
-						ConstantVector::SetNull(child_entry, true);
+						ConstantVector::SetNull(child_entry);
 					}
 				}
 			}
 		} else {
-			UnifiedVectorFormat rdata;
-			input.ToUnifiedFormat(count, rdata);
-
-			const auto &arg_valid = rdata.validity;
-			auto tdata = UnifiedVectorFormat::GetData<INPUT_TYPE>(rdata);
+			auto entries = input.template Values<INPUT_TYPE>(count);
 
 			result.SetVectorType(VectorType::FLAT_VECTOR);
 			auto &child_entries = StructVector::GetEntries(result);
@@ -427,11 +421,11 @@ struct ICUDatePart : public ICUDateFunc {
 
 			auto &res_valid = FlatVector::Validity(result);
 			for (idx_t i = 0; i < count; ++i) {
-				const auto idx = rdata.sel->get_index(i);
-				if (arg_valid.RowIsValid(idx)) {
+				auto entry = entries[i];
+				if (entry.IsValid()) {
 					res_valid.SetValid(i);
-					auto micros = SetTime(calendar, tdata[idx]);
-					const auto is_finite = Timestamp::IsFinite(tdata[idx]);
+					auto micros = SetTime(calendar, entry.value);
+					const auto is_finite = Timestamp::IsFinite(entry.value);
 					for (size_t col = 0; col < child_entries.size(); ++col) {
 						auto &child_entry = child_entries[col];
 						if (is_finite) {

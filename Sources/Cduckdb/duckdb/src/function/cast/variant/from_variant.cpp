@@ -157,7 +157,7 @@ static bool CastVariantToPrimitive(FromVariantConversionData &conversion_data, V
 	auto &variant = conversion_data.variant;
 
 	auto &target_type = result.GetType();
-	auto result_data = FlatVector::GetData<T>(result);
+	auto result_data = FlatVector::GetDataMutable<T>(result);
 	auto &result_validity = FlatVector::Validity(result);
 
 	bool all_valid = true;
@@ -259,17 +259,17 @@ static bool ConvertVariantToList(FromVariantConversionData &conversion_data, Vec
 
 	ListVector::Reserve(result, total_offset + total_children);
 	auto &child = ListVector::GetEntry(result);
-	auto list_data = ListVector::GetData(result);
+	auto result_data = FlatVector::Writer<list_entry_t>(result, offset + count);
 	for (idx_t i = 0; i < count; i++) {
 		auto row_index = row.IsValid() ? row.GetIndex() : i;
 		auto &child_data_entry = child_data[i];
 
 		if (!validity.RowIsValid(i)) {
-			FlatVector::SetNull(result, offset + i, true);
+			result_data.SetInvalid(offset + i);
 			continue;
 		}
 
-		auto &entry = list_data[i + offset];
+		auto &entry = result_data[i + offset];
 		entry.offset = total_offset;
 		entry.length = child_data_entry.child_count;
 		total_offset += entry.length;
@@ -411,7 +411,7 @@ static bool ConvertVariantToStruct(FromVariantConversionData &conversion_data, V
 		ValidityMask lookup_validity(count);
 		VariantUtils::FindChildValues(conversion_data.variant, component, row_sel, child_values_sel, lookup_validity,
 		                              child_data, validity, count);
-		if (!lookup_validity.AllValid()) {
+		if (lookup_validity.CanHaveNull()) {
 			optional_idx nested_index;
 			for (idx_t i = 0; i < count; i++) {
 				if (!lookup_validity.RowIsValid(i)) {
@@ -442,7 +442,7 @@ static bool CastVariantToJSON(FromVariantConversionData &conversion_data, Vector
 
 	ConvertedJSONHolder json_holder;
 
-	auto result_data = FlatVector::GetData<string_t>(result);
+	auto result_data = FlatVector::Writer<string_t>(result, count);
 	json_holder.doc = yyjson_mut_doc_new(nullptr);
 	for (idx_t i = 0; i < count; i++) {
 		auto row_index = row.IsValid() ? row.GetIndex() : i;
@@ -461,7 +461,7 @@ static bool CastVariantToJSON(FromVariantConversionData &conversion_data, Vector
 			return false;
 		}
 		string_t res(json_holder.stringified_json, NumericCast<uint32_t>(len));
-		result_data[offset + i] = StringVector::AddString(result, res);
+		result_data[offset + i] = res;
 		free(json_holder.stringified_json);
 		json_holder.stringified_json = nullptr;
 	}

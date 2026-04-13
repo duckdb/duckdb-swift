@@ -40,8 +40,8 @@
 #line 0 "src/planner/planner.cpp"
 #include "src/planner/planner.cpp"
 
-#line 0 "src/planner/pragma_handler.cpp"
-#include "src/planner/pragma_handler.cpp"
+#line 0 "src/planner/statement_preprocessor.cpp"
+#include "src/planner/statement_preprocessor.cpp"
 
 #line 0 "src/planner/logical_operator_deep_copy.cpp"
 #include "src/planner/logical_operator_deep_copy.cpp"

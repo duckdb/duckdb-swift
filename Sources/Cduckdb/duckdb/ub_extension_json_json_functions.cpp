@@ -46,8 +46,20 @@
 #line 0 "extension/json/json_functions/json_serialize_plan.cpp"
 #include "extension/json/json_functions/json_serialize_plan.cpp"
 
+#line 0 "extension/json/json_functions/json_normalize.cpp"
+#include "extension/json/json_functions/json_normalize.cpp"
+
 #line 0 "extension/json/json_functions/json_serialize_sql.cpp"
 #include "extension/json/json_functions/json_serialize_sql.cpp"
+
+#line 0 "extension/json/json_functions/json_deep_merge.cpp"
+#include "extension/json/json_functions/json_deep_merge.cpp"
+
+#line 0 "extension/json/json_functions/json_merge_patch_diff.cpp"
+#include "extension/json/json_functions/json_merge_patch_diff.cpp"
+
+#line 0 "extension/json/json_functions/json_strip_nulls.cpp"
+#include "extension/json/json_functions/json_strip_nulls.cpp"
 
 #line 0 "extension/json/json_functions/read_json.cpp"
 #include "extension/json/json_functions/read_json.cpp"

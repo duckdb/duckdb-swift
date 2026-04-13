@@ -63,7 +63,7 @@ private:
 	template <class STATE_TYPE, class INPUT_TYPE, class OP>
 	static inline void UnaryFlatLoop(const INPUT_TYPE *__restrict idata, AggregateInputData &aggr_input_data,
 	                                 STATE_TYPE **__restrict states, ValidityMask &mask, idx_t count) {
-		if (OP::IgnoreNull() && !mask.AllValid()) {
+		if (OP::IgnoreNull() && mask.CanHaveNull()) {
 			AggregateUnaryInput input(aggr_input_data, mask);
 			auto &base_idx = input.input_idx;
 			base_idx = 0;
@@ -113,7 +113,7 @@ private:
 		const auto HAS_ISEL = isel.IsSet();
 		const auto HAS_SSEL = ssel.IsSet();
 #endif
-		if (OP::IgnoreNull() && !mask.AllValid()) {
+		if (OP::IgnoreNull() && mask.CanHaveNull()) {
 			// potential NULL values and NULL values are ignored
 			AggregateUnaryInput input(aggr_input_data, mask);
 			for (idx_t i = 0; i < count; i++) {
@@ -172,7 +172,7 @@ private:
 	                                   STATE_TYPE *__restrict state, idx_t count, ValidityMask &mask,
 	                                   const SelectionVector &__restrict sel_vector) {
 		AggregateUnaryInput input(aggr_input_data, mask);
-		if (OP::IgnoreNull() && !mask.AllValid()) {
+		if (OP::IgnoreNull() && mask.CanHaveNull()) {
 			// potential NULL values and NULL values are ignored
 			for (idx_t i = 0; i < count; i++) {
 				input.input_idx = sel_vector.get_index(i);
@@ -196,7 +196,7 @@ private:
 	                                     const SelectionVector &ssel, ValidityMask &avalidity,
 	                                     ValidityMask &bvalidity) {
 		AggregateBinaryInput input(aggr_input_data, avalidity, bvalidity);
-		if (OP::IgnoreNull() && (!avalidity.AllValid() || !bvalidity.AllValid())) {
+		if (OP::IgnoreNull() && (avalidity.CanHaveNull() || bvalidity.CanHaveNull())) {
 			// potential NULL values and NULL values are ignored
 			for (idx_t i = 0; i < count; i++) {
 				input.lidx = asel.get_index(i);
@@ -225,7 +225,7 @@ private:
 	                                    const SelectionVector &asel, const SelectionVector &bsel,
 	                                    ValidityMask &avalidity, ValidityMask &bvalidity) {
 		AggregateBinaryInput input(aggr_input_data, avalidity, bvalidity);
-		if (OP::IgnoreNull() && (!avalidity.AllValid() || !bvalidity.AllValid())) {
+		if (OP::IgnoreNull() && (avalidity.CanHaveNull() || bvalidity.CanHaveNull())) {
 			// potential NULL values and NULL values are ignored
 			for (idx_t i = 0; i < count; i++) {
 				input.lidx = asel.get_index(i);
@@ -254,7 +254,7 @@ public:
 			OP::template ConstantOperation<STATE_TYPE, OP>(**sdata, aggr_input_data, count);
 #ifndef DUCKDB_SMALLER_BINARY
 		} else if (states.GetVectorType() == VectorType::FLAT_VECTOR) {
-			auto sdata = FlatVector::GetData<STATE_TYPE *>(states);
+			auto sdata = FlatVector::GetDataMutable<STATE_TYPE *>(states);
 			NullaryFlatLoop<STATE_TYPE, OP>(sdata, aggr_input_data, count);
 #endif
 		} else {
@@ -286,7 +286,7 @@ public:
 		} else if (input.GetVectorType() == VectorType::FLAT_VECTOR &&
 		           states.GetVectorType() == VectorType::FLAT_VECTOR) {
 			auto idata = FlatVector::GetData<INPUT_TYPE>(input);
-			auto sdata = FlatVector::GetData<STATE_TYPE *>(states);
+			auto sdata = FlatVector::GetDataMutable<STATE_TYPE *>(states);
 			UnaryFlatLoop<STATE_TYPE, INPUT_TYPE, OP>(idata, aggr_input_data, sdata, FlatVector::Validity(input),
 			                                          count);
 #endif
@@ -408,7 +408,7 @@ public:
 			result.SetVectorType(VectorType::FLAT_VECTOR);
 
 			auto sdata = FlatVector::GetData<STATE_TYPE *>(states);
-			auto rdata = FlatVector::GetData<RESULT_TYPE>(result);
+			auto rdata = FlatVector::GetDataMutable<RESULT_TYPE>(result);
 			AggregateFinalizeData finalize_data(result, aggr_input_data);
 			for (idx_t i = 0; i < count; i++) {
 				finalize_data.result_idx = i + offset;

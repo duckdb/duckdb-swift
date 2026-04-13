@@ -34,6 +34,9 @@
 #line 0 "src/storage/table/row_id_column_data.cpp"
 #include "src/storage/table/row_id_column_data.cpp"
 
+#line 0 "src/storage/table/row_number_column_data.cpp"
+#include "src/storage/table/row_number_column_data.cpp"
+
 #line 0 "src/storage/table/row_group.cpp"
 #include "src/storage/table/row_group.cpp"
 

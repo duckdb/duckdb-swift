@@ -34,6 +34,9 @@
 #line 0 "src/catalog/catalog_entry/table_catalog_entry.cpp"
 #include "src/catalog/catalog_entry/table_catalog_entry.cpp"
 
+#line 0 "src/catalog/catalog_entry/trigger_catalog_entry.cpp"
+#include "src/catalog/catalog_entry/trigger_catalog_entry.cpp"
+
 #line 0 "src/catalog/catalog_entry/column_dependency_manager.cpp"
 #include "src/catalog/catalog_entry/column_dependency_manager.cpp"
 
@@ -45,4 +48,7 @@
 
 #line 0 "src/catalog/catalog_entry/view_catalog_entry.cpp"
 #include "src/catalog/catalog_entry/view_catalog_entry.cpp"
+
+#line 0 "src/catalog/catalog_entry/window_function_catalog_entry.cpp"
+#include "src/catalog/catalog_entry/window_function_catalog_entry.cpp"
 

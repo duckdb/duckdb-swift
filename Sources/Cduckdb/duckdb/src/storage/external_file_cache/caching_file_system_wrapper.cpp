@@ -1,4 +1,4 @@
-#include "duckdb/storage/caching_file_system_wrapper.hpp"
+#include "duckdb/storage/external_file_cache/caching_file_system_wrapper.hpp"
 
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/file_system.hpp"
@@ -157,20 +157,13 @@ void CachingFileSystemWrapper::Read(FileHandle &handle, void *buffer, int64_t nr
 		return underlying_file_system.Read(handle, buffer, nr_bytes, location);
 	}
 
-	data_ptr_t cached_buffer = nullptr;
-	auto buffer_handle = caching_handle->Read(cached_buffer, NumericCast<idx_t>(nr_bytes), location);
-	if (!buffer_handle.IsValid()) {
-		throw IOException("Failed to read from caching file handle: file=\"%s\", offset=%llu, bytes=%lld",
-		                  handle.GetPath().c_str(), location, nr_bytes);
-	}
-
-	// Copy data from cached buffer handle to user's buffer.
-	memcpy(buffer, cached_buffer, NumericCast<size_t>(nr_bytes));
+	auto group = caching_handle->Read(NumericCast<idx_t>(nr_bytes), location);
+	group.CopyTo(static_cast<data_ptr_t>(buffer), NumericCast<idx_t>(nr_bytes));
 }
 
 int64_t CachingFileSystemWrapper::Read(FileHandle &handle, void *buffer, int64_t nr_bytes) {
 	const idx_t current_position = SeekPosition(handle);
-	const idx_t max_read = GetFileSize(handle) - current_position;
+	const idx_t max_read = NumericCast<idx_t>(GetFileSize(handle)) - current_position;
 	nr_bytes = MinValue<int64_t>(NumericCast<int64_t>(max_read), nr_bytes);
 	Read(handle, buffer, nr_bytes, current_position);
 	Seek(handle, current_position + NumericCast<idx_t>(nr_bytes));

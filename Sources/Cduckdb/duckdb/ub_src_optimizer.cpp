@@ -100,6 +100,9 @@
 #line 0 "src/optimizer/window_self_join.cpp"
 #include "src/optimizer/window_self_join.cpp"
 
+#line 0 "src/optimizer/row_number_rewriter.cpp"
+#include "src/optimizer/row_number_rewriter.cpp"
+
 #line 0 "src/optimizer/sampling_pushdown.cpp"
 #include "src/optimizer/sampling_pushdown.cpp"
 

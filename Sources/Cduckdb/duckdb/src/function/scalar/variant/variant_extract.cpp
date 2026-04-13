@@ -116,11 +116,9 @@ static bool TryShreddedExtractRecursive(Vector &input, const vector<VariantPathC
 		// NULL out everything in the unshredded part
 		auto &unshredded_child = top_shredded[0];
 		for (auto &unshredded_entry : StructVector::GetEntries(unshredded_child)) {
-			unshredded_entry.SetVectorType(VectorType::CONSTANT_VECTOR);
-			ConstantVector::SetNull(unshredded_entry, true);
+			ConstantVector::SetNull(unshredded_entry);
 		}
-		unshredded_child.SetVectorType(VectorType::CONSTANT_VECTOR);
-		ConstantVector::SetNull(unshredded_child, true);
+		ConstantVector::SetNull(unshredded_child);
 		auto &shredded_child = top_shredded[1];
 		shredded_child.Reference(input);
 
@@ -211,7 +209,7 @@ void VariantUtils::VariantExtract(Vector &variant_vec, const vector<VariantPathC
 			if (!validity.RowIsValid(j)) {
 				continue;
 			}
-			if (!lookup_validity.AllValid() && !lookup_validity.RowIsValid(j)) {
+			if (lookup_validity.CanHaveNull() && !lookup_validity.RowIsValid(j)) {
 				//! No child could be extracted, set to NULL
 				validity.SetInvalid(j);
 				continue;
@@ -234,24 +232,23 @@ void VariantUtils::VariantExtract(Vector &variant_vec, const vector<VariantPathC
 	auto values_list_size = ListVector::GetListSize(raw_values);
 
 	//! Create a new Variant that references the existing data of the input Variant
-	result.Initialize(false, count);
+	result.Initialize(VectorDataInitialization::UNINITIALIZED, count);
 	VariantVector::GetKeys(result).Reference(VariantVector::GetKeys(variant_vec));
 	VariantVector::GetChildren(result).Reference(VariantVector::GetChildren(variant_vec));
 	VariantVector::GetData(result).Reference(VariantVector::GetData(variant_vec));
 
 	//! Copy the existing 'values' list entry data
 	auto &result_values = VariantVector::GetValues(result);
-	result_values.Initialize(false, count);
+	result_values.Initialize(VectorDataInitialization::UNINITIALIZED, count);
 	ListVector::Reserve(result_values, values_list_size);
 	ListVector::SetListSize(result_values, values_list_size);
-	auto result_values_data = FlatVector::GetData<list_entry_t>(result_values);
-	auto &result_values_validity = FlatVector::Validity(result_values);
+	auto result_data = FlatVector::Writer<list_entry_t>(result_values);
 	for (idx_t i = 0; i < count; i++) {
 		if (!validity.RowIsValid(i)) {
-			result_values_validity.SetInvalid(i);
+			result_data.SetInvalid(i);
 			continue;
 		}
-		result_values_data[i] = values_data[values.sel->get_index(i)];
+		result_data[i] = values_data[values.sel->get_index(i)];
 	}
 
 	auto &result_indices = components.size() % 2 == 0 ? value_index_sel : new_value_index_sel;
@@ -273,7 +270,7 @@ void VariantUtils::VariantExtract(Vector &variant_vec, const vector<VariantPathC
 	result_byte_offset.Dictionary(VariantVector::GetValuesByteOffset(variant_vec), values_list_size, new_sel,
 	                              values_list_size);
 
-	if (!validity.AllValid()) {
+	if (validity.CanHaveNull()) {
 		//! Create a copy of the vector, because we used Reference before, and we now need to adjust the data
 		//! Which is a problem if we're still sharing the memory with 'input'
 		Vector other(result.GetType(), count);
@@ -286,11 +283,6 @@ void VariantUtils::VariantExtract(Vector &variant_vec, const vector<VariantPathC
 			}
 		}
 	}
-
-	if (variant_vec.GetVectorType() == VectorType::CONSTANT_VECTOR) {
-		result.SetVectorType(VectorType::CONSTANT_VECTOR);
-	}
-	result.Verify(count);
 }
 
 //! FIXME: it could make sense to allow a third argument: 'default'

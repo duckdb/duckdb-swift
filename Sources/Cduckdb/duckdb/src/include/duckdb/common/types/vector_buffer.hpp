@@ -13,100 +13,84 @@
 #include "duckdb/common/types/string_heap.hpp"
 #include "duckdb/common/types/string_type.hpp"
 #include "duckdb/storage/buffer/buffer_handle.hpp"
+#include "duckdb/common/enums/vector_type.hpp"
 
 namespace duckdb {
 
 class BufferHandle;
 class VectorBuffer;
 class Vector;
+struct ValidityMask;
 
 enum class VectorBufferType : uint8_t {
-	STANDARD_BUFFER,     // standard buffer, holds a single array of data
-	DICTIONARY_BUFFER,   // dictionary buffer, holds a selection vector
-	VECTOR_CHILD_BUFFER, // vector child buffer: holds another vector
-	STRING_BUFFER,       // string buffer, holds a string heap
-	FSST_BUFFER,         // fsst compressed string buffer, holds a string heap, fsst symbol table and a string count
-	STRUCT_BUFFER,       // struct buffer, holds a ordered mapping from name to child vector
-	LIST_BUFFER,         // list buffer, holds a single flatvector child
-	MANAGED_BUFFER,      // managed buffer, holds a buffer managed by the buffermanager
-	OPAQUE_BUFFER,       // opaque buffer, can be created for example by the parquet reader
-	ARRAY_BUFFER,        // array buffer, holds a single flatvector child
-	SHREDDED_BUFFER      // holds data for a shredded variant vector
+	STANDARD_BUFFER,   // VectorType::FLAT/CONSTANT - Fixed-Size Type - Holds a single array of data
+	STRING_BUFFER,     // VectorType::FLAT/CONSTANT - String          - Holds string_t array and StringHeap
+	STRUCT_BUFFER,     // VectorType::FLAT/CONSTANT - Struct          - Holds struct child vectors
+	LIST_BUFFER,       // VectorType::FLAT/CONSTANT - List            - Holds list_entry_t array and list child vector
+	ARRAY_BUFFER,      // VectorType::FLAT/CONSTANT - Array           - Holds array child vector
+	DICTIONARY_BUFFER, // VectorType::DICTIONARY    - Any             - Holds SelectionVector and dict child vector
+	FSST_BUFFER,       // VectorType::FSST          - String          - Holds string_t array, StringHeap and FSST table
+	SHREDDED_BUFFER,   // VectorType::SHREDDED      - Variant         - Holds shredded variant
+	SEQUENCE_BUFFER    // VectorType::SEQUENCE      - Any             - Holds linear numeric sequence (start, increment)
 };
 
-enum class VectorAuxiliaryDataType : uint8_t {
-	ARROW_AUXILIARY // Holds Arrow Chunks that this vector depends on
+struct AuxiliaryDataHolder {
+	virtual ~AuxiliaryDataHolder() = default;
 };
 
-struct VectorAuxiliaryData {
-	explicit VectorAuxiliaryData(VectorAuxiliaryDataType type_p)
-	    : type(type_p) {
+struct AuxiliaryDataSet {
+	vector<unique_ptr<AuxiliaryDataHolder>> data;
+};
 
-	      };
-	VectorAuxiliaryDataType type;
-
-	virtual ~VectorAuxiliaryData() {
-	}
-
+class PinnedBufferHolder : public AuxiliaryDataHolder {
 public:
-	template <class TARGET>
-	TARGET &Cast() {
-		if (type != TARGET::TYPE) {
-			throw InternalException("Failed to cast vector auxiliary data to type - type mismatch");
-		}
-		return reinterpret_cast<TARGET &>(*this);
+	explicit PinnedBufferHolder(BufferHandle handle);
+	~PinnedBufferHolder() override;
+
+private:
+	BufferHandle handle;
+};
+
+class AuxiliaryDataSetHolder : public AuxiliaryDataHolder {
+public:
+	explicit AuxiliaryDataSetHolder(buffer_ptr<AuxiliaryDataSet> buffer) : auxiliary_data(std::move(buffer)) {
 	}
 
-	template <class TARGET>
-	const TARGET &Cast() const {
-		if (type != TARGET::TYPE) {
-			throw InternalException("Failed to cast vector auxiliary data to type - type mismatch");
-		}
-		return reinterpret_cast<const TARGET &>(*this);
-	}
+private:
+	buffer_ptr<AuxiliaryDataSet> auxiliary_data;
 };
 
 //! The VectorBuffer is a class used by the vector to hold its data
 class VectorBuffer {
 public:
-	explicit VectorBuffer(VectorBufferType type) : buffer_type(type) {
-	}
-	explicit VectorBuffer(idx_t data_size) : buffer_type(VectorBufferType::STANDARD_BUFFER) {
-		if (data_size > 0) {
-			data = Allocator::DefaultAllocator().Allocate(data_size);
-		}
-	}
-	explicit VectorBuffer(AllocatedData &&data_p)
-	    : buffer_type(VectorBufferType::STANDARD_BUFFER), data(std::move(data_p)) {
+	explicit VectorBuffer(VectorType vector_type, VectorBufferType type) : vector_type(vector_type), buffer_type(type) {
 	}
 	virtual ~VectorBuffer() {
 	}
-	VectorBuffer() {
-	}
 
 public:
-	data_ptr_t GetData() {
-		return data.get();
+	virtual data_ptr_t GetData() {
+		return nullptr;
+	}
+	virtual ValidityMask &GetValidityMask() {
+		throw InternalException("VectorBuffer does not have a ValidityMask");
 	}
 
-	void SetData(AllocatedData &&new_data) {
-		data = std::move(new_data);
+	void AddAuxiliaryData(unique_ptr<AuxiliaryDataHolder> aux_data_p) {
+		if (!auxiliary_data) {
+			auxiliary_data = make_buffer<AuxiliaryDataSet>();
+		}
+		auxiliary_data->data.push_back(std::move(aux_data_p));
 	}
-
-	VectorAuxiliaryData *GetAuxiliaryData() {
-		return aux_data.get();
+	buffer_ptr<AuxiliaryDataSet> &GetAuxiliaryData() {
+		return auxiliary_data;
 	}
-
-	void SetAuxiliaryData(unique_ptr<VectorAuxiliaryData> aux_data_p) {
-		aux_data = std::move(aux_data_p);
-	}
-
-	void MoveAuxiliaryData(VectorBuffer &source_buffer) {
-		SetAuxiliaryData(std::move(source_buffer.aux_data));
+	virtual void ClearAuxiliaryData() {
+		auxiliary_data.reset();
 	}
 
 	virtual optional_ptr<Allocator> GetAllocator() const {
-		return data.GetAllocator();
+		return nullptr;
 	}
 
 	static buffer_ptr<VectorBuffer> CreateStandardVector(PhysicalType type, idx_t capacity = STANDARD_VECTOR_SIZE);
@@ -115,18 +99,23 @@ public:
 	static buffer_ptr<VectorBuffer> CreateStandardVector(const LogicalType &logical_type,
 	                                                     idx_t capacity = STANDARD_VECTOR_SIZE);
 
+	inline VectorType GetVectorType() const {
+		return vector_type;
+	}
+	virtual void SetVectorType(VectorType vector_type);
+	//! Set only this buffer's vector type without propagating to children (for struct/array buffers)
+	void SetVectorTypeOnly(VectorType new_vector_type) {
+		vector_type = new_vector_type;
+	}
+
 	inline VectorBufferType GetBufferType() const {
 		return buffer_type;
 	}
 
-	inline VectorAuxiliaryDataType GetAuxiliaryDataType() const {
-		return aux_data->type;
-	}
-
 protected:
+	VectorType vector_type;
 	VectorBufferType buffer_type;
-	unique_ptr<VectorAuxiliaryData> aux_data;
-	AllocatedData data;
+	buffer_ptr<AuxiliaryDataSet> auxiliary_data;
 
 public:
 	template <class TARGET>
@@ -141,28 +130,4 @@ public:
 	}
 };
 
-//! The ManagedVectorBuffer holds a buffer handle
-class ManagedVectorBuffer : public VectorBuffer {
-public:
-	explicit ManagedVectorBuffer(BufferHandle handle);
-	~ManagedVectorBuffer() override;
-
-private:
-	BufferHandle handle;
-};
-
-//! The DictionaryBuffer holds a selection vector
-class ShreddedVectorBuffer : public VectorBuffer {
-public:
-	explicit ShreddedVectorBuffer(Vector &shredded_data);
-	~ShreddedVectorBuffer() override;
-
-public:
-	Vector &GetChild() {
-		return *shredded_data;
-	}
-
-private:
-	unique_ptr<Vector> shredded_data;
-};
 } // namespace duckdb

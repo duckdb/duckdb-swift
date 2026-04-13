@@ -52,6 +52,9 @@
 #line 0 "src/optimizer/rule/ordered_aggregate_optimizer.cpp"
 #include "src/optimizer/rule/ordered_aggregate_optimizer.cpp"
 
+#line 0 "src/optimizer/rule/predicate_factoring.cpp"
+#include "src/optimizer/rule/predicate_factoring.cpp"
+
 #line 0 "src/optimizer/rule/regex_optimizations.cpp"
 #include "src/optimizer/rule/regex_optimizations.cpp"
 

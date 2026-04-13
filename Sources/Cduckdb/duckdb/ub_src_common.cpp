@@ -10,6 +10,9 @@
 #line 0 "src/common/box_renderer.cpp"
 #include "src/common/box_renderer.cpp"
 
+#line 0 "src/common/column_data_collection_render_interface.cpp"
+#include "src/common/column_data_collection_render_interface.cpp"
+
 #line 0 "src/common/cgroups.cpp"
 #include "src/common/cgroups.cpp"
 

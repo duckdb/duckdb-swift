@@ -67,6 +67,9 @@
 #line 0 "src/function/table/system/duckdb_sequences.cpp"
 #include "src/function/table/system/duckdb_sequences.cpp"
 
+#line 0 "src/function/table/system/duckdb_triggers.cpp"
+#include "src/function/table/system/duckdb_triggers.cpp"
+
 #line 0 "src/function/table/system/duckdb_settings.cpp"
 #include "src/function/table/system/duckdb_settings.cpp"
 

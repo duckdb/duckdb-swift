@@ -95,7 +95,7 @@ void ExpressionExecutor::Execute(const BoundCaseExpression &expr, ExpressionStat
 template <class T>
 void TemplatedFillLoop(Vector &vector, Vector &result, const SelectionVector &sel, sel_t count) {
 	result.SetVectorType(VectorType::FLAT_VECTOR);
-	auto res = FlatVector::GetData<T>(result);
+	auto res = FlatVector::GetDataMutable<T>(result);
 	auto &result_mask = FlatVector::Validity(result);
 	if (vector.GetVectorType() == VectorType::CONSTANT_VECTOR) {
 		auto data = ConstantVector::GetData<T>(vector);
@@ -109,15 +109,15 @@ void TemplatedFillLoop(Vector &vector, Vector &result, const SelectionVector &se
 			}
 		}
 	} else {
-		UnifiedVectorFormat vdata;
-		vector.ToUnifiedFormat(count, vdata);
-		auto data = UnifiedVectorFormat::GetData<T>(vdata);
+		auto entries = vector.Values<T>(count);
 		for (idx_t i = 0; i < count; i++) {
-			auto source_idx = vdata.sel->get_index(i);
+			auto entry = entries[i];
 			auto res_idx = sel.get_index(i);
-
-			res[res_idx] = data[source_idx];
-			result_mask.Set(res_idx, vdata.validity.RowIsValid(source_idx));
+			if (entry.IsValid()) {
+				res[res_idx] = entry.value;
+			} else {
+				result_mask.SetInvalid(res_idx);
+			}
 		}
 	}
 }
@@ -132,14 +132,12 @@ void ValidityFillLoop(Vector &vector, Vector &result, const SelectionVector &sel
 			}
 		}
 	} else {
-		UnifiedVectorFormat vdata;
-		vector.ToUnifiedFormat(count, vdata);
-		if (vdata.validity.AllValid()) {
+		auto entries = vector.Validity(count);
+		if (!entries.CanHaveNull()) {
 			return;
 		}
 		for (idx_t i = 0; i < count; i++) {
-			auto source_idx = vdata.sel->get_index(i);
-			if (!vdata.validity.RowIsValid(source_idx)) {
+			if (!entries.IsValid(i)) {
 				result_mask.SetInvalid(sel.get_index(i));
 			}
 		}
@@ -217,7 +215,7 @@ void ExpressionExecutor::FillSwitch(Vector &vector, Vector &result, const Select
 			break;
 		}
 
-		auto result_data = FlatVector::GetData<list_entry_t>(result);
+		auto result_data = FlatVector::Writer<list_entry_t>(result);
 		for (idx_t i = 0; i < count; i++) {
 			auto result_idx = sel.get_index(i);
 			result_data[result_idx].offset += offset;

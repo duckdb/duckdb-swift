@@ -315,7 +315,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 	// the inplace loops take the result as the last parameter
 	switch (comparison_type) {
 	case ExpressionType::COMPARE_EQUAL: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count =
 			    TemplatedFilterSelection<T, Equals, false>(vdata, predicate, sel, approved_tuple_count, new_sel);
 		} else {
@@ -325,7 +325,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 		break;
 	}
 	case ExpressionType::COMPARE_NOTEQUAL: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count =
 			    TemplatedFilterSelection<T, NotEquals, false>(vdata, predicate, sel, approved_tuple_count, new_sel);
 		} else {
@@ -335,7 +335,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 		break;
 	}
 	case ExpressionType::COMPARE_LESSTHAN: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count =
 			    TemplatedFilterSelection<T, LessThan, false>(vdata, predicate, sel, approved_tuple_count, new_sel);
 		} else {
@@ -345,7 +345,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 		break;
 	}
 	case ExpressionType::COMPARE_GREATERTHAN: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count =
 			    TemplatedFilterSelection<T, GreaterThan, false>(vdata, predicate, sel, approved_tuple_count, new_sel);
 		} else {
@@ -355,7 +355,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 		break;
 	}
 	case ExpressionType::COMPARE_LESSTHANOREQUALTO: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count = TemplatedFilterSelection<T, LessThanEquals, false>(vdata, predicate, sel,
 			                                                                          approved_tuple_count, new_sel);
 		} else {
@@ -365,7 +365,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 		break;
 	}
 	case ExpressionType::COMPARE_GREATERTHANOREQUALTO: {
-		if (mask.AllValid()) {
+		if (mask.CannotHaveNull()) {
 			approved_tuple_count = TemplatedFilterSelection<T, GreaterThanEquals, false>(vdata, predicate, sel,
 			                                                                             approved_tuple_count, new_sel);
 		} else {
@@ -383,7 +383,7 @@ static void FilterSelectionSwitch(UnifiedVectorFormat &vdata, T predicate, Selec
 template <bool IS_NULL>
 static idx_t TemplatedNullSelection(UnifiedVectorFormat &vdata, SelectionVector &sel, idx_t &approved_tuple_count) {
 	auto &mask = vdata.validity;
-	if (mask.AllValid()) {
+	if (mask.CannotHaveNull()) {
 		// no NULL values
 		if (IS_NULL) {
 			approved_tuple_count = 0;
@@ -562,16 +562,18 @@ idx_t ColumnSegment::FilterSelection(SelectionVector &sel, Vector &vector, Unifi
 	}
 	case TableFilterType::BLOOM_FILTER: {
 		auto &bloom_filter = filter.Cast<BFTableFilter>();
-		auto &state = filter_state.Cast<BFTableFilterState>();
+		auto &state = filter_state.Cast<JoinFilterTableFilterState>();
 		return bloom_filter.Filter(vector, sel, approved_tuple_count, state);
 	}
 	case TableFilterType::PERFECT_HASH_JOIN_FILTER: {
 		auto &perfect_hash_join_filter = filter.Cast<PerfectHashJoinFilter>();
-		return perfect_hash_join_filter.Filter(vector, sel, approved_tuple_count);
+		auto &state = filter_state.Cast<JoinFilterTableFilterState>();
+		return perfect_hash_join_filter.Filter(vector, sel, approved_tuple_count, state);
 	}
-	case duckdb::TableFilterType::PREFIX_RANGE_FILTER: {
+	case TableFilterType::PREFIX_RANGE_FILTER: {
 		auto &prefix_range_filter = filter.Cast<PrefixRangeTableFilter>();
-		return prefix_range_filter.Filter(vector, sel, approved_tuple_count);
+		auto &state = filter_state.Cast<JoinFilterTableFilterState>();
+		return prefix_range_filter.Filter(vector, sel, approved_tuple_count, state);
 	}
 	case TableFilterType::EXPRESSION_FILTER: {
 		auto &state = filter_state.Cast<ExpressionFilterState>();
@@ -622,7 +624,7 @@ idx_t ColumnSegment::FilterSelection(SelectionVector &sel, Vector &vector, Unifi
 		} else {
 			// standard case: we can handle everything at once - run the expression once
 			DataChunk chunk;
-			chunk.data.emplace_back(vector);
+			chunk.data.emplace_back(Vector::Ref(vector));
 			chunk.SetCardinality(scan_count);
 			approved_tuple_count = state.executor.SelectExpression(chunk, result_sel, sel, approved_tuple_count);
 		}
