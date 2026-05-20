@@ -11,6 +11,7 @@
 
 #include "duckdb/main/settings.hpp"
 
+#include "duckdb/common/constants.hpp"
 #include "duckdb/common/enums/access_mode.hpp"
 #include "duckdb/common/enum_util.hpp"
 #include "duckdb/catalog/catalog_search_path.hpp"
@@ -130,14 +131,14 @@ Value DeltaOnlyVariantEncodingEnabledSetting::GetSetting(const ClientContext &co
 void AllocatorFlushThresholdSetting::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
 	config.options.allocator_flush_threshold = DBConfig::ParseMemoryLimit(input.ToString());
 	if (db) {
-		TaskScheduler::GetScheduler(*db).SetAllocatorFlushTreshold(config.options.allocator_flush_threshold);
+		TaskScheduler::GetScheduler(*db).SetAllocatorFlushThreshold(config.options.allocator_flush_threshold);
 	}
 }
 
 void AllocatorFlushThresholdSetting::ResetGlobal(DatabaseInstance *db, DBConfig &config) {
 	config.options.allocator_flush_threshold = DBConfigOptions().allocator_flush_threshold;
 	if (db) {
-		TaskScheduler::GetScheduler(*db).SetAllocatorFlushTreshold(config.options.allocator_flush_threshold);
+		TaskScheduler::GetScheduler(*db).SetAllocatorFlushThreshold(config.options.allocator_flush_threshold);
 	}
 }
 
@@ -389,8 +390,6 @@ void AddOptimizerMetrics(profiler_settings_t &settings, const set<OptimizerType>
 
 void ExtractFromList(ClientConfig &config, profiler_settings_t &enabled_metrics, vector<string> &invalid_settings,
                      const Value &input, const set<OptimizerType> &disabled_optimizers) {
-	config.profiler_settings_type = LogicalTypeId::LIST;
-
 	enabled_metrics = ExtractSettings(
 	    [&](const std::function<void(const std::string &)> &func) {
 		    for (auto &val : ListValue::GetChildren(input)) {
@@ -402,8 +401,6 @@ void ExtractFromList(ClientConfig &config, profiler_settings_t &enabled_metrics,
 
 void ExtractFromStruct(ClientConfig &config, profiler_settings_t &enabled_metrics, vector<string> &invalid_settings,
                        const Value &input, const set<OptimizerType> &disabled_optimizers) {
-	config.profiler_settings_type = LogicalTypeId::STRUCT;
-
 	enabled_metrics = ExtractSettings(
 	    [&](const std::function<void(const std::string &)> &func) {
 		    auto &children = StructValue::GetChildren(input);
@@ -420,8 +417,6 @@ void ExtractFromStruct(ClientConfig &config, profiler_settings_t &enabled_metric
 
 void ExtractFromJSON(ClientConfig &config, profiler_settings_t &enabled_metrics, vector<string> &invalid_settings,
                      const Value &input, const set<OptimizerType> &disabled_optimizers) {
-	config.profiler_settings_type = LogicalTypeId::VARCHAR;
-
 	// JSON string: parse, then accept entries with value == "true"
 	std::unordered_map<std::string, std::string> json;
 	try {
@@ -486,7 +481,6 @@ void ConfigureProfilingSetting::ResetLocal(ClientContext &context) {
 	auto &config = ClientConfig::GetConfig(context);
 	config.enable_profiler = ClientConfig().enable_profiler;
 	config.profiler_settings = MetricsUtils::GetDefaultMetrics();
-	config.profiler_settings_type = LogicalTypeId::VARCHAR;
 }
 
 Value ConfigureProfilingSetting::GetSetting(const ClientContext &context) {
@@ -496,37 +490,11 @@ Value ConfigureProfilingSetting::GetSetting(const ClientContext &context) {
 	for (auto &entry : config.profiler_settings) {
 		enabled_settings.insert(EnumUtil::ToString(entry));
 	}
-
-	switch (config.profiler_settings_type) {
-	case LogicalTypeId::VARCHAR: {
-		// i.e. JSON
-		string profiling_settings_str;
-		for (auto &entry : enabled_settings) {
-			if (!profiling_settings_str.empty()) {
-				profiling_settings_str += ", ";
-			}
-			profiling_settings_str += "\"" + entry + "\": \"true\"";
-		}
-
-		return Value(StringUtil::Format("{%s}", profiling_settings_str));
+	vector<Value> children;
+	for (auto &entry : enabled_settings) {
+		children.emplace_back(entry);
 	}
-	case LogicalTypeId::STRUCT: {
-		child_list_t<Value> children;
-		for (auto &entry : enabled_settings) {
-			children.emplace_back(entry, Value::BOOLEAN(true));
-		}
-		return Value::STRUCT(std::move(children));
-	}
-	case LogicalTypeId::LIST: {
-		vector<Value> children;
-		for (auto &entry : enabled_settings) {
-			children.emplace_back(entry);
-		}
-		return Value::LIST(std::move(children));
-	}
-	default:
-		throw InternalException("Invalid custom profiler settings type");
-	}
+	return Value::LIST(LogicalType::VARCHAR, std::move(children));
 }
 
 //===----------------------------------------------------------------------===//
@@ -546,6 +514,22 @@ void CustomUserAgentSetting::ResetGlobal(DatabaseInstance *db, DBConfig &config)
 		throw InvalidInputException("Cannot change custom_user_agent setting while database is running");
 	}
 	config.options.custom_user_agent = DBConfigOptions().custom_user_agent;
+}
+
+//===----------------------------------------------------------------------===//
+// Debug Verification Mode
+//===----------------------------------------------------------------------===//
+void DebugVerificationModeSetting::SetGlobal(DatabaseInstance *db, DBConfig &config, const Value &input) {
+	config.options.global_verification_mode = EnumUtil::FromString<DebugVerificationMode>(input.ToString());
+}
+
+void DebugVerificationModeSetting::ResetGlobal(DatabaseInstance *db, DBConfig &config) {
+	config.options.global_verification_mode = DebugVerificationMode::NONE;
+}
+
+Value DebugVerificationModeSetting::GetSetting(const ClientContext &context) {
+	auto &config = DBConfig::GetConfig(context);
+	return EnumUtil::ToString(config.options.global_verification_mode);
 }
 
 //===----------------------------------------------------------------------===//
@@ -729,6 +713,15 @@ void DuckDBAPISetting::OnSet(SettingCallbackInfo &info, Value &input) {
 }
 
 //===----------------------------------------------------------------------===//
+// Vacuum Rebuild Indexes
+//===----------------------------------------------------------------------===//
+void VacuumRebuildIndexesSetting::OnSet(SettingCallbackInfo &info, Value &input) {
+	if (info.db || info.context) {
+		throw InvalidInputException("Cannot change vacuum_rebuild_indexes setting while database is running");
+	}
+}
+
+//===----------------------------------------------------------------------===//
 // Enable External Access
 //===----------------------------------------------------------------------===//
 void EnableExternalAccessSetting::OnSet(SettingCallbackInfo &info, Value &input) {
@@ -762,6 +755,31 @@ void EnableExternalAccessSetting::OnSet(SettingCallbackInfo &info, Value &input)
 void EnableExternalFileCacheSetting::OnSet(SettingCallbackInfo &info, Value &input) {
 	if (info.db) {
 		ExternalFileCache::Get(*info.db).SetEnabled(input.GetValue<bool>());
+	}
+}
+
+//===----------------------------------------------------------------------===//
+// External File Cache Block Sizes
+//===----------------------------------------------------------------------===//
+void ExternalFileCacheLocalBlockSizeSetting::OnSet(SettingCallbackInfo &info, Value &input) {
+	const auto bytes = input.GetValue<uint64_t>();
+	if (bytes == 0) {
+		throw InvalidInputException("Invalid option for %s: value must be positive", string(Name));
+	}
+	if (!IsPowerOfTwo(bytes)) {
+		throw InvalidInputException("Invalid option for %s: block size must be a power of two, got %llu", string(Name),
+		                            bytes);
+	}
+}
+
+void ExternalFileCacheRemoteBlockSizeSetting::OnSet(SettingCallbackInfo &info, Value &input) {
+	const auto bytes = input.GetValue<uint64_t>();
+	if (bytes == 0) {
+		throw InvalidInputException("Invalid option for %s: value must be positive", string(Name));
+	}
+	if (!IsPowerOfTwo(bytes)) {
+		throw InvalidInputException("Invalid option for %s: block size must be a power of two, got %llu", string(Name),
+		                            bytes);
 	}
 }
 
@@ -830,6 +848,7 @@ void ForceVariantShredding::SetGlobal(DatabaseInstance *_, DBConfig &config, con
 		case LogicalTypeId::TIME:
 		case LogicalTypeId::TIME_TZ:
 		case LogicalTypeId::TIMESTAMP_TZ:
+		case LogicalTypeId::TIMESTAMP_TZ_NS:
 		case LogicalTypeId::TIMESTAMP:
 		case LogicalTypeId::TIMESTAMP_SEC:
 		case LogicalTypeId::TIMESTAMP_MS:
@@ -1172,7 +1191,7 @@ void EnableHTTPLoggingSetting::SetLocal(ClientContext &context, const Value &inp
 	auto &config = ClientConfig::GetConfig(context);
 	config.enable_http_logging = input.GetValue<bool>();
 
-	// NOTE: this is a deprecated setting: we mimick the old behaviour by setting the log storage output to STDOUT and
+	// NOTE: this is a deprecated setting: we mimic the old behaviour by setting the log storage output to STDOUT and
 	// enabling logging for http only. Note that this behaviour is slightly wonky in that it sets all sorts of logging
 	// config
 	auto &log_manager = LogManager::Get(context);
@@ -1263,6 +1282,20 @@ void IndexScanPercentageSetting::OnSet(SettingCallbackInfo &, Value &input) {
 }
 
 //===----------------------------------------------------------------------===//
+// Initial Column Segment Size
+//===----------------------------------------------------------------------===//
+void InitialColumnSegmentSizeSetting::OnSet(SettingCallbackInfo &, Value &input) {
+	auto initial_column_segment_size = input.GetValue<uint64_t>();
+	if (initial_column_segment_size < DEFAULT_BLOCK_HEADER_STORAGE_SIZE) {
+		throw InvalidInputException(
+		    "The initial column segment size must be at least 8 bytes (default block header storage size)");
+	}
+	if (!IsPowerOfTwo(initial_column_segment_size)) {
+		throw InvalidInputException("The initial column segment size must be a power of two");
+	}
+}
+
+//===----------------------------------------------------------------------===//
 // Log Query Path
 //===----------------------------------------------------------------------===//
 void LogQueryPathSetting::OnSet(SettingCallbackInfo &info, Value &input) {
@@ -1292,6 +1325,9 @@ void MaxMemorySetting::SetGlobal(DatabaseInstance *db, DBConfig &config, const V
 
 void MaxMemorySetting::ResetGlobal(DatabaseInstance *db, DBConfig &config) {
 	config.SetDefaultMaxMemory();
+	if (db) {
+		BufferManager::GetBufferManager(*db).SetMemoryLimit(config.options.maximum_memory);
+	}
 }
 
 Value MaxMemorySetting::GetSetting(const ClientContext &context) {

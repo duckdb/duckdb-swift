@@ -94,7 +94,7 @@ void VariantColumnWriter::AnalyzeSchema(ParquetAnalyzeSchemaState &state_p, Vect
 	auto &state = state_p.Cast<VariantAnalyzeSchemaState>();
 
 	RecursiveUnifiedVectorFormat recursive_format;
-	Vector::RecursiveToUnifiedFormat(input, count, recursive_format);
+	Vector::RecursiveToUnifiedFormat(input, recursive_format);
 	UnifiedVariantVectorData variant(recursive_format);
 
 	for (idx_t i = 0; i < count; i++) {
@@ -152,9 +152,18 @@ static bool ConstructShreddedType(const VariantAnalyzeData &state, LogicalType &
 	CheckPrimitive<VariantLogicalType::TIMESTAMP_MICROS, LogicalTypeId::TIMESTAMP>(state, result);
 	CheckPrimitive<VariantLogicalType::TIMESTAMP_NANOS, LogicalTypeId::TIMESTAMP_NS>(state, result);
 	CheckPrimitive<VariantLogicalType::TIMESTAMP_MICROS_TZ, LogicalTypeId::TIMESTAMP_TZ>(state, result);
+	CheckPrimitive<VariantLogicalType::TIMESTAMP_NANOS_TZ, LogicalTypeId::TIMESTAMP_TZ_NS>(state, result);
 	CheckPrimitive<VariantLogicalType::BLOB, LogicalTypeId::BLOB>(state, result);
 	CheckPrimitive<VariantLogicalType::VARCHAR, LogicalTypeId::VARCHAR>(state, result);
 	CheckPrimitive<VariantLogicalType::UUID, LogicalTypeId::UUID>(state, result);
+	// these types are not natively supported in Parquet - we convert them during write
+	// during analysis map them to the type we convert them into
+	CheckPrimitive<VariantLogicalType::UINT8, LogicalTypeId::SMALLINT>(state, result);
+	CheckPrimitive<VariantLogicalType::UINT16, LogicalTypeId::INTEGER>(state, result);
+	CheckPrimitive<VariantLogicalType::UINT32, LogicalTypeId::BIGINT>(state, result);
+	CheckPrimitive<VariantLogicalType::UINT64, LogicalTypeId::BIGINT>(state, result);
+	CheckPrimitive<VariantLogicalType::UINT128, LogicalTypeId::BIGINT>(state, result);
+	CheckPrimitive<VariantLogicalType::INT128, LogicalTypeId::BIGINT>(state, result);
 
 	auto array_count = state.type_map[static_cast<uint8_t>(VariantLogicalType::ARRAY)];
 	auto object_count = state.type_map[static_cast<uint8_t>(VariantLogicalType::OBJECT)];
@@ -178,9 +187,14 @@ static bool ConstructShreddedType(const VariantAnalyzeData &state, LogicalType &
 			for (auto &field : object_data.fields) {
 				LogicalType child_type;
 				if (!ConstructShreddedType(field.second, child_type)) {
-					return false;
+					// cannot shred on this field - skip
+					continue;
 				}
 				field_types.emplace_back(field.first, child_type);
+			}
+			if (field_types.empty()) {
+				// no field types to shred on - avoid shredding
+				return false;
 			}
 			out = LogicalType::STRUCT(field_types);
 			return true;
@@ -201,6 +215,7 @@ void VariantColumnWriter::AnalyzeSchemaFinalize(const ParquetAnalyzeSchemaState 
 		return;
 	}
 	is_analyzed = true;
+	analyzed_shredding_type = ShreddingType(shredded_type);
 	auto typed_value = TransformTypedValueRecursive(shredded_type);
 	auto &schema = Schema();
 	auto &context = writer.GetContext();
@@ -213,6 +228,14 @@ void VariantColumnWriter::AnalyzeSchemaFinalize(const ParquetAnalyzeSchemaState 
 	child_writers.push_back(ColumnWriter::CreateWriterRecursive(context, writer, schema_path, typed_value,
 	                                                            "typed_value", false, nullptr, nullptr,
 	                                                            schema.max_repeat, schema.max_define + 1, true));
+}
+
+bool VariantColumnWriter::TryExportPreparedShreddingType(ShreddingType &result) const {
+	if (analyzed_shredding_type.set) {
+		result = analyzed_shredding_type.Copy();
+		return true;
+	}
+	return StructColumnWriter::TryExportPreparedShreddingType(result);
 }
 
 } // namespace duckdb

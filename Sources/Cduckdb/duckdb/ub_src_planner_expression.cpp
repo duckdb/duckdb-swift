@@ -1,11 +1,5 @@
-#line 0 "src/planner/expression/bound_expression.cpp"
-#include "src/planner/expression/bound_expression.cpp"
-
 #line 0 "src/planner/expression/bound_aggregate_expression.cpp"
 #include "src/planner/expression/bound_aggregate_expression.cpp"
-
-#line 0 "src/planner/expression/bound_between_expression.cpp"
-#include "src/planner/expression/bound_between_expression.cpp"
 
 #line 0 "src/planner/expression/bound_case_expression.cpp"
 #include "src/planner/expression/bound_case_expression.cpp"
@@ -16,9 +10,6 @@
 #line 0 "src/planner/expression/bound_columnref_expression.cpp"
 #include "src/planner/expression/bound_columnref_expression.cpp"
 
-#line 0 "src/planner/expression/bound_comparison_expression.cpp"
-#include "src/planner/expression/bound_comparison_expression.cpp"
-
 #line 0 "src/planner/expression/bound_conjunction_expression.cpp"
 #include "src/planner/expression/bound_conjunction_expression.cpp"
 
@@ -27,6 +18,9 @@
 
 #line 0 "src/planner/expression/bound_expanded_expression.cpp"
 #include "src/planner/expression/bound_expanded_expression.cpp"
+
+#line 0 "src/planner/expression/bound_expression.cpp"
+#include "src/planner/expression/bound_expression.cpp"
 
 #line 0 "src/planner/expression/bound_function_expression.cpp"
 #include "src/planner/expression/bound_function_expression.cpp"
@@ -54,4 +48,10 @@
 
 #line 0 "src/planner/expression/bound_window_expression.cpp"
 #include "src/planner/expression/bound_window_expression.cpp"
+
+#line 0 "src/planner/expression/legacy_bound_between_expression.cpp"
+#include "src/planner/expression/legacy_bound_between_expression.cpp"
+
+#line 0 "src/planner/expression/legacy_bound_comparison_expression.cpp"
+#include "src/planner/expression/legacy_bound_comparison_expression.cpp"
 

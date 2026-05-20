@@ -48,7 +48,7 @@ public:
 	AttachedDatabase &db;
 	ClientContext &context;
 	Catalog &catalog;
-	optional_ptr<TableCatalogEntry> current_table;
+	optional_ptr<DuckTableEntry> current_table;
 	MetaBlockPointer checkpoint_id;
 	idx_t wal_version = 1;
 	optional_idx current_position;
@@ -772,7 +772,7 @@ void WriteAheadLogDeserializer::ReplayIndexData(IndexStorageInfo &info) {
 			// Read the data into a buffer handle.
 			auto buffer_handle = buffer_manager.Allocate(MemoryTag::ART_INDEX, block_manager.get(), false);
 			auto block_handle = buffer_handle.GetBlockHandle();
-			auto data_ptr = buffer_handle.Ptr();
+			auto data_ptr = buffer_handle.GetDataMutable();
 
 			list.ReadElement<bool>(data_ptr, data_info.allocation_sizes[j]);
 
@@ -947,12 +947,13 @@ void WriteAheadLogDeserializer::ReplayDropTrigger() {
 	if (DeserializeOnly()) {
 		return;
 	}
-	if (!table_name.empty()) {
-		auto &table = Catalog::GetEntry<TableCatalogEntry>(context, catalog.GetName(), info.schema, table_name);
-		auto &duck_table = table.Cast<DuckTableEntry>();
-		auto transaction = catalog.GetCatalogTransaction(context);
-		duck_table.DropTrigger(transaction, info.name, info.cascade);
+	if (table_name.empty()) {
+		throw InternalException("WAL replay: DROP TRIGGER entry has an empty table name for trigger \"%s\"", info.name);
 	}
+	auto &table = Catalog::GetEntry<TableCatalogEntry>(context, catalog.GetName(), info.schema, table_name);
+	auto &duck_table = table.Cast<DuckTableEntry>();
+	auto transaction = catalog.GetCatalogTransaction(context);
+	duck_table.DropTrigger(transaction, info.name, info.cascade);
 }
 
 //===--------------------------------------------------------------------===//
@@ -984,13 +985,15 @@ void WriteAheadLogDeserializer::ReplaySequenceValue() {
 	auto name = deserializer.ReadProperty<string>(102, "name");
 	auto usage_count = deserializer.ReadProperty<uint64_t>(103, "usage_count");
 	auto counter = deserializer.ReadProperty<int64_t>(104, "counter");
+	auto last_value = deserializer.ReadPropertyWithDefault<optional<int64_t>>(105, "last_value");
+
 	if (DeserializeOnly()) {
 		return;
 	}
 
 	// fetch the sequence from the catalog
 	auto &seq = catalog.GetEntry<SequenceCatalogEntry>(context, schema, name);
-	seq.ReplayValue(usage_count, counter);
+	seq.ReplayValue(usage_count, counter, last_value);
 }
 
 //===--------------------------------------------------------------------===//
@@ -1105,7 +1108,7 @@ void WriteAheadLogDeserializer::ReplayUseTable() {
 	if (DeserializeOnly()) {
 		return;
 	}
-	state.current_table = &catalog.GetEntry<TableCatalogEntry>(context, schema_name, table_name);
+	state.current_table = &catalog.GetEntry<DuckTableEntry>(context, schema_name, table_name);
 }
 
 void WriteAheadLogDeserializer::ReplayInsert() {
@@ -1161,11 +1164,11 @@ void WriteAheadLogDeserializer::ReplayRowGroupData() {
 			column_ids.emplace_back(col.StorageOid());
 		}
 		Vector row_id_vector(LogicalType::ROW_TYPE, STANDARD_VECTOR_SIZE);
-		auto row_ids = FlatVector::GetDataMutable<row_t>(row_id_vector);
 		auto current_row_id = storage.GetTotalRows();
 		for (auto &chunk : new_row_groups.Chunks(transaction, column_ids)) {
+			auto row_id_writer = FlatVector::Writer<row_t>(row_id_vector, chunk.size());
 			for (idx_t r = 0; r < chunk.size(); r++) {
-				row_ids[r] = NumericCast<row_t>(current_row_id + r);
+				row_id_writer.WriteValue(NumericCast<row_t>(current_row_id + r));
 			}
 			current_row_id += chunk.size();
 			for (auto &index : indexes.Indexes()) {
@@ -1194,7 +1197,7 @@ void WriteAheadLogDeserializer::ReplayDelete() {
 
 	D_ASSERT(chunk.ColumnCount() == 1 && chunk.data[0].GetType() == LogicalType::ROW_TYPE);
 	auto &row_identifiers = chunk.data[0];
-	row_identifiers.Flatten(chunk.size());
+	row_identifiers.Flatten();
 	auto source_ids = FlatVector::GetData<row_t>(row_identifiers);
 
 	// Delete the row IDs from the current table.
@@ -1206,7 +1209,7 @@ void WriteAheadLogDeserializer::ReplayDelete() {
 		}
 	}
 	TableDeleteState delete_state;
-	storage.Delete(delete_state, context, row_identifiers, chunk.size());
+	storage.Delete(delete_state, context, *state.current_table, row_identifiers, chunk.size());
 }
 
 void WriteAheadLogDeserializer::ReplayUpdate() {

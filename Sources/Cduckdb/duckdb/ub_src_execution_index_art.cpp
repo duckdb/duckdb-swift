@@ -1,8 +1,8 @@
-#line 0 "src/execution/index/art/art_builder.cpp"
-#include "src/execution/index/art/art_builder.cpp"
-
 #line 0 "src/execution/index/art/art.cpp"
 #include "src/execution/index/art/art.cpp"
+
+#line 0 "src/execution/index/art/art_builder.cpp"
+#include "src/execution/index/art/art_builder.cpp"
 
 #line 0 "src/execution/index/art/art_index.cpp"
 #include "src/execution/index/art/art_index.cpp"
@@ -18,6 +18,9 @@
 
 #line 0 "src/execution/index/art/base_node.cpp"
 #include "src/execution/index/art/base_node.cpp"
+
+#line 0 "src/execution/index/art/const_prefix_handle.cpp"
+#include "src/execution/index/art/const_prefix_handle.cpp"
 
 #line 0 "src/execution/index/art/iterator.cpp"
 #include "src/execution/index/art/iterator.cpp"
@@ -42,7 +45,4 @@
 
 #line 0 "src/execution/index/art/prefix_handle.cpp"
 #include "src/execution/index/art/prefix_handle.cpp"
-
-#line 0 "src/execution/index/art/const_prefix_handle.cpp"
-#include "src/execution/index/art/const_prefix_handle.cpp"
 

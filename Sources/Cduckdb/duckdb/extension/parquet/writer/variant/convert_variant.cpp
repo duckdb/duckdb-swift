@@ -173,6 +173,8 @@ static unordered_set<VariantLogicalType> GetVariantType(const LogicalType &type)
 		return {VariantLogicalType::TIME_MICROS};
 	case LogicalTypeId::TIMESTAMP_TZ:
 		return {VariantLogicalType::TIMESTAMP_MICROS_TZ};
+	case LogicalTypeId::TIMESTAMP_TZ_NS:
+		return {VariantLogicalType::TIMESTAMP_NANOS_TZ};
 	case LogicalTypeId::TIMESTAMP:
 		return {VariantLogicalType::TIMESTAMP_MICROS};
 	case LogicalTypeId::TIMESTAMP_NS:
@@ -777,7 +779,7 @@ static void CreateValues(UnifiedVariantVectorData &variant, Vector &value, optio
                          optional_ptr<const SelectionVector> value_index_sel,
                          optional_ptr<const SelectionVector> result_sel,
                          optional_ptr<ParquetVariantShreddingState> shredding_state, idx_t count) {
-	auto &validity = FlatVector::Validity(value);
+	auto &validity = FlatVector::ValidityMutable(value);
 	auto value_data = FlatVector::GetDataMutable<string_t>(value);
 
 	for (idx_t i = 0; i < count; i++) {
@@ -898,11 +900,11 @@ static void ToParquetVariant(DataChunk &input, ExpressionState &state, Vector &r
 	// - metadata = BLOB
 	// - value = BLOB
 
-	auto &variant_vec = input.data[0];
+	const auto &variant_vec = input.data[0];
 	auto count = input.size();
 
 	RecursiveUnifiedVectorFormat recursive_format;
-	Vector::RecursiveToUnifiedFormat(variant_vec, count, recursive_format);
+	Vector::RecursiveToUnifiedFormat(variant_vec, recursive_format);
 	UnifiedVariantVectorData variant(recursive_format);
 
 	auto &result_vectors = StructVector::GetEntries(result);
@@ -994,8 +996,10 @@ static LogicalType GetParquetVariantType(optional_ptr<LogicalType> shredding = n
 	return res;
 }
 
-static unique_ptr<FunctionData> BindTransform(ClientContext &context, ScalarFunction &bound_function,
-                                              vector<unique_ptr<Expression>> &arguments) {
+static unique_ptr<FunctionData> BindTransform(BindScalarFunctionInput &input) {
+	auto &context = input.GetClientContext();
+	auto &bound_function = input.GetBoundFunction();
+	auto &arguments = input.GetArguments();
 	if (arguments.empty()) {
 		return nullptr;
 	}

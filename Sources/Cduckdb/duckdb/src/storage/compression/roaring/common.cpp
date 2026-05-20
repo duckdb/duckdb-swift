@@ -172,14 +172,13 @@ unique_ptr<AnalyzeState> RoaringInitAnalyze(ColumnData &col_data, PhysicalType t
 		// compatibility mode with old versions - disable roaring
 		return nullptr;
 	}
-	CompressionInfo info(col_data.GetBlockManager());
-	auto state = make_uniq<RoaringAnalyzeState>(info);
+	auto state = make_uniq<RoaringAnalyzeState>(col_data.GetBlockManager());
 	return std::move(state);
 }
 template <PhysicalType TYPE>
-bool RoaringAnalyze(AnalyzeState &state, Vector &input, idx_t count) {
+bool RoaringAnalyze(AnalyzeState &state, const Vector &input) {
 	auto &analyze_state = state.Cast<RoaringAnalyzeState>();
-	analyze_state.Analyze<TYPE>(input, count);
+	analyze_state.Analyze<TYPE>(input);
 	return true;
 }
 
@@ -198,9 +197,9 @@ unique_ptr<CompressionState> RoaringInitCompression(ColumnDataCheckpointData &ch
 }
 
 template <PhysicalType TYPE>
-void RoaringCompress(CompressionState &state_p, Vector &scan_vector, idx_t count) {
+void RoaringCompress(CompressionState &state_p, const Vector &scan_vector) {
 	auto &state = state_p.Cast<RoaringCompressState>();
-	state.Compress<TYPE>(scan_vector, count);
+	state.Compress<TYPE>(scan_vector);
 }
 
 void RoaringFinalizeCompress(CompressionState &state_p) {
@@ -237,7 +236,7 @@ void RoaringScanPartial(ColumnSegment &segment, ColumnScanState &state, idx_t sc
                         idx_t result_offset) {
 	auto &scan_state = state.scan_state->Cast<RoaringScanState>();
 	auto start = state.GetPositionInSegment();
-	auto &result_mask = FlatVector::Validity(result);
+	auto &result_mask = FlatVector::ValidityMutable(result);
 	scan_state.ScanPartial(start, result_mask, result_offset, scan_count);
 }
 void RoaringScanPartialBoolean(ColumnSegment &segment, ColumnScanState &state, idx_t scan_count, Vector &result,
@@ -250,7 +249,7 @@ void RoaringScanPartialBoolean(ColumnSegment &segment, ColumnScanState &state, i
 	ExtractValidityMaskToData(mask, result, result_offset, scan_count);
 }
 void RoaringScan(ColumnSegment &segment, ColumnScanState &state, idx_t scan_count, Vector &result) {
-	result.Flatten(scan_count);
+	result.Flatten();
 	RoaringScanPartial(segment, state, scan_count, result, 0);
 }
 
@@ -273,7 +272,7 @@ void RoaringFetchRow(ColumnSegment &segment, ColumnFetchState &state, row_t row_
 	idx_t container_idx = scan_state.GetContainerIndex(static_cast<idx_t>(row_id), internal_offset);
 	auto &container_state = scan_state.LoadContainer(container_idx, internal_offset);
 
-	scan_state.ScanInternal(container_state, 1, FlatVector::Validity(result), result_idx);
+	scan_state.ScanInternal(container_state, 1, FlatVector::ValidityMutable(result), result_idx);
 }
 void RoaringFetchRowBoolean(ColumnSegment &segment, ColumnFetchState &state, row_t row_id, Vector &result,
                             idx_t result_idx) {

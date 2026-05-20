@@ -23,6 +23,7 @@
 #include "duckdb/execution/operator/csv_scanner/csv_option.hpp"
 #include "duckdb/common/insertion_order_preserving_map.hpp"
 #include "duckdb/common/serialization_compatibility.hpp"
+#include "duckdb/storage/table/per_column_metadata_blocks.hpp"
 
 namespace duckdb {
 
@@ -205,6 +206,19 @@ protected:
 		}
 	}
 
+	// DuckDB Optional
+	template <typename T>
+	void WriteValue(const optional<T> &opt) {
+		if (!opt) {
+			OnNullableBegin(false);
+			OnNullableEnd();
+		} else {
+			OnNullableBegin(true);
+			WriteValue(opt.value());
+			OnNullableEnd();
+		}
+	}
+
 	// Pair
 	template <class K, class V>
 	void WriteValue(const std::pair<K, V> &pair) {
@@ -379,6 +393,9 @@ protected:
 	}
 	void WriteValue(optional_idx value) {
 		WriteValue(value.IsValid() ? value.GetIndex() : DConstants::INVALID_INDEX);
+	}
+	void WriteValue(PerColumnMetadataBlock value) {
+		WriteValue(value.GetPacked());
 	}
 };
 

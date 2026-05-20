@@ -57,7 +57,7 @@ public:
 			}
 			input_chunk.Initialize(BufferAllocator::Get(context), input_types);
 			for (idx_t c = 0; c < op.parameters.size(); c++) {
-				input_chunk.data[c].Reference(op.parameters[c]);
+				input_chunk.data[c].Reference(op.parameters[c], count_t(1));
 			}
 			input_chunk.SetCardinality(1);
 		}
@@ -313,7 +313,7 @@ string PhysicalTableScan::GetFilterInfo(const TableFilterSet &filter_set) const 
 	bool first_item = true;
 	for (auto &f : filter_set) {
 		auto filter_idx = f.GetIndex();
-		auto &filter = f.Filter();
+		auto &filter = f.Filter().Cast<ExpressionFilter>();
 		if (filter_idx < names.size()) {
 			if (!first_item) {
 				filters_info += "\n";
@@ -409,6 +409,10 @@ bool PhysicalTableScan::ParallelSource() const {
 		return false;
 	}
 	return true;
+}
+
+TableFunctionParallelism PhysicalTableScan::SourceParallelism() const {
+	return function.parallelism;
 }
 
 InsertionOrderPreservingMap<string> PhysicalTableScan::ExtraSourceParams(GlobalSourceState &gstate_p,

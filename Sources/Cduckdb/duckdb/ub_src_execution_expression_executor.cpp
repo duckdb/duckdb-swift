@@ -1,6 +1,3 @@
-#line 0 "src/execution/expression_executor/execute_between.cpp"
-#include "src/execution/expression_executor/execute_between.cpp"
-
 #line 0 "src/execution/expression_executor/execute_case.cpp"
 #include "src/execution/expression_executor/execute_case.cpp"
 

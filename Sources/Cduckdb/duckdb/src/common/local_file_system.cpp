@@ -110,7 +110,7 @@ bool LocalFileSystem::FileExists(const string &filename, optional_ptr<FileOpener
 	auto unicode_path = NormalizePathAndConvertToUnicode(*this, filename, opener);
 	const wchar_t *wpath = unicode_path.c_str();
 	if (_waccess(wpath, 0) == 0) {
-		struct _stati64 status;
+		struct _stati64 status; // typos:ignore
 		_wstati64(wpath, &status);
 		if (status.st_mode & S_IFREG) {
 			return true;
@@ -122,7 +122,7 @@ bool LocalFileSystem::IsPipe(const string &filename, optional_ptr<FileOpener> op
 	auto unicode_path = NormalizePathAndConvertToUnicode(*this, filename, opener);
 	const wchar_t *wpath = unicode_path.c_str();
 	if (_waccess(wpath, 0) == 0) {
-		struct _stati64 status;
+		struct _stati64 status; // typos:ignore
 		_wstati64(wpath, &status);
 		if (status.st_mode & _S_IFCHR) {
 			return true;
@@ -166,6 +166,13 @@ public:
 		}
 	};
 };
+
+static void CloseFileAndAppendError(int fd, string &extended_error) {
+	if (close(fd) == -1) {
+		extended_error += ". Also, failed closing file: ";
+		extended_error += strerror(errno);
+	}
+}
 
 static FileMetadata StatsFromStruct(struct stat s) {
 	FileMetadata file_metadata;
@@ -396,7 +403,11 @@ unique_ptr<FileHandle> LocalFileSystem::OpenFile(const string &path_p, FileOpenF
 		// OSX requires fcntl for Direct IO
 		rc = fcntl(fd, F_NOCACHE, 1);
 		if (rc == -1) {
-			throw IOException("Could not enable direct IO for file \"%s\": %s", path, strerror(errno));
+			int retained_errno = errno;
+			string extended_error = strerror(retained_errno);
+			CloseFileAndAppendError(fd, extended_error);
+			throw IOException({{"errno", std::to_string(retained_errno)}},
+			                  "Could not enable direct IO for file \"%s\": %s", path, extended_error);
 		}
 	}
 #endif
@@ -450,10 +461,7 @@ unique_ptr<FileHandle> LocalFileSystem::OpenFile(const string &path_p, FileOpenF
 						}
 					}
 				}
-				rc = close(fd);
-				if (rc == -1) {
-					extended_error += ". Also, failed closing file";
-				}
+				CloseFileAndAppendError(fd, extended_error);
 				extended_error += ". See also https://duckdb.org/docs/current/connect/concurrency";
 				throw IOException({{"errno", std::to_string(retained_errno)}}, "Could not set lock on file \"%s\": %s",
 				                  path, extended_error);

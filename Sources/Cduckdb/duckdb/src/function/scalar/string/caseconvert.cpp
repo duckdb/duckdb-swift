@@ -107,7 +107,7 @@ struct CaseConvertOperator {
 
 template <bool IS_UPPER>
 static void CaseConvertFunction(DataChunk &args, ExpressionState &state, Vector &result) {
-	UnaryExecutor::ExecuteString<string_t, string_t, CaseConvertOperator<IS_UPPER>>(args.data[0], result, args.size());
+	UnaryExecutor::ExecuteString<string_t, string_t, CaseConvertOperator<IS_UPPER>>(args.data[0], result);
 }
 
 namespace {
@@ -124,8 +124,7 @@ struct CaseConvertOperatorASCII {
 
 template <bool IS_UPPER>
 static void CaseConvertFunctionASCII(DataChunk &args, ExpressionState &state, Vector &result) {
-	UnaryExecutor::ExecuteString<string_t, string_t, CaseConvertOperatorASCII<IS_UPPER>>(args.data[0], result,
-	                                                                                     args.size());
+	UnaryExecutor::ExecuteString<string_t, string_t, CaseConvertOperatorASCII<IS_UPPER>>(args.data[0], result);
 }
 
 template <bool IS_UPPER>
@@ -142,12 +141,12 @@ static unique_ptr<BaseStatistics> CaseConvertPropagateStats(ClientContext &conte
 
 ScalarFunction LowerFun::GetFunction() {
 	return ScalarFunction("lower", {LogicalType::VARCHAR}, LogicalType::VARCHAR, CaseConvertFunction<false>, nullptr,
-	                      nullptr, CaseConvertPropagateStats<false>);
+	                      CaseConvertPropagateStats<false>);
 }
 
 ScalarFunction UpperFun::GetFunction() {
 	return ScalarFunction("upper", {LogicalType::VARCHAR}, LogicalType::VARCHAR, CaseConvertFunction<true>, nullptr,
-	                      nullptr, CaseConvertPropagateStats<true>);
+	                      CaseConvertPropagateStats<true>);
 }
 
 } // namespace duckdb

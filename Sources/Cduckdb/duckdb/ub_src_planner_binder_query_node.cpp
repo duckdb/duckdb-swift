@@ -1,14 +1,14 @@
+#line 0 "src/planner/binder/query_node/bind_cte_node.cpp"
+#include "src/planner/binder/query_node/bind_cte_node.cpp"
+
+#line 0 "src/planner/binder/query_node/bind_recursive_cte_node.cpp"
+#include "src/planner/binder/query_node/bind_recursive_cte_node.cpp"
+
 #line 0 "src/planner/binder/query_node/bind_select_node.cpp"
 #include "src/planner/binder/query_node/bind_select_node.cpp"
 
 #line 0 "src/planner/binder/query_node/bind_setop_node.cpp"
 #include "src/planner/binder/query_node/bind_setop_node.cpp"
-
-#line 0 "src/planner/binder/query_node/bind_recursive_cte_node.cpp"
-#include "src/planner/binder/query_node/bind_recursive_cte_node.cpp"
-
-#line 0 "src/planner/binder/query_node/bind_cte_node.cpp"
-#include "src/planner/binder/query_node/bind_cte_node.cpp"
 
 #line 0 "src/planner/binder/query_node/bind_statement_node.cpp"
 #include "src/planner/binder/query_node/bind_statement_node.cpp"

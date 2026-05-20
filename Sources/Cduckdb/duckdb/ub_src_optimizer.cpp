@@ -10,9 +10,6 @@
 #line 0 "src/optimizer/column_lifetime_analyzer.cpp"
 #include "src/optimizer/column_lifetime_analyzer.cpp"
 
-#line 0 "src/optimizer/empty_result_pullup.cpp"
-#include "src/optimizer/empty_result_pullup.cpp"
-
 #line 0 "src/optimizer/common_aggregate_optimizer.cpp"
 #include "src/optimizer/common_aggregate_optimizer.cpp"
 
@@ -34,6 +31,9 @@
 #line 0 "src/optimizer/deliminator.cpp"
 #include "src/optimizer/deliminator.cpp"
 
+#line 0 "src/optimizer/empty_result_pullup.cpp"
+#include "src/optimizer/empty_result_pullup.cpp"
+
 #line 0 "src/optimizer/expression_heuristics.cpp"
 #include "src/optimizer/expression_heuristics.cpp"
 
@@ -52,6 +52,9 @@
 #line 0 "src/optimizer/in_clause_rewriter.cpp"
 #include "src/optimizer/in_clause_rewriter.cpp"
 
+#line 0 "src/optimizer/join_elimination.cpp"
+#include "src/optimizer/join_elimination.cpp"
+
 #line 0 "src/optimizer/join_filter_pushdown_optimizer.cpp"
 #include "src/optimizer/join_filter_pushdown_optimizer.cpp"
 
@@ -61,14 +64,23 @@
 #line 0 "src/optimizer/late_materialization_helper.cpp"
 #include "src/optimizer/late_materialization_helper.cpp"
 
+#line 0 "src/optimizer/limit_pushdown.cpp"
+#include "src/optimizer/limit_pushdown.cpp"
+
 #line 0 "src/optimizer/optimizer.cpp"
 #include "src/optimizer/optimizer.cpp"
 
 #line 0 "src/optimizer/outer_join_simplification.cpp"
 #include "src/optimizer/outer_join_simplification.cpp"
 
-#line 0 "src/optimizer/join_elimination.cpp"
-#include "src/optimizer/join_elimination.cpp"
+#line 0 "src/optimizer/partial_aggregate_pushdown.cpp"
+#include "src/optimizer/partial_aggregate_pushdown.cpp"
+
+#line 0 "src/optimizer/partitioned_execution.cpp"
+#include "src/optimizer/partitioned_execution.cpp"
+
+#line 0 "src/optimizer/projection_pullup.cpp"
+#include "src/optimizer/projection_pullup.cpp"
 
 #line 0 "src/optimizer/regex_range_filter.cpp"
 #include "src/optimizer/regex_range_filter.cpp"
@@ -82,11 +94,14 @@
 #line 0 "src/optimizer/row_group_pruner.cpp"
 #include "src/optimizer/row_group_pruner.cpp"
 
+#line 0 "src/optimizer/row_number_rewriter.cpp"
+#include "src/optimizer/row_number_rewriter.cpp"
+
+#line 0 "src/optimizer/sampling_pushdown.cpp"
+#include "src/optimizer/sampling_pushdown.cpp"
+
 #line 0 "src/optimizer/statistics_propagator.cpp"
 #include "src/optimizer/statistics_propagator.cpp"
-
-#line 0 "src/optimizer/limit_pushdown.cpp"
-#include "src/optimizer/limit_pushdown.cpp"
 
 #line 0 "src/optimizer/topn_optimizer.cpp"
 #include "src/optimizer/topn_optimizer.cpp"
@@ -99,13 +114,4 @@
 
 #line 0 "src/optimizer/window_self_join.cpp"
 #include "src/optimizer/window_self_join.cpp"
-
-#line 0 "src/optimizer/row_number_rewriter.cpp"
-#include "src/optimizer/row_number_rewriter.cpp"
-
-#line 0 "src/optimizer/sampling_pushdown.cpp"
-#include "src/optimizer/sampling_pushdown.cpp"
-
-#line 0 "src/optimizer/projection_pullup.cpp"
-#include "src/optimizer/projection_pullup.cpp"
 

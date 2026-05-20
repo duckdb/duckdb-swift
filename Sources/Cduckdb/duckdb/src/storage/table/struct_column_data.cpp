@@ -1,4 +1,5 @@
 #include "duckdb/storage/table/struct_column_data.hpp"
+#include "duckdb/common/vector/flat_vector.hpp"
 #include "duckdb/common/vector/struct_vector.hpp"
 #include "duckdb/storage/statistics/struct_stats.hpp"
 #include "duckdb/common/serializer/deserializer.hpp"
@@ -135,6 +136,7 @@ static void ScanChild(ColumnScanState &state, Vector &result, const std::functio
 		target.Reset();
 		input.Reset();
 		auto scan_count = callback(input.data[0]);
+		FlatVector::SetSize(input.data[0], scan_count);
 		input.SetCardinality(scan_count);
 		executor.Execute(input, target);
 		result.Reference(target.data[0]);
@@ -162,7 +164,7 @@ idx_t StructColumnData::Scan(TransactionData transaction, idx_t vector_index, Co
 		auto &target_vector = GetFieldVectorForScan(result, child.vector_index);
 		if (!child.should_scan) {
 			// if we are not scanning this vector - set it to NULL
-			ConstantVector::SetNull(target_vector);
+			ConstantVector::SetNull(target_vector, count_t(target_count));
 			continue;
 		}
 		ScanChild(state, target_vector, [&](Vector &child_result) {
@@ -170,6 +172,7 @@ idx_t StructColumnData::Scan(TransactionData transaction, idx_t vector_index, Co
 			return scan_count;
 		});
 	}
+	FlatVector::SetSize(result, scan_count);
 	return scan_count;
 }
 
@@ -185,6 +188,7 @@ idx_t StructColumnData::ScanCount(ColumnScanState &state, Vector &result, idx_t 
 		if (!child.should_scan) {
 			// if we are not scanning this vector - set it to NULL
 			target_vector.SetVectorType(VectorType::CONSTANT_VECTOR);
+			FlatVector::SetSize(target_vector, count_t(count));
 			ConstantVector::SetNull(target_vector, true);
 			continue;
 		}
@@ -221,23 +225,31 @@ void StructColumnData::InitializeAppend(ColumnAppendState &state) {
 	}
 }
 
-void StructColumnData::Append(BaseStatistics &stats, ColumnAppendState &state, Vector &vector, idx_t count) {
+void StructColumnData::Append(ColumnAppendState &state, const Vector &vector, idx_t count) {
 	if (vector.GetVectorType() != VectorType::FLAT_VECTOR) {
 		Vector append_vector(Vector::Ref(vector));
-		append_vector.Flatten(count);
-		Append(stats, state, append_vector, count);
+		append_vector.Flatten();
+		Append(state, append_vector, count);
 		return;
 	}
 
 	// append the null values
-	validity->Append(stats, state.child_appends[0], vector, count);
+	validity->Append(state.child_appends[0], vector, count);
 
 	auto &child_entries = StructVector::GetEntries(vector);
 	for (idx_t i = 0; i < child_entries.size(); i++) {
-		sub_columns[i]->Append(StructStats::GetChildStats(stats, i), state.child_appends[i + 1], child_entries[i],
-		                       count);
+		sub_columns[i]->Append(state.child_appends[i + 1], child_entries[i], count);
 	}
 	this->count += count;
+}
+
+void StructColumnData::FinalizeAppend(ColumnDataFinalizeAppendState &finalize_state, ColumnAppendState &state) {
+	validity->FinalizeAppendLocked(finalize_state, state.child_appends[0]);
+
+	for (idx_t i = 0; i < sub_columns.size(); i++) {
+		ColumnDataFinalizeAppendState child_finalize_state(finalize_state, LogicalTypeId::STRUCT, i);
+		sub_columns[i]->FinalizeAppendLocked(child_finalize_state, state.child_appends[i + 1]);
+	}
 }
 
 void StructColumnData::RevertAppend(row_t new_count) {
@@ -266,17 +278,17 @@ idx_t StructColumnData::Fetch(ColumnScanState &state, row_t row_id, Vector &resu
 	return scan_count;
 }
 
-void StructColumnData::Update(TransactionData transaction, DataTable &data_table, idx_t column_index,
+void StructColumnData::Update(TransactionData transaction, DuckTableEntry &table_entry, idx_t column_index,
                               Vector &update_vector, row_t *row_ids, idx_t update_count, idx_t row_group_start) {
-	validity->Update(transaction, data_table, column_index, update_vector, row_ids, update_count, row_group_start);
+	validity->Update(transaction, table_entry, column_index, update_vector, row_ids, update_count, row_group_start);
 	auto &child_entries = StructVector::GetEntries(update_vector);
 	for (idx_t i = 0; i < child_entries.size(); i++) {
-		sub_columns[i]->Update(transaction, data_table, column_index, child_entries[i], row_ids, update_count,
+		sub_columns[i]->Update(transaction, table_entry, column_index, child_entries[i], row_ids, update_count,
 		                       row_group_start);
 	}
 }
 
-void StructColumnData::UpdateColumn(TransactionData transaction, DataTable &data_table,
+void StructColumnData::UpdateColumn(TransactionData transaction, DuckTableEntry &table_entry,
                                     const vector<column_t> &column_path, Vector &update_vector, row_t *row_ids,
                                     idx_t update_count, idx_t depth, idx_t row_group_start) {
 	// we can never DIRECTLY update a struct column
@@ -286,13 +298,13 @@ void StructColumnData::UpdateColumn(TransactionData transaction, DataTable &data
 	auto update_column = column_path[depth];
 	if (update_column == 0) {
 		// update the validity column
-		validity->UpdateColumn(transaction, data_table, column_path, update_vector, row_ids, update_count, depth + 1,
+		validity->UpdateColumn(transaction, table_entry, column_path, update_vector, row_ids, update_count, depth + 1,
 		                       row_group_start);
 	} else {
 		if (update_column > sub_columns.size()) {
 			throw InternalException("Update column_path out of range");
 		}
-		sub_columns[update_column - 1]->UpdateColumn(transaction, data_table, column_path, update_vector, row_ids,
+		sub_columns[update_column - 1]->UpdateColumn(transaction, table_entry, column_path, update_vector, row_ids,
 		                                             update_count, depth + 1, row_group_start);
 	}
 }

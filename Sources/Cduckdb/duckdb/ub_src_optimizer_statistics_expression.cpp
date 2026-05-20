@@ -10,6 +10,9 @@
 #line 0 "src/optimizer/statistics/expression/propagate_cast.cpp"
 #include "src/optimizer/statistics/expression/propagate_cast.cpp"
 
+#line 0 "src/optimizer/statistics/expression/propagate_columnref.cpp"
+#include "src/optimizer/statistics/expression/propagate_columnref.cpp"
+
 #line 0 "src/optimizer/statistics/expression/propagate_comparison.cpp"
 #include "src/optimizer/statistics/expression/propagate_comparison.cpp"
 
@@ -18,9 +21,6 @@
 
 #line 0 "src/optimizer/statistics/expression/propagate_constant.cpp"
 #include "src/optimizer/statistics/expression/propagate_constant.cpp"
-
-#line 0 "src/optimizer/statistics/expression/propagate_columnref.cpp"
-#include "src/optimizer/statistics/expression/propagate_columnref.cpp"
 
 #line 0 "src/optimizer/statistics/expression/propagate_function.cpp"
 #include "src/optimizer/statistics/expression/propagate_function.cpp"

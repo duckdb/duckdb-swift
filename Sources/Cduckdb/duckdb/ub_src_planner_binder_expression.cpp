@@ -43,9 +43,6 @@
 #line 0 "src/planner/binder/expression/bind_positional_reference_expression.cpp"
 #include "src/planner/binder/expression/bind_positional_reference_expression.cpp"
 
-#line 0 "src/planner/binder/expression/bind_unpacked_star_expression.cpp"
-#include "src/planner/binder/expression/bind_unpacked_star_expression.cpp"
-
 #line 0 "src/planner/binder/expression/bind_star_expression.cpp"
 #include "src/planner/binder/expression/bind_star_expression.cpp"
 
@@ -57,6 +54,9 @@
 
 #line 0 "src/planner/binder/expression/bind_unnest_expression.cpp"
 #include "src/planner/binder/expression/bind_unnest_expression.cpp"
+
+#line 0 "src/planner/binder/expression/bind_unpacked_star_expression.cpp"
+#include "src/planner/binder/expression/bind_unpacked_star_expression.cpp"
 
 #line 0 "src/planner/binder/expression/bind_window_expression.cpp"
 #include "src/planner/binder/expression/bind_window_expression.cpp"
