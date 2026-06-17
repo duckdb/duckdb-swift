@@ -98,11 +98,11 @@ public struct ResultSet: Sendable {
     return nil
   }
   
-  func columnDataType(at index: DBInt) -> DatabaseType {
+  public func columnDataType(at index: DBInt) -> DatabaseType {
     storage.columnDataType(at: index)
   }
 
-  func columnLogicalType(at index: DBInt) -> LogicalType {
+  public func columnLogicalType(at index: DBInt) -> LogicalType {
     storage.columnLogicalType(at: index)
   }
   
