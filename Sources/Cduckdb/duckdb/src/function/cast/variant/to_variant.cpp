@@ -111,7 +111,7 @@ struct VariantCastData : BoundCastData {
 	LogicalType shredded_type;
 
 	unique_ptr<BoundCastData> Copy() const override {
-		return make_uniq<VariantCastData>(shredded_type);
+		return make_uniq<VariantCastData>(*this);
 	}
 };
 
@@ -214,7 +214,7 @@ static bool CastToVARIANT(Vector &source, Vector &result, idx_t count, CastParam
 	offsets.Initialize(Allocator::DefaultAllocator(),
 	                   {LogicalType::UINTEGER, LogicalType::UINTEGER, LogicalType::UINTEGER, LogicalType::UINTEGER},
 	                   count);
-	offsets.SetCardinality(count);
+	offsets.SetChildCardinality(count);
 	auto &keys = VariantVector::GetKeys(result);
 	auto &keys_entry = ListVector::GetChildMutable(keys);
 

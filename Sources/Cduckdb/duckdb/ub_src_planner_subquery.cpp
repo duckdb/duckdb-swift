@@ -1,3 +1,6 @@
+#line 0 "src/planner/subquery/delim_join_cte_rewriter.cpp"
+#include "src/planner/subquery/delim_join_cte_rewriter.cpp"
+
 #line 0 "src/planner/subquery/flatten_dependent_join.cpp"
 #include "src/planner/subquery/flatten_dependent_join.cpp"
 

@@ -4,11 +4,17 @@
 #line 0 "src/optimizer/join_order/cost_model.cpp"
 #include "src/optimizer/join_order/cost_model.cpp"
 
+#line 0 "src/optimizer/join_order/filter_info.cpp"
+#include "src/optimizer/join_order/filter_info.cpp"
+
 #line 0 "src/optimizer/join_order/join_node.cpp"
 #include "src/optimizer/join_order/join_node.cpp"
 
 #line 0 "src/optimizer/join_order/join_order_optimizer.cpp"
 #include "src/optimizer/join_order/join_order_optimizer.cpp"
+
+#line 0 "src/optimizer/join_order/join_predicate.cpp"
+#include "src/optimizer/join_order/join_predicate.cpp"
 
 #line 0 "src/optimizer/join_order/join_relation_set.cpp"
 #include "src/optimizer/join_order/join_relation_set.cpp"

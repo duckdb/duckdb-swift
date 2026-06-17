@@ -1,6 +1,3 @@
-#line 0 "src/common/allocator.cpp"
-#include "src/common/allocator.cpp"
-
 #line 0 "src/common/assert.cpp"
 #include "src/common/assert.cpp"
 
@@ -91,8 +88,14 @@
 #line 0 "src/common/hive_partitioning.cpp"
 #include "src/common/hive_partitioning.cpp"
 
+#line 0 "src/common/identifier.cpp"
+#include "src/common/identifier.cpp"
+
 #line 0 "src/common/local_file_system.cpp"
 #include "src/common/local_file_system.cpp"
+
+#line 0 "src/common/memory_mapped_file.cpp"
+#include "src/common/memory_mapped_file.cpp"
 
 #line 0 "src/common/opener_file_system.cpp"
 #include "src/common/opener_file_system.cpp"
@@ -118,11 +121,11 @@
 #line 0 "src/common/render_tree.cpp"
 #include "src/common/render_tree.cpp"
 
-#line 0 "src/common/serialization_compatibility.cpp"
-#include "src/common/serialization_compatibility.cpp"
-
 #line 0 "src/common/stacktrace.cpp"
 #include "src/common/stacktrace.cpp"
+
+#line 0 "src/common/storage_compatibility.cpp"
+#include "src/common/storage_compatibility.cpp"
 
 #line 0 "src/common/string_util.cpp"
 #include "src/common/string_util.cpp"

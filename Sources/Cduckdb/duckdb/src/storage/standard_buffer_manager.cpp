@@ -20,6 +20,11 @@ namespace duckdb {
 #ifdef DUCKDB_DEBUG_DESTROY_BLOCKS
 static void WriteGarbageIntoBuffer(BlockLock &lock, BlockHandle &block) {
 	auto &buffer = block.GetMemory().GetBuffer(lock);
+	if (!buffer->OwnsInternalBuffer()) {
+		// don't write garbage into mmap buffers
+		// this would directly be written back into the file
+		return;
+	}
 	memset(buffer->GetDataMutable(), 0xa5, buffer->Size()); // 0xa5 is default memory in debug mode
 }
 
@@ -43,12 +48,12 @@ unique_ptr<FileBuffer> StandardBufferManager::ConstructManagedBuffer(idx_t size,
 	if (type == FileBufferType::BLOCK) {
 		throw InternalException("ConstructManagedBuffer cannot be used to construct blocks");
 	}
-	if (source) {
+	if (source && source->OwnsInternalBuffer()) {
 		auto tmp = std::move(source);
 		D_ASSERT(tmp->AllocSize() == BufferManager::GetAllocSize(size + block_header_size));
 		result = make_uniq<FileBuffer>(*tmp, type, block_header_size);
 	} else {
-		// non re-usable buffer: allocate a new buffer
+		// non re-usable buffer (or mmap-backed, which we cannot rewrite): allocate a new buffer
 		result = make_uniq<FileBuffer>(BlockAllocator::Get(db), type, size, block_header_size);
 	}
 	result->Initialize(DBConfig::GetConfig(db).options.debug_initialize);
@@ -371,7 +376,8 @@ void StandardBufferManager::PurgeQueue(const BlockHandle &handle) {
 }
 
 void StandardBufferManager::AddToEvictionQueue(shared_ptr<BlockHandle> &handle) {
-	buffer_pool.AddToEvictionQueue(handle);
+	auto lock = handle->GetMemory().GetLock();
+	buffer_pool.AddToEvictionQueue(lock, handle);
 }
 
 void StandardBufferManager::VerifyZeroReaders(BlockLock &lock, shared_ptr<BlockHandle> &handle) {
@@ -407,7 +413,7 @@ void StandardBufferManager::Unpin(shared_ptr<BlockHandle> &handle) {
 		if (new_readers == 0) {
 			VerifyZeroReaders(lock, handle);
 			if (block_memory.MustAddToEvictionQueue()) {
-				purge = buffer_pool.AddToEvictionQueue(handle);
+				purge = buffer_pool.AddToEvictionQueue(lock, handle);
 			} else {
 				block_memory.Unload(lock);
 			}
@@ -566,6 +572,8 @@ unique_ptr<FileBuffer> StandardBufferManager::ReadTemporaryBuffer(QueryContext c
 	handle.reset();
 
 	// Delete the file and return the buffer.
+	// DeleteTemporaryFile already decrements evicted_data_per_tag for the .block path; do not
+	// decrement again here or the counter underflows on every read-back.
 	DeleteTemporaryFile(block.GetMemory());
 
 	return buffer;

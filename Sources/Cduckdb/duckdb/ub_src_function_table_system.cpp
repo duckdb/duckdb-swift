@@ -46,6 +46,9 @@
 #line 0 "src/function/table/system/duckdb_memory.cpp"
 #include "src/function/table/system/duckdb_memory.cpp"
 
+#line 0 "src/function/table/system/duckdb_metrics.cpp"
+#include "src/function/table/system/duckdb_metrics.cpp"
+
 #line 0 "src/function/table/system/duckdb_optimizers.cpp"
 #include "src/function/table/system/duckdb_optimizers.cpp"
 

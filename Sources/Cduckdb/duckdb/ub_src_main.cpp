@@ -76,12 +76,6 @@
 #line 0 "src/main/prepared_statement_data.cpp"
 #include "src/main/prepared_statement_data.cpp"
 
-#line 0 "src/main/profiling_info.cpp"
-#include "src/main/profiling_info.cpp"
-
-#line 0 "src/main/profiling_utils.cpp"
-#include "src/main/profiling_utils.cpp"
-
 #line 0 "src/main/query_profiler.cpp"
 #include "src/main/query_profiler.cpp"
 

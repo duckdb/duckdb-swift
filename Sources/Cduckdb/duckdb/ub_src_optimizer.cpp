@@ -49,6 +49,9 @@
 #line 0 "src/optimizer/filter_pushdown.cpp"
 #include "src/optimizer/filter_pushdown.cpp"
 
+#line 0 "src/optimizer/grouping_sets_optimizer.cpp"
+#include "src/optimizer/grouping_sets_optimizer.cpp"
+
 #line 0 "src/optimizer/in_clause_rewriter.cpp"
 #include "src/optimizer/in_clause_rewriter.cpp"
 
@@ -84,6 +87,9 @@
 
 #line 0 "src/optimizer/regex_range_filter.cpp"
 #include "src/optimizer/regex_range_filter.cpp"
+
+#line 0 "src/optimizer/remote_pushdown_optimizer.cpp"
+#include "src/optimizer/remote_pushdown_optimizer.cpp"
 
 #line 0 "src/optimizer/remove_duplicate_groups.cpp"
 #include "src/optimizer/remove_duplicate_groups.cpp"

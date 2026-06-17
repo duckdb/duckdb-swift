@@ -7,6 +7,9 @@
 #line 0 "src/function/cast_rules.cpp"
 #include "src/function/cast_rules.cpp"
 
+#line 0 "src/function/combine_types_rules.cpp"
+#include "src/function/combine_types_rules.cpp"
+
 #line 0 "src/function/compression_config.cpp"
 #include "src/function/compression_config.cpp"
 
