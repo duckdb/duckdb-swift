@@ -27,47 +27,10 @@ import Foundation
 public extension Decimal {
   
   init(_ source: IntHuge) {
-    let magnitude =  source.magnitude
-    let mantissa: (UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
-    let significantBitCount = magnitude.bitWidth - magnitude.leadingZeroBitCount
-    let length = (significantBitCount + (UInt16.bitWidth - 1)) / UInt16.bitWidth
-    mantissa.0 = UInt16(truncatingIfNeeded: magnitude >> (0 * 16))
-    mantissa.1 = UInt16(truncatingIfNeeded: magnitude >> (1 * 16))
-    mantissa.2 = UInt16(truncatingIfNeeded: magnitude >> (2 * 16))
-    mantissa.3 = UInt16(truncatingIfNeeded: magnitude >> (3 * 16))
-    mantissa.4 = UInt16(truncatingIfNeeded: magnitude >> (4 * 16))
-    mantissa.5 = UInt16(truncatingIfNeeded: magnitude >> (5 * 16))
-    mantissa.6 = UInt16(truncatingIfNeeded: magnitude >> (6 * 16))
-    mantissa.7 = UInt16(truncatingIfNeeded: magnitude >> (7 * 16))
-    self = .init(
-      _exponent: 0,
-      _length: UInt32(length),
-      _isNegative: source.signum() < 0 ? 1 : 0,
-      _isCompact: 0,
-      _reserved: 0,
-      _mantissa: mantissa
-    )
+    self = Decimal(string: source.description)!
   }
   
   init(_ source: UIntHuge) {
-    let mantissa: (UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
-    let significantBitCount = source.bitWidth - source.leadingZeroBitCount
-    let length = (significantBitCount + (UInt16.bitWidth - 1)) / UInt16.bitWidth
-    mantissa.0 = UInt16(truncatingIfNeeded: source >> (0 * 16))
-    mantissa.1 = UInt16(truncatingIfNeeded: source >> (1 * 16))
-    mantissa.2 = UInt16(truncatingIfNeeded: source >> (2 * 16))
-    mantissa.3 = UInt16(truncatingIfNeeded: source >> (3 * 16))
-    mantissa.4 = UInt16(truncatingIfNeeded: source >> (4 * 16))
-    mantissa.5 = UInt16(truncatingIfNeeded: source >> (5 * 16))
-    mantissa.6 = UInt16(truncatingIfNeeded: source >> (6 * 16))
-    mantissa.7 = UInt16(truncatingIfNeeded: source >> (7 * 16))
-    self = .init(
-      _exponent: 0,
-      _length: UInt32(length),
-      _isNegative: 0,
-      _isCompact: 0,
-      _reserved: 0,
-      _mantissa: mantissa
-    )
+    self = Decimal(string: source.description)!
   }
 }
