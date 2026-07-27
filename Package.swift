@@ -3,23 +3,30 @@
 import PackageDescription
 
 #if os(macOS)
-// Prebuilt static lib (arm64 only), wrapped as an xcframework and checked
-// into Binaries/CduckdbBinary.xcframework. Rebuild whenever the DuckDB
-// source or this fork's patch changes via:
+// Prebuilt static lib (arm64 only) checked into
+// Binaries/CduckdbBinary.xcframework/macos-arm64/libCduckdb.a. Rebuild
+// whenever the DuckDB source or this fork's patch changes via:
 //   swift build -c release --target Cduckdb --arch arm64   (on the Linux-source branch)
 //   ar rcs libCduckdb.a .build/release/Cduckdb.o
 //   xcodebuild -create-xcframework -library libCduckdb.a -output Binaries/CduckdbBinary.xcframework
-let cduckdbBinaryTarget: Target = .binaryTarget(
-  name: "CduckdbBinary",
-  path: "Binaries/CduckdbBinary.xcframework"
-)
+//
+// Cduckdb itself only supplies the public C header (no sources to compile).
+// The actual link against the prebuilt archive happens on the DuckDB Swift
+// target below — putting linkerSettings on an empty Cduckdb target instead
+// trips a Swift Build (Xcode build system) quirk that expects a phantom
+// merged Cduckdb.o that never gets produced.
 let cduckdbTarget: Target = .target(
   name: "Cduckdb",
-  dependencies: ["CduckdbBinary"],
   path: "Sources/CduckdbPrebuilt",
   publicHeadersPath: "include"
 )
-let platformSpecificTargets: [Target] = [cduckdbBinaryTarget]
+let duckdbLinkerSettings: [LinkerSetting] = [
+  .unsafeFlags([
+    "-L\(Context.packageDirectory)/Binaries/CduckdbBinary.xcframework/macos-arm64",
+    "-lCduckdb"
+  ])
+]
+let platformSpecificTargets: [Target] = []
 #else
 let cduckdbTarget: Target = .target(
       name: "Cduckdb",
@@ -586,6 +593,7 @@ let cduckdbTarget: Target = .target(
         .define("DUCKDB_BUILD_LIBRARY")
       ]
     )
+let duckdbLinkerSettings: [LinkerSetting] = []
 let platformSpecificTargets: [Target] = []
 #endif
 
@@ -598,7 +606,8 @@ let package = Package(
   targets: [
     .target(
       name: "DuckDB",
-      dependencies: ["Cduckdb"]
+      dependencies: ["Cduckdb"],
+      linkerSettings: duckdbLinkerSettings
     ),
     cduckdbTarget,
     .testTarget(
