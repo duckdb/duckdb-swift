@@ -2,18 +2,33 @@
 
 import PackageDescription
 
-let package = Package(
-
-  name: "DuckDB",
-  products: [
-    .library(name: "DuckDB", targets: ["DuckDB"]),
-  ],
-  targets: [
-    .target(
-      name: "DuckDB",
-      dependencies: ["Cduckdb"]
-    ),
-    .target(
+#if os(macOS)
+// Prebuilt static lib (arm64 only) checked into
+// Binaries/CduckdbBinary.xcframework/macos-arm64/libCduckdb.a. Rebuild
+// whenever the DuckDB source or this fork's patch changes via:
+//   swift build -c release --target Cduckdb --arch arm64   (on the Linux-source branch)
+//   ar rcs libCduckdb.a .build/release/Cduckdb.o
+//   xcodebuild -create-xcframework -library libCduckdb.a -output Binaries/CduckdbBinary.xcframework
+//
+// Cduckdb itself only supplies the public C header (no sources to compile).
+// The actual link against the prebuilt archive happens on the DuckDB Swift
+// target below — putting linkerSettings on an empty Cduckdb target instead
+// trips a Swift Build (Xcode build system) quirk that expects a phantom
+// merged Cduckdb.o that never gets produced.
+let cduckdbTarget: Target = .target(
+  name: "Cduckdb",
+  path: "Sources/CduckdbPrebuilt",
+  publicHeadersPath: "include"
+)
+let duckdbLinkerSettings: [LinkerSetting] = [
+  .unsafeFlags([
+    "-L\(Context.packageDirectory)/Binaries/CduckdbBinary.xcframework/macos-arm64",
+    "-lCduckdb"
+  ])
+]
+let platformSpecificTargets: [Target] = []
+#else
+let cduckdbTarget: Target = .target(
       name: "Cduckdb",
       sources: [
         "duckdb/ub_src_catalog.cpp",
@@ -577,11 +592,28 @@ let package = Package(
         .define("DUCKDB_EXTENSION_JSON_LINKED"),
         .define("DUCKDB_BUILD_LIBRARY")
       ]
+    )
+let duckdbLinkerSettings: [LinkerSetting] = []
+let platformSpecificTargets: [Target] = []
+#endif
+
+let package = Package(
+
+  name: "DuckDB",
+  products: [
+    .library(name: "DuckDB", targets: ["DuckDB"]),
+  ],
+  targets: [
+    .target(
+      name: "DuckDB",
+      dependencies: ["Cduckdb"],
+      linkerSettings: duckdbLinkerSettings
     ),
+    cduckdbTarget,
     .testTarget(
       name: "DuckDBTests",
       dependencies: ["DuckDB"]
     )
-  ],
+  ] + platformSpecificTargets,
   cxxLanguageStandard: .cxx17
 )
