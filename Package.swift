@@ -2,18 +2,24 @@
 
 import PackageDescription
 
-let package = Package(
-
-  name: "DuckDB",
-  products: [
-    .library(name: "DuckDB", targets: ["DuckDB"]),
-  ],
-  targets: [
-    .target(
-      name: "DuckDB",
-      dependencies: ["Cduckdb"]
-    ),
-    .target(
+#if os(macOS)
+let cduckdbTarget: Target = .target(
+  name: "Cduckdb",
+  path: "Sources/CduckdbPrebuilt",
+  publicHeadersPath: "include",
+  linkerSettings: [
+    // Prebuilt static lib (arm64 only) checked into Binaries/macos-arm64,
+    // built from the same sources as the Linux branch below. Rebuild via
+    // `swift build -c release --target Cduckdb --arch arm64` and re-archive
+    // whenever the DuckDB source or this fork's patch changes.
+    .unsafeFlags([
+      "-L\(Context.packageDirectory)/Binaries/macos-arm64",
+      "-lCduckdb"
+    ])
+  ]
+)
+#else
+let cduckdbTarget: Target = .target(
       name: "Cduckdb",
       sources: [
         "duckdb/ub_src_catalog.cpp",
@@ -577,7 +583,21 @@ let package = Package(
         .define("DUCKDB_EXTENSION_JSON_LINKED"),
         .define("DUCKDB_BUILD_LIBRARY")
       ]
+    )
+#endif
+
+let package = Package(
+
+  name: "DuckDB",
+  products: [
+    .library(name: "DuckDB", targets: ["DuckDB"]),
+  ],
+  targets: [
+    .target(
+      name: "DuckDB",
+      dependencies: ["Cduckdb"]
     ),
+    cduckdbTarget,
     .testTarget(
       name: "DuckDBTests",
       dependencies: ["DuckDB"]
