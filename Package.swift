@@ -3,21 +3,23 @@
 import PackageDescription
 
 #if os(macOS)
+// Prebuilt static lib (arm64 only), wrapped as an xcframework and checked
+// into Binaries/CduckdbBinary.xcframework. Rebuild whenever the DuckDB
+// source or this fork's patch changes via:
+//   swift build -c release --target Cduckdb --arch arm64   (on the Linux-source branch)
+//   ar rcs libCduckdb.a .build/release/Cduckdb.o
+//   xcodebuild -create-xcframework -library libCduckdb.a -output Binaries/CduckdbBinary.xcframework
+let cduckdbBinaryTarget: Target = .binaryTarget(
+  name: "CduckdbBinary",
+  path: "Binaries/CduckdbBinary.xcframework"
+)
 let cduckdbTarget: Target = .target(
   name: "Cduckdb",
+  dependencies: ["CduckdbBinary"],
   path: "Sources/CduckdbPrebuilt",
-  publicHeadersPath: "include",
-  linkerSettings: [
-    // Prebuilt static lib (arm64 only) checked into Binaries/macos-arm64,
-    // built from the same sources as the Linux branch below. Rebuild via
-    // `swift build -c release --target Cduckdb --arch arm64` and re-archive
-    // whenever the DuckDB source or this fork's patch changes.
-    .unsafeFlags([
-      "-L\(Context.packageDirectory)/Binaries/macos-arm64",
-      "-lCduckdb"
-    ])
-  ]
+  publicHeadersPath: "include"
 )
+let platformSpecificTargets: [Target] = [cduckdbBinaryTarget]
 #else
 let cduckdbTarget: Target = .target(
       name: "Cduckdb",
@@ -584,6 +586,7 @@ let cduckdbTarget: Target = .target(
         .define("DUCKDB_BUILD_LIBRARY")
       ]
     )
+let platformSpecificTargets: [Target] = []
 #endif
 
 let package = Package(
@@ -602,6 +605,6 @@ let package = Package(
       name: "DuckDBTests",
       dependencies: ["DuckDB"]
     )
-  ],
+  ] + platformSpecificTargets,
   cxxLanguageStandard: .cxx17
 )
