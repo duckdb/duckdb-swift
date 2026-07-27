@@ -277,17 +277,18 @@ extension duckdb_decimal {
 }
 
 fileprivate extension Decimal {
-  
+
+  // `_mantissa`/`_length` are the base-2^16 storage of a Decimal's unsigned
+  // coefficient, but FoundationEssentials marks them `internal` on Linux
+  // (Swift 6.1+), unlike the Darwin Foundation overlay where they're
+  // reachable. We derive the same base-10 coefficient from the Decimal's
+  // public string representation instead, which is exact since Decimal's
+  // description never uses scientific notation.
   var hugeMantissa: UIntHuge {
-    let components = [
-      _mantissa.0, _mantissa.1, _mantissa.2, _mantissa.3,
-      _mantissa.4, _mantissa.5, _mantissa.6, _mantissa.7
-    ]
-    var mantissa = UIntHuge(0)
-    for i in 0..<Int(_length) {
-      mantissa += UIntHuge(components[i]) << (i * 16)
+    let digits = abs(self).description.filter(\.isNumber)
+    return digits.reduce(UIntHuge(0)) { partial, digit in
+      partial * 10 + UIntHuge(digit.wholeNumberValue!)
     }
-    return mantissa
   }
 }
 
