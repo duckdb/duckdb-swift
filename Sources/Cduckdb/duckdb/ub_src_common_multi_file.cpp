@@ -13,11 +13,11 @@
 #line 0 "src/common/multi_file/multi_file_list.cpp"
 #include "src/common/multi_file/multi_file_list.cpp"
 
-#line 0 "src/common/multi_file/multi_file_read_ahead.cpp"
-#include "src/common/multi_file/multi_file_read_ahead.cpp"
-
 #line 0 "src/common/multi_file/multi_file_reader.cpp"
 #include "src/common/multi_file/multi_file_reader.cpp"
+
+#line 0 "src/common/multi_file/table_function_multi_file.cpp"
+#include "src/common/multi_file/table_function_multi_file.cpp"
 
 #line 0 "src/common/multi_file/union_by_name.cpp"
 #include "src/common/multi_file/union_by_name.cpp"

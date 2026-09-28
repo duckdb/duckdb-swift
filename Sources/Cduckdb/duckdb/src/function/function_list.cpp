@@ -14,6 +14,7 @@
 #include "duckdb/function/scalar/struct_functions.hpp"
 #include "duckdb/function/scalar/system_functions.hpp"
 #include "duckdb/function/scalar/tablefilter_functions.hpp"
+#include "duckdb/function/window/match_recognize_functions.hpp"
 #include "duckdb/function/window/ranking_functions.hpp"
 #include "duckdb/function/window/rows_functions.hpp"
 #include "duckdb/function/window/value_functions.hpp"
@@ -101,6 +102,8 @@ static const StaticFunctionDefinition function[] = {
 	DUCKDB_SCALAR_FUNCTION(IsDistinctFromFun),
 	DUCKDB_SCALAR_FUNCTION(IsNotDistinctFromFun),
 	DUCKDB_SCALAR_FUNCTION(BetweenFun),
+	DUCKDB_SCALAR_FUNCTION(CastFun),
+	DUCKDB_SCALAR_FUNCTION(BarrierFun),
 	DUCKDB_SCALAR_FUNCTION(InternalCompressGeometryPointFun),
 	DUCKDB_SCALAR_FUNCTION_SET(InternalCompressIntegralUbigintFun),
 	DUCKDB_SCALAR_FUNCTION_SET(InternalCompressIntegralUintegerFun),
@@ -197,6 +200,7 @@ static const StaticFunctionDefinition function[] = {
 	DUCKDB_SCALAR_FUNCTION(ListZipFun),
 	DUCKDB_SCALAR_FUNCTION(LowerFun),
 	DUCKDB_SCALAR_FUNCTION(MapContainsFun),
+	DUCKDB_WINDOW_FUNCTION(MatchRecognizeFun),
 	DUCKDB_AGGREGATE_FUNCTION_SET(MaxFun),
 	DUCKDB_SCALAR_FUNCTION_SET(MD5Fun),
 	DUCKDB_SCALAR_FUNCTION_SET(MD5NumberFun),
@@ -227,6 +231,7 @@ static const StaticFunctionDefinition function[] = {
 	DUCKDB_SCALAR_FUNCTION(RemapStructFun),
 	DUCKDB_SCALAR_FUNCTION(RowFun),
 	DUCKDB_WINDOW_FUNCTION(RowNumberFun),
+	DUCKDB_SCALAR_FUNCTION_SET(SetvalFun),
 	DUCKDB_SCALAR_FUNCTION_SET(SHA1Fun),
 	DUCKDB_SCALAR_FUNCTION_SET(SHA256Fun),
 	DUCKDB_SCALAR_FUNCTION_ALIAS(SplitFun),
@@ -266,8 +271,10 @@ static const StaticFunctionDefinition function[] = {
 	DUCKDB_SCALAR_FUNCTION(UpperFun),
 	DUCKDB_SCALAR_FUNCTION_SET(VariantArrayLengthFun),
 	DUCKDB_SCALAR_FUNCTION(VariantComparatorFun),
+	DUCKDB_SCALAR_FUNCTION_SET(VariantContainsFun),
 	DUCKDB_SCALAR_FUNCTION_SET(VariantExistsFun),
 	DUCKDB_SCALAR_FUNCTION_SET(VariantExtractFun),
+	DUCKDB_SCALAR_FUNCTION_SET(VariantExtractStringFun),
 	DUCKDB_SCALAR_FUNCTION_SET(VariantKeysFun),
 	DUCKDB_SCALAR_FUNCTION(VariantNormalizeFun),
 	DUCKDB_SCALAR_FUNCTION_SET(VariantTypeFun),

@@ -13,10 +13,12 @@
 #include "duckdb/catalog/catalog_entry/view_catalog_entry.hpp"
 #include "duckdb/catalog/dependency_manager.hpp"
 #include "duckdb/catalog/duck_catalog.hpp"
+#include "duckdb/common/assert.hpp"
 #include "duckdb/common/enums/checkpoint_abort.hpp"
 #include "duckdb/common/serializer/binary_deserializer.hpp"
 #include "duckdb/common/serializer/binary_serializer.hpp"
 #include "duckdb/common/thread.hpp"
+#include "duckdb/common/vector_size.hpp"
 #include "duckdb/execution/index/art/art.hpp"
 #include "duckdb/execution/index/unbound_index.hpp"
 #include "duckdb/main/attached_database.hpp"
@@ -36,6 +38,7 @@
 #include "duckdb/transaction/transaction_manager.hpp"
 #include "duckdb/transaction/meta_transaction.hpp"
 #include "duckdb/storage/data_table.hpp"
+#include "duckdb/parser/parsed_data/create_view_info.hpp"
 
 namespace duckdb {
 
@@ -66,8 +69,11 @@ void ActiveCheckpointWrapper::GetCheckpointTransaction(CheckpointOptions &option
 	auto &transaction = DuckTransaction::Get(*checkpoint_context, db);
 	transaction.SetIsCheckpointTransaction();
 	checkpoint_transaction = &transaction;
-	options.transaction_id = transaction.start_time;
-	transaction_manager.SetActiveCheckpoint(transaction.start_time);
+	// the checkpoint sees every commit before it started
+	D_ASSERT(transaction.view.visibility_bound == VisibilityBound::Before(transaction.start_time));
+	options.checkpoint_id = transaction_manager.NextCheckpointId();
+	options.visibility_bound = transaction.view.visibility_bound;
+	transaction_manager.SetActiveCheckpoint(options.checkpoint_id.GetIndex());
 }
 
 void ActiveCheckpointWrapper::Commit() {
@@ -364,7 +370,7 @@ void SingleFileCheckpointWriter::CreateCheckpoint() {
 		auto &storage = table.GetStorage();
 		auto &table_info = storage.GetDataTableInfo();
 		auto &index_list = table_info->GetIndexes();
-		index_list.MergeCheckpointDeltas(options.transaction_id);
+		index_list.MergeCheckpointDeltas(options.checkpoint_id);
 	}
 	active_checkpoint.Commit();
 }
@@ -473,10 +479,10 @@ static unique_ptr<CreateInfo> ReadCreateInfo(Deserializer &deserializer, Catalog
 	// 100 is the serialization field ID for the catalog entry's CreateInfo payload
 	auto info = deserializer.ReadProperty<unique_ptr<CreateInfo>>(100, entry_name);
 	if (!info) {
-		throw IOException("corrupt database file - %s entry without create info", entry_name);
+		throw DataCorruptionException("corrupt database file - %s entry without create info", entry_name);
 	}
 	if (info->type != expected_type) {
-		throw IOException("corrupt database file - catalog entry type mismatch for %s", entry_name);
+		throw DataCorruptionException("corrupt database file - catalog entry type mismatch for %s", entry_name);
 	}
 	return info;
 }
@@ -522,7 +528,7 @@ void CheckpointReader::ReadEntry(CatalogTransaction transaction, Deserializer &d
 		break;
 	}
 	default:
-		throw IOException("corrupt database file - unrecognized catalog type in checkpoint");
+		throw DataCorruptionException("corrupt database file - unrecognized catalog type in checkpoint");
 	}
 }
 
@@ -560,10 +566,10 @@ void CheckpointReader::ReadTrigger(CatalogTransaction transaction, Deserializer 
 	auto info = ReadCreateInfo(deserializer, CatalogType::TRIGGER_ENTRY, "trigger");
 	auto &trigger_info = info->Cast<CreateTriggerInfo>();
 	trigger_info.on_conflict = OnCreateConflict::IGNORE_ON_CONFLICT;
-	auto &schema = catalog.GetSchema(transaction, trigger_info.GetQualifiedName().Schema());
+	auto &schema = catalog.GetEntrySchema(transaction, trigger_info.GetQualifiedName());
 	auto table_entry = schema.GetEntry(transaction, CatalogType::TABLE_ENTRY, trigger_info.base_table->Table());
 	if (!table_entry) {
-		throw IOException("corrupt database file - trigger entry without table entry");
+		throw DataCorruptionException("corrupt database file - trigger entry without table entry");
 	}
 	auto &duck_table = table_entry->Cast<DuckTableEntry>();
 	duck_table.CreateTrigger(transaction, trigger_info);
@@ -607,11 +613,11 @@ void CheckpointReader::ReadIndex(CatalogTransaction transaction, Deserializer &d
 	// create the index in the catalog
 
 	// look for the table in the catalog
-	auto &schema = catalog.GetSchema(transaction, create_info->GetQualifiedName().Schema());
+	auto &schema = catalog.GetEntrySchema(transaction, create_info->GetQualifiedName());
 	auto catalog_table = schema.GetEntry(transaction, CatalogType::TABLE_ENTRY, info.table);
 	if (!catalog_table) {
 		// See internal issue 3663.
-		throw IOException("corrupt database file - index entry without table entry");
+		throw DataCorruptionException("corrupt database file - index entry without table entry");
 	}
 	auto &table = catalog_table->Cast<DuckTableEntry>();
 
@@ -715,10 +721,6 @@ void CheckpointReader::ReadTable(CatalogTransaction transaction, Deserializer &d
 	auto &schema = *catalog.GetSchema(transaction, schema_path, OnEntryNotFound::THROW_EXCEPTION);
 	auto bound_info = Binder::BindCreateTableCheckpoint(std::move(info), schema);
 
-	for (auto &dep : bound_info->Base().dependencies.Set()) {
-		bound_info->dependencies.AddDependency(dep);
-	}
-
 	// now read the actual table data and place it into the CreateTableInfo
 	ReadTableData(transaction, deserializer, *bound_info);
 
@@ -756,8 +758,10 @@ void CheckpointReader::ReadTableData(CatalogTransaction transaction, Deserialize
 	}
 
 	// FIXME: icky downcast to get the underlying MetadataReader
-	auto &binary_deserializer = dynamic_cast<BinaryDeserializer &>(deserializer);
-	auto &reader = dynamic_cast<MetadataReader &>(binary_deserializer.GetStream());
+	DynamicCastCheck<BinaryDeserializer>(&deserializer);
+	auto &binary_deserializer = static_cast<BinaryDeserializer &>(deserializer);
+	DynamicCastCheck<MetadataReader>(&binary_deserializer.GetStream());
+	auto &reader = static_cast<MetadataReader &>(binary_deserializer.GetStream());
 
 	vector<MetaBlockPointer> read_pointers;
 	MetadataReader table_data_reader(reader.GetMetadataManager(), table_pointer, read_pointers);

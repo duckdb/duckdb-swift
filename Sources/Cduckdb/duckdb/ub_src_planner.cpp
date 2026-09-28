@@ -7,6 +7,9 @@
 #line 0 "src/planner/binding_alias.cpp"
 #include "src/planner/binding_alias.cpp"
 
+#line 0 "src/planner/bound_expression_sql_exporter.cpp"
+#include "src/planner/bound_expression_sql_exporter.cpp"
+
 #line 0 "src/planner/bound_parameter_map.cpp"
 #include "src/planner/bound_parameter_map.cpp"
 
@@ -31,6 +34,9 @@
 #line 0 "src/planner/expression_iterator.cpp"
 #include "src/planner/expression_iterator.cpp"
 
+#line 0 "src/planner/expression_nullability.cpp"
+#include "src/planner/expression_nullability.cpp"
+
 #line 0 "src/planner/joinside.cpp"
 #include "src/planner/joinside.cpp"
 
@@ -40,8 +46,17 @@
 #line 0 "src/planner/logical_operator_deep_copy.cpp"
 #include "src/planner/logical_operator_deep_copy.cpp"
 
+#line 0 "src/planner/logical_operator_repeatability.cpp"
+#include "src/planner/logical_operator_repeatability.cpp"
+
 #line 0 "src/planner/logical_operator_visitor.cpp"
 #include "src/planner/logical_operator_visitor.cpp"
+
+#line 0 "src/planner/logical_plan_verification_result.cpp"
+#include "src/planner/logical_plan_verification_result.cpp"
+
+#line 0 "src/planner/logical_plan_verifier.cpp"
+#include "src/planner/logical_plan_verifier.cpp"
 
 #line 0 "src/planner/planner.cpp"
 #include "src/planner/planner.cpp"

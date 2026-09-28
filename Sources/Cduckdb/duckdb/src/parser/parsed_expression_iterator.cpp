@@ -10,8 +10,11 @@
 #include "duckdb/parser/query_node/insert_query_node.hpp"
 #include "duckdb/parser/statement/insert_statement.hpp"
 #include "duckdb/parser/query_node/merge_query_node.hpp"
+#include "duckdb/parser/query_node/copy_query_node.hpp"
+#include "duckdb/parser/parsed_data/copy_info.hpp"
 #include "duckdb/parser/statement/merge_into_statement.hpp"
 #include "duckdb/parser/tableref/list.hpp"
+#include "duckdb/parser/tableref/match_recognize_ref.hpp"
 
 namespace duckdb {
 
@@ -109,6 +112,28 @@ void ParsedExpressionIterator::EnumerateTableRefChildren(
 	case TableReferenceType::TABLE_FUNCTION: {
 		auto &tf_ref = ref.Cast<TableFunctionRef>();
 		expr_callback(tf_ref.function);
+		break;
+	}
+	case TableReferenceType::MATCH_RECOGNIZE: {
+		auto &mr_ref = ref.Cast<MatchRecognizeRef>();
+		for (auto &expr : mr_ref.config->partition_expressions) {
+			expr_callback(expr);
+		}
+		for (auto &order : mr_ref.config->order_by_expressions) {
+			expr_callback(order.expression);
+		}
+		for (auto &expr : mr_ref.config->measures_expression_list) {
+			expr_callback(expr);
+		}
+		for (auto &expr : mr_ref.config->defines_expression_list) {
+			expr_callback(expr);
+		}
+		if (mr_ref.config->pattern) {
+			expr_callback(mr_ref.config->pattern);
+		}
+		if (mr_ref.input) {
+			ref_callback(*mr_ref.input);
+		}
 		break;
 	}
 	case TableReferenceType::BASE_TABLE:
@@ -256,6 +281,22 @@ void ParsedExpressionIterator::EnumerateQueryNodeChildren(
 		}
 		for (auto &expr : merge_node.returning_list) {
 			expr_callback(expr);
+		}
+		break;
+	}
+	case QueryNodeType::COPY_QUERY_NODE: {
+		auto &copy_node = node.Cast<CopyQueryNode>();
+		auto &copy_info = *copy_node.info;
+		if (copy_info.select_statement) {
+			EnumerateQueryNodeChildren(*copy_info.select_statement, expr_callback, ref_callback);
+		}
+		if (copy_info.file_path_expression) {
+			expr_callback(copy_info.file_path_expression);
+		}
+		for (auto &option : copy_info.parsed_options) {
+			if (option.second) {
+				expr_callback(option.second);
+			}
 		}
 		break;
 	}

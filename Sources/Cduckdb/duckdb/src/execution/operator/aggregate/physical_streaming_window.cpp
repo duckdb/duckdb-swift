@@ -41,9 +41,10 @@ public:
 			auto &aggregate = *wexpr.AggregateFunction();
 			bind_data = wexpr.BindInfo().get();
 			dtor = aggregate.GetCallbacks().GetStateDestructorCallback();
-			state.resize(aggregate.GetCallbacks().GetStateSizeCallback()(aggregate));
+			AggregateStateInput state_input(aggregate, bind_data);
+			state.resize(aggregate.GetCallbacks().GetStateSizeCallback()(state_input));
 			state_ptr = state.data();
-			aggregate.GetCallbacks().GetStateInitCallback()(aggregate, state.data());
+			aggregate.GetCallbacks().GetStateInitCallback()(state_input, &state_ptr, 1);
 			for (auto &child : wexpr.GetChildren()) {
 				arg_types.push_back(child->GetReturnType());
 				executor.AddExpression(*child);
@@ -135,7 +136,7 @@ public:
 				throw NotImplementedException("GetStreamingState for %s",
 				                              ExpressionTypeToString(expr.GetExpressionType()));
 			}
-			const auto offset = fstate->Cast<WindowExecutorStreamingState>().offset;
+			const auto offset = fstate->offset;
 			if (offset < 0) {
 				lead_count = MaxValue<idx_t>(idx_t(-offset), lead_count);
 			}
@@ -156,7 +157,7 @@ public:
 	//! We can't initialise until we have an input chunk
 	bool initialized;
 	//! Function states
-	vector<unique_ptr<LocalSourceState>> states;
+	vector<unique_ptr<WindowExecutorStreamingState>> states;
 	Allocator &allocator;
 	//! The number of rows ahead to buffer for LEAD
 	idx_t lead_count = 0;

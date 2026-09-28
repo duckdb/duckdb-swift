@@ -31,6 +31,9 @@
 #line 0 "src/optimizer/pushdown/pushdown_projection.cpp"
 #include "src/optimizer/pushdown/pushdown_projection.cpp"
 
+#line 0 "src/optimizer/pushdown/pushdown_secure_view.cpp"
+#include "src/optimizer/pushdown/pushdown_secure_view.cpp"
+
 #line 0 "src/optimizer/pushdown/pushdown_semi_anti_join.cpp"
 #include "src/optimizer/pushdown/pushdown_semi_anti_join.cpp"
 

@@ -13,6 +13,9 @@
 #line 0 "src/function/cast/cast_function_set.cpp"
 #include "src/function/cast/cast_function_set.cpp"
 
+#line 0 "src/function/cast/cast_statistics.cpp"
+#include "src/function/cast/cast_statistics.cpp"
+
 #line 0 "src/function/cast/decimal_cast.cpp"
 #include "src/function/cast/decimal_cast.cpp"
 

@@ -1,4 +1,5 @@
 #include "duckdb/function/table/read_csv.hpp"
+#include "duckdb/catalog/catalog.hpp"
 #include "duckdb/function/table/read_duckdb.hpp"
 
 #include "duckdb/common/enum_util.hpp"
@@ -20,6 +21,7 @@
 #include "duckdb/parser/expression/constant_expression.hpp"
 #include "duckdb/parser/expression/function_expression.hpp"
 #include "duckdb/parser/tableref/table_function_ref.hpp"
+#include "duckdb/planner/expression/bound_cast_expression.hpp"
 #include "duckdb/planner/operator/logical_get.hpp"
 #include "duckdb/execution/operator/csv_scanner/csv_file_scanner.hpp"
 #include "duckdb/execution/operator/csv_scanner/base_scanner.hpp"
@@ -142,10 +144,10 @@ static unique_ptr<FunctionData> CSVReaderDeserialize(Deserializer &deserializer,
 }
 
 static bool PushdownProjectionExpression(ClientContext &context, const TableFunctionProjectionExpressionInput &input) {
-	if (input.expr.GetExpressionClass() != ExpressionClass::BOUND_CAST) {
+	if (!BoundCastExpression::IsCast(input.expr)) {
 		return false;
 	}
-	const auto &cast = input.expr.Cast<BoundCastExpression>();
+	const auto &cast = input.expr.Cast<BoundFunctionExpression>();
 	const auto &target_type = cast.GetReturnType();
 	auto &bind_data = input.get.bind_data->Cast<MultiFileBindData>();
 	const idx_t idx = input.get.GetColumnIds()[input.column_index].GetPrimaryIndex();
@@ -205,7 +207,7 @@ unique_ptr<TableRef> ReadCSVReplacement(ClientContext &context, ReplacementScanI
 	}
 	auto table_function = make_uniq<TableFunctionRef>();
 	vector<unique_ptr<ParsedExpression>> children;
-	children.push_back(make_uniq<ConstantExpression>(Value(table_name)));
+	children.push_back(ConstantExpression::String(table_name));
 	table_function->function = make_uniq<FunctionExpression>("read_csv_auto", std::move(children));
 
 	if (!FileSystem::HasGlob(table_name)) {

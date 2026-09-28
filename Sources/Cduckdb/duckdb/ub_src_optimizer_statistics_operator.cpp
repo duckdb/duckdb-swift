@@ -4,6 +4,9 @@
 #line 0 "src/optimizer/statistics/operator/propagate_cross_product.cpp"
 #include "src/optimizer/statistics/operator/propagate_cross_product.cpp"
 
+#line 0 "src/optimizer/statistics/operator/propagate_cte.cpp"
+#include "src/optimizer/statistics/operator/propagate_cte.cpp"
+
 #line 0 "src/optimizer/statistics/operator/propagate_filter.cpp"
 #include "src/optimizer/statistics/operator/propagate_filter.cpp"
 
@@ -21,6 +24,9 @@
 
 #line 0 "src/optimizer/statistics/operator/propagate_projection.cpp"
 #include "src/optimizer/statistics/operator/propagate_projection.cpp"
+
+#line 0 "src/optimizer/statistics/operator/propagate_secure_view.cpp"
+#include "src/optimizer/statistics/operator/propagate_secure_view.cpp"
 
 #line 0 "src/optimizer/statistics/operator/propagate_set_operation.cpp"
 #include "src/optimizer/statistics/operator/propagate_set_operation.cpp"

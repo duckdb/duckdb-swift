@@ -43,6 +43,12 @@
 #line 0 "src/function/scalar/string/sha256.cpp"
 #include "src/function/scalar/string/sha256.cpp"
 
+#line 0 "src/function/scalar/string/string_common.cpp"
+#include "src/function/scalar/string/string_common.cpp"
+
+#line 0 "src/function/scalar/string/string_slice.cpp"
+#include "src/function/scalar/string/string_slice.cpp"
+
 #line 0 "src/function/scalar/string/string_split.cpp"
 #include "src/function/scalar/string/string_split.cpp"
 

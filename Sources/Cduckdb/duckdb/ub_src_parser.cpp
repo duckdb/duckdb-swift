@@ -19,6 +19,9 @@
 #line 0 "src/parser/keyword_helper.cpp"
 #include "src/parser/keyword_helper.cpp"
 
+#line 0 "src/parser/literal.cpp"
+#include "src/parser/literal.cpp"
+
 #line 0 "src/parser/parsed_expression.cpp"
 #include "src/parser/parsed_expression.cpp"
 
@@ -42,4 +45,7 @@
 
 #line 0 "src/parser/tableref.cpp"
 #include "src/parser/tableref.cpp"
+
+#line 0 "src/parser/token_iterator.cpp"
+#include "src/parser/token_iterator.cpp"
 

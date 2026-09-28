@@ -7,11 +7,17 @@
 #line 0 "src/function/scalar/variant/variant_comparator.cpp"
 #include "src/function/scalar/variant/variant_comparator.cpp"
 
+#line 0 "src/function/scalar/variant/variant_contains.cpp"
+#include "src/function/scalar/variant/variant_contains.cpp"
+
 #line 0 "src/function/scalar/variant/variant_exists.cpp"
 #include "src/function/scalar/variant/variant_exists.cpp"
 
 #line 0 "src/function/scalar/variant/variant_extract.cpp"
 #include "src/function/scalar/variant/variant_extract.cpp"
+
+#line 0 "src/function/scalar/variant/variant_extract_string.cpp"
+#include "src/function/scalar/variant/variant_extract_string.cpp"
 
 #line 0 "src/function/scalar/variant/variant_keys.cpp"
 #include "src/function/scalar/variant/variant_keys.cpp"

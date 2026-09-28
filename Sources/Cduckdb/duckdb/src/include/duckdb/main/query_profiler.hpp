@@ -103,14 +103,18 @@ public:
 	//! Finalize query metrics for output; safe to call multiple times.
 	DUCKDB_API void FinalizeMetrics();
 
-	//! Track bytes read (always tracked, even when profiling disabled).
-	DUCKDB_API void TrackBytesRead(idx_t amount);
-	//! Track bytes written (always tracked, even when profiling disabled).
-	DUCKDB_API void TrackBytesWritten(idx_t amount);
+	//! Track bytes read and the time spent reading.
+	DUCKDB_API void TrackBytesRead(idx_t amount, idx_t elapsed_us);
+	//! Track bytes written and the time spent writing.
+	DUCKDB_API void TrackBytesWritten(idx_t amount, idx_t elapsed_us);
+	//! Track bytes spilled to the temporary directory (always tracked, even when profiling disabled).
+	DUCKDB_API void TrackBytesSpilled(idx_t amount);
 	//! Track memory allocated (thread-safe; always tracked).
 	DUCKDB_API void TrackTotalMemoryAllocated(idx_t amount);
 	//! Add to a metric counter (profiling-only).
 	DUCKDB_API void AddToMetricCounter(const string &key, idx_t amount);
+	//! Add parser time measured before the per-statement profiler was started.
+	void AddParserTime(const Profiler &parser_timer);
 
 	//! Set an arbitrary metric value (profiling-only; no-op when profiling is disabled).
 	DUCKDB_API void SetMetric(const string &key, Value new_value);
@@ -132,6 +136,8 @@ public:
 	DUCKDB_API void Flush(OperatorProfiler &profiler);
 	//! Adds the top level query information to the global profiler.
 	DUCKDB_API void SetBlockedTime(const double &blocked_thread_time);
+	//! Record the peak bytes a streaming result buffered. Called just before the query ends
+	DUCKDB_API void SetStreamingPeakBufferSize(idx_t peak_bytes);
 
 	DUCKDB_API void Initialize(const PhysicalOperator &root);
 

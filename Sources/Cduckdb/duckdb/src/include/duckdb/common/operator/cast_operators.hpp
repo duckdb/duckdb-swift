@@ -11,6 +11,7 @@
 #include "duckdb/common/assert.hpp"
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/hugeint.hpp"
+#include "duckdb/common/query_location.hpp"
 #include "duckdb/common/limits.hpp"
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/typedefs.hpp"
@@ -83,7 +84,7 @@ struct HandleCastError {
 	static void AssignError(const string &error_message, CastParameters &parameters);
 	static void AssignError(const string &error_message, string *error_message_ptr,
 	                        optional_ptr<const Expression> cast_source = nullptr,
-	                        optional_idx error_location = optional_idx());
+	                        QueryLocation error_location = QueryLocation());
 };
 
 //===--------------------------------------------------------------------===//
@@ -1050,6 +1051,16 @@ struct CastFromPointer {
 };
 template <>
 duckdb::string_t CastFromPointer::Operation(uintptr_t input, StringHeap &heap);
+
+//! Parses the text produced by CastFromPointer; not registered as a SQL cast
+struct CastToPointer {
+	template <class SRC, class DST>
+	static inline DST Operation(SRC input) {
+		throw duckdb::NotImplementedException("Cast to pointer could not be performed!");
+	}
+};
+template <>
+uintptr_t CastToPointer::Operation(string_t input);
 
 //===--------------------------------------------------------------------===//
 // Types

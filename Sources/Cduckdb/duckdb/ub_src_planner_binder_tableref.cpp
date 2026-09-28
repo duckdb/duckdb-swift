@@ -19,6 +19,9 @@
 #line 0 "src/planner/binder/tableref/bind_joinref.cpp"
 #include "src/planner/binder/tableref/bind_joinref.cpp"
 
+#line 0 "src/planner/binder/tableref/bind_match_recognize_ref.cpp"
+#include "src/planner/binder/tableref/bind_match_recognize_ref.cpp"
+
 #line 0 "src/planner/binder/tableref/bind_named_parameters.cpp"
 #include "src/planner/binder/tableref/bind_named_parameters.cpp"
 

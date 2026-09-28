@@ -1,9 +1,6 @@
 #line 0 "src/execution/expression_executor/execute_case.cpp"
 #include "src/execution/expression_executor/execute_case.cpp"
 
-#line 0 "src/execution/expression_executor/execute_cast.cpp"
-#include "src/execution/expression_executor/execute_cast.cpp"
-
 #line 0 "src/execution/expression_executor/execute_comparison.cpp"
 #include "src/execution/expression_executor/execute_comparison.cpp"
 
@@ -15,6 +12,9 @@
 
 #line 0 "src/execution/expression_executor/execute_function.cpp"
 #include "src/execution/expression_executor/execute_function.cpp"
+
+#line 0 "src/execution/expression_executor/execute_lambda.cpp"
+#include "src/execution/expression_executor/execute_lambda.cpp"
 
 #line 0 "src/execution/expression_executor/execute_operator.cpp"
 #include "src/execution/expression_executor/execute_operator.cpp"

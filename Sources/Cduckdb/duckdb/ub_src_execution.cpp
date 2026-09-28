@@ -4,6 +4,9 @@
 #line 0 "src/execution/aggregate_hashtable.cpp"
 #include "src/execution/aggregate_hashtable.cpp"
 
+#line 0 "src/execution/aggregate_state_spilling.cpp"
+#include "src/execution/aggregate_state_spilling.cpp"
+
 #line 0 "src/execution/base_aggregate_hashtable.cpp"
 #include "src/execution/base_aggregate_hashtable.cpp"
 
@@ -19,6 +22,9 @@
 #line 0 "src/execution/join_hashtable.cpp"
 #include "src/execution/join_hashtable.cpp"
 
+#line 0 "src/execution/mark_join_row_comparison.cpp"
+#include "src/execution/mark_join_row_comparison.cpp"
+
 #line 0 "src/execution/perfect_aggregate_hashtable.cpp"
 #include "src/execution/perfect_aggregate_hashtable.cpp"
 
@@ -30,4 +36,7 @@
 
 #line 0 "src/execution/radix_partitioned_hashtable.cpp"
 #include "src/execution/radix_partitioned_hashtable.cpp"
+
+#line 0 "src/execution/row_id_deduplicator.cpp"
+#include "src/execution/row_id_deduplicator.cpp"
 

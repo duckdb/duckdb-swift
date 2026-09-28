@@ -1,6 +1,9 @@
 #line 0 "src/function/aggregate_function.cpp"
 #include "src/function/aggregate_function.cpp"
 
+#line 0 "src/function/aggregate_state_serialization.cpp"
+#include "src/function/aggregate_state_serialization.cpp"
+
 #line 0 "src/function/built_in_functions.cpp"
 #include "src/function/built_in_functions.cpp"
 
@@ -54,6 +57,9 @@
 
 #line 0 "src/function/table_macro_function.cpp"
 #include "src/function/table_macro_function.cpp"
+
+#line 0 "src/function/type_constructor.cpp"
+#include "src/function/type_constructor.cpp"
 
 #line 0 "src/function/window_function.cpp"
 #include "src/function/window_function.cpp"

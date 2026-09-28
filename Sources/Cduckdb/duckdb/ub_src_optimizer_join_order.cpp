@@ -10,6 +10,9 @@
 #line 0 "src/optimizer/join_order/join_node.cpp"
 #include "src/optimizer/join_order/join_node.cpp"
 
+#line 0 "src/optimizer/join_order/join_order_operator.cpp"
+#include "src/optimizer/join_order/join_order_operator.cpp"
+
 #line 0 "src/optimizer/join_order/join_order_optimizer.cpp"
 #include "src/optimizer/join_order/join_order_optimizer.cpp"
 
@@ -30,7 +33,4 @@
 
 #line 0 "src/optimizer/join_order/relation_manager.cpp"
 #include "src/optimizer/join_order/relation_manager.cpp"
-
-#line 0 "src/optimizer/join_order/relation_statistics_helper.cpp"
-#include "src/optimizer/join_order/relation_statistics_helper.cpp"
 

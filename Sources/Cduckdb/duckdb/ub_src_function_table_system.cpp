@@ -22,8 +22,14 @@
 #line 0 "src/function/table/system/duckdb_dependencies.cpp"
 #include "src/function/table/system/duckdb_dependencies.cpp"
 
+#line 0 "src/function/table/system/duckdb_dialects.cpp"
+#include "src/function/table/system/duckdb_dialects.cpp"
+
 #line 0 "src/function/table/system/duckdb_eviction_queues.cpp"
 #include "src/function/table/system/duckdb_eviction_queues.cpp"
+
+#line 0 "src/function/table/system/duckdb_extension_repositories.cpp"
+#include "src/function/table/system/duckdb_extension_repositories.cpp"
 
 #line 0 "src/function/table/system/duckdb_extensions.cpp"
 #include "src/function/table/system/duckdb_extensions.cpp"
@@ -33,6 +39,9 @@
 
 #line 0 "src/function/table/system/duckdb_functions.cpp"
 #include "src/function/table/system/duckdb_functions.cpp"
+
+#line 0 "src/function/table/system/duckdb_grammar_extensions.cpp"
+#include "src/function/table/system/duckdb_grammar_extensions.cpp"
 
 #line 0 "src/function/table/system/duckdb_indexes.cpp"
 #include "src/function/table/system/duckdb_indexes.cpp"
@@ -60,6 +69,9 @@
 
 #line 0 "src/function/table/system/duckdb_schemas.cpp"
 #include "src/function/table/system/duckdb_schemas.cpp"
+
+#line 0 "src/function/table/system/duckdb_secret_type_parameters.cpp"
+#include "src/function/table/system/duckdb_secret_type_parameters.cpp"
 
 #line 0 "src/function/table/system/duckdb_secret_types.cpp"
 #include "src/function/table/system/duckdb_secret_types.cpp"

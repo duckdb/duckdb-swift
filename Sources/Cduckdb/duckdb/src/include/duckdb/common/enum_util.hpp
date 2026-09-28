@@ -34,11 +34,11 @@ struct EnumUtil {
 
 enum class ARTConflictType : uint8_t;
 
-enum class ARTHandlingResult : uint8_t;
+enum class ARTScanNodeResult : uint8_t;
 
-enum class ARTScanHandling : uint8_t;
+enum class ARTScanProgress : uint8_t;
 
-enum class ARTScanResult : uint8_t;
+enum class ARTSearchResult : uint8_t;
 
 enum class AccessMode : uint8_t;
 
@@ -51,6 +51,10 @@ enum class AggregateDistinctDependent : uint8_t;
 enum class AggregateHandling : uint8_t;
 
 enum class AggregateOrderDependent : uint8_t;
+
+enum class AggregateRewritePolicy : uint8_t;
+
+enum class AggregateRewriteSourceType : uint8_t;
 
 enum class AggregateStateExportMode : uint8_t;
 
@@ -148,6 +152,8 @@ enum class CompressionValidity : uint8_t;
 
 enum class ConflictManagerMode : uint8_t;
 
+enum class ConstraintTiming : uint8_t;
+
 enum class ConstraintType : uint8_t;
 
 enum class CoordinateReferenceSystemType : uint8_t;
@@ -184,11 +190,11 @@ enum class DefaultOrderByNullType : uint8_t;
 
 enum class DeferredRuntimeFilterType : uint8_t;
 
+enum class DeleteIdState : uint8_t;
+
 enum class DependencyEntryType : uint8_t;
 
 enum class DeprecatedIndexType : uint8_t;
-
-enum class DeprecatedUsingKeySyntax : uint8_t;
 
 enum class DestroyBufferUpon : uint8_t;
 
@@ -220,7 +226,13 @@ enum class ExtensionInstallMode : uint8_t;
 
 enum class ExtensionLoadResult : uint8_t;
 
+enum class ExtensionRepositoryAccess : uint8_t;
+
+enum class ExtensionRepositoryType : uint8_t;
+
 enum class ExtensionUpdateResultTag : uint8_t;
+
+enum class ExternalResourceOperation : uint8_t;
 
 enum class ExtraDropInfoType : uint8_t;
 
@@ -229,8 +241,6 @@ enum class ExtraPersistentColumnDataType : uint8_t;
 enum class ExtraTypeInfoType : uint8_t;
 
 enum class FileBufferType : uint8_t;
-
-enum class FileCompressionType : uint8_t;
 
 enum class FileExpandResult : uint8_t;
 
@@ -241,6 +251,8 @@ enum class FileIOMode : uint8_t;
 enum class FileLockType : uint8_t;
 
 enum class FileNameSegmentType : uint8_t;
+
+enum class FileWriteMode : uint8_t;
 
 enum class FilterPropagateResult : uint8_t;
 
@@ -260,11 +272,19 @@ enum class GeometryStorageType : uint8_t;
 
 enum class GeometryType : uint8_t;
 
+enum class GrammarChangeType : uint8_t;
+
 enum class GroupByExpressionInfoType : uint8_t;
 
 enum class HLLStorageType : uint8_t;
 
+enum class HTTPClientCachePolicy : uint8_t;
+
 enum class HTTPStatusCode : uint16_t;
+
+enum class HTTPTransportReusePolicy : uint8_t;
+
+enum class IdentifierCaseMode : uint8_t;
 
 enum class IndexAppendMode : uint8_t;
 
@@ -272,11 +292,15 @@ enum class IndexBindState : uint8_t;
 
 enum class IndexConstraintType : uint8_t;
 
+enum class IndexDeltaType : uint8_t;
+
 enum class InsertColumnOrder : uint8_t;
 
 enum class InterruptMode : uint8_t;
 
 enum class JoinFilterPushdownMode : uint8_t;
+
+enum class JoinOrderOperatorType : uint8_t;
 
 enum class JoinRefType : uint8_t;
 
@@ -294,6 +318,8 @@ enum class LimitNodeType : uint8_t;
 
 enum class LimitValueType : uint8_t;
 
+enum class LiteralKind : uint8_t;
+
 enum class LoadType : uint8_t;
 
 enum class LogContextScope : uint8_t;
@@ -303,6 +329,8 @@ enum class LogLevel : uint8_t;
 enum class LogMode : uint8_t;
 
 enum class LoggingTargetTable : uint8_t;
+
+enum class LogicalOperatorRepeatability : uint8_t;
 
 enum class LogicalOperatorType : uint8_t;
 
@@ -314,6 +342,16 @@ enum class MacroType : uint8_t;
 
 enum class MapInvalidReason : uint8_t;
 
+enum class MatchMode : uint8_t;
+
+enum class MatchRecognizeAfterMatch : uint8_t;
+
+enum class MatchRecognizeClauseKind : uint8_t;
+
+enum class MatchRecognizePatternType : uint8_t;
+
+enum class MatchRecognizeRows : uint8_t;
+
 enum class MemoryTag : uint8_t;
 
 enum class MergeActionCondition : uint8_t;
@@ -324,7 +362,7 @@ enum class MetaPipelineType : uint8_t;
 
 enum class Monotonicity : uint8_t;
 
-enum class MultiFileAcquireResult : uint8_t;
+enum class MultiFileClaimResult : uint8_t;
 
 enum class MultiFileColumnMappingMode : uint8_t;
 
@@ -382,6 +420,10 @@ enum class PartitionedTupleDataType : uint8_t;
 
 enum class PatternMatchType : uint8_t;
 
+enum class PatternMemo : uint8_t;
+
+enum class PatternOp : uint8_t;
+
 enum class PendingExecutionResult : uint8_t;
 
 enum class PhysicalOperatorType : uint8_t;
@@ -392,7 +434,15 @@ enum class PhysicalType : uint8_t;
 
 enum class PipelineBroadcastExchangeConsumerMode : uint8_t;
 
+enum class PipelineBroadcastExchangeOrderMode : uint8_t;
+
+enum class PipelineBroadcastExchangeScanMode : uint8_t;
+
 enum class PipelineInputMode : uint8_t;
+
+enum class PipelineScheduleMode : uint8_t;
+
+enum class PipelineScheduleStageType : uint8_t;
 
 enum class PragmaType : uint8_t;
 
@@ -422,7 +472,9 @@ enum class QueryResultType : uint8_t;
 
 enum class RecoveryMode : uint8_t;
 
-enum class RecursiveCTEInlineStageType : uint8_t;
+enum class RecursiveCTEPipelineMetricType : uint8_t;
+
+enum class RecursiveCTESourcePhase : uint8_t;
 
 enum class RecursiveProbeSidePreference : uint8_t;
 
@@ -432,19 +484,29 @@ enum class RelationType : uint8_t;
 
 enum class RemoteCapability : uint8_t;
 
+enum class RemoveUnusedColumnsMode : uint8_t;
+
 enum class RenderMode : uint8_t;
 
 enum class RequestType : uint8_t;
 
+enum class ResultLifetime : uint8_t;
+
 enum class ResultModifierType : uint8_t;
 
+enum class ResultOrdering : uint8_t;
+
 enum class RowGroupAppendMode : uint8_t;
+
+enum class RowIdHandling : uint8_t;
 
 enum class SampleMethod : uint8_t;
 
 enum class SampleType : uint8_t;
 
 enum class SamplingState : uint8_t;
+
+enum class ScanReadAheadAcquire : uint8_t;
 
 enum class ScanType : uint8_t;
 
@@ -470,6 +532,8 @@ enum class SetType : uint8_t;
 
 enum class SettingScope : uint8_t;
 
+enum class ShowBehaviorType : uint8_t;
+
 enum class ShowType : uint8_t;
 
 enum class SimplifiedTokenType : uint8_t;
@@ -484,13 +548,19 @@ enum class SinkResultType : uint8_t;
 
 enum class SortKeyType : uint8_t;
 
+enum class SourceBatchIndexState : uint8_t;
+
 enum class SourceResultType : uint8_t;
 
 enum class StarExpressionType : uint8_t;
 
+enum class StateMemoryOwnership : uint8_t;
+
 enum class StatementReturnType : uint8_t;
 
 enum class StatementType : uint8_t;
+
+enum class StatisticsPropagationMode : uint8_t;
 
 enum class StatisticsType : uint8_t;
 
@@ -542,8 +612,6 @@ enum class TransactionModifierType : uint8_t;
 
 enum class TransactionType : uint8_t;
 
-enum class TransformFrameState : uint8_t;
-
 enum class TriggerEventType : uint8_t;
 
 enum class TriggerForEach : uint8_t;
@@ -560,7 +628,11 @@ enum class UndoFlags : uint32_t;
 
 enum class UnionInvalidReason : uint8_t;
 
+enum class VacuumIndexStrategy : uint8_t;
+
 enum class VariantChildLookupMode : uint8_t;
+
+enum class VariantComparisonType : uint8_t;
 
 enum class VariantLogicalType : uint8_t;
 
@@ -568,11 +640,17 @@ enum class VariantStatsShreddingState : uint8_t;
 
 enum class VectorBufferType : uint8_t;
 
+enum class VectorPrepareState : uint8_t;
+
 enum class VectorType : uint8_t;
 
 enum class VerifyExistenceType : uint8_t;
 
+enum class VersionCompressionResult : uint8_t;
+
 enum class VertexType : uint8_t;
+
+enum class ViewSecurityType : uint8_t;
 
 enum class WALType : uint8_t;
 
@@ -589,13 +667,13 @@ template<>
 const char* EnumUtil::ToChars<ARTConflictType>(ARTConflictType value);
 
 template<>
-const char* EnumUtil::ToChars<ARTHandlingResult>(ARTHandlingResult value);
+const char* EnumUtil::ToChars<ARTScanNodeResult>(ARTScanNodeResult value);
 
 template<>
-const char* EnumUtil::ToChars<ARTScanHandling>(ARTScanHandling value);
+const char* EnumUtil::ToChars<ARTScanProgress>(ARTScanProgress value);
 
 template<>
-const char* EnumUtil::ToChars<ARTScanResult>(ARTScanResult value);
+const char* EnumUtil::ToChars<ARTSearchResult>(ARTSearchResult value);
 
 template<>
 const char* EnumUtil::ToChars<AccessMode>(AccessMode value);
@@ -614,6 +692,12 @@ const char* EnumUtil::ToChars<AggregateHandling>(AggregateHandling value);
 
 template<>
 const char* EnumUtil::ToChars<AggregateOrderDependent>(AggregateOrderDependent value);
+
+template<>
+const char* EnumUtil::ToChars<AggregateRewritePolicy>(AggregateRewritePolicy value);
+
+template<>
+const char* EnumUtil::ToChars<AggregateRewriteSourceType>(AggregateRewriteSourceType value);
 
 template<>
 const char* EnumUtil::ToChars<AggregateStateExportMode>(AggregateStateExportMode value);
@@ -760,6 +844,9 @@ template<>
 const char* EnumUtil::ToChars<ConflictManagerMode>(ConflictManagerMode value);
 
 template<>
+const char* EnumUtil::ToChars<ConstraintTiming>(ConstraintTiming value);
+
+template<>
 const char* EnumUtil::ToChars<ConstraintType>(ConstraintType value);
 
 template<>
@@ -814,13 +901,13 @@ template<>
 const char* EnumUtil::ToChars<DeferredRuntimeFilterType>(DeferredRuntimeFilterType value);
 
 template<>
+const char* EnumUtil::ToChars<DeleteIdState>(DeleteIdState value);
+
+template<>
 const char* EnumUtil::ToChars<DependencyEntryType>(DependencyEntryType value);
 
 template<>
 const char* EnumUtil::ToChars<DeprecatedIndexType>(DeprecatedIndexType value);
-
-template<>
-const char* EnumUtil::ToChars<DeprecatedUsingKeySyntax>(DeprecatedUsingKeySyntax value);
 
 template<>
 const char* EnumUtil::ToChars<DestroyBufferUpon>(DestroyBufferUpon value);
@@ -868,7 +955,16 @@ template<>
 const char* EnumUtil::ToChars<ExtensionLoadResult>(ExtensionLoadResult value);
 
 template<>
+const char* EnumUtil::ToChars<ExtensionRepositoryAccess>(ExtensionRepositoryAccess value);
+
+template<>
+const char* EnumUtil::ToChars<ExtensionRepositoryType>(ExtensionRepositoryType value);
+
+template<>
 const char* EnumUtil::ToChars<ExtensionUpdateResultTag>(ExtensionUpdateResultTag value);
+
+template<>
+const char* EnumUtil::ToChars<ExternalResourceOperation>(ExternalResourceOperation value);
 
 template<>
 const char* EnumUtil::ToChars<ExtraDropInfoType>(ExtraDropInfoType value);
@@ -881,9 +977,6 @@ const char* EnumUtil::ToChars<ExtraTypeInfoType>(ExtraTypeInfoType value);
 
 template<>
 const char* EnumUtil::ToChars<FileBufferType>(FileBufferType value);
-
-template<>
-const char* EnumUtil::ToChars<FileCompressionType>(FileCompressionType value);
 
 template<>
 const char* EnumUtil::ToChars<FileExpandResult>(FileExpandResult value);
@@ -899,6 +992,9 @@ const char* EnumUtil::ToChars<FileLockType>(FileLockType value);
 
 template<>
 const char* EnumUtil::ToChars<FileNameSegmentType>(FileNameSegmentType value);
+
+template<>
+const char* EnumUtil::ToChars<FileWriteMode>(FileWriteMode value);
 
 template<>
 const char* EnumUtil::ToChars<FilterPropagateResult>(FilterPropagateResult value);
@@ -928,13 +1024,25 @@ template<>
 const char* EnumUtil::ToChars<GeometryType>(GeometryType value);
 
 template<>
+const char* EnumUtil::ToChars<GrammarChangeType>(GrammarChangeType value);
+
+template<>
 const char* EnumUtil::ToChars<GroupByExpressionInfoType>(GroupByExpressionInfoType value);
 
 template<>
 const char* EnumUtil::ToChars<HLLStorageType>(HLLStorageType value);
 
 template<>
+const char* EnumUtil::ToChars<HTTPClientCachePolicy>(HTTPClientCachePolicy value);
+
+template<>
 const char* EnumUtil::ToChars<HTTPStatusCode>(HTTPStatusCode value);
+
+template<>
+const char* EnumUtil::ToChars<HTTPTransportReusePolicy>(HTTPTransportReusePolicy value);
+
+template<>
+const char* EnumUtil::ToChars<IdentifierCaseMode>(IdentifierCaseMode value);
 
 template<>
 const char* EnumUtil::ToChars<IndexAppendMode>(IndexAppendMode value);
@@ -946,6 +1054,9 @@ template<>
 const char* EnumUtil::ToChars<IndexConstraintType>(IndexConstraintType value);
 
 template<>
+const char* EnumUtil::ToChars<IndexDeltaType>(IndexDeltaType value);
+
+template<>
 const char* EnumUtil::ToChars<InsertColumnOrder>(InsertColumnOrder value);
 
 template<>
@@ -953,6 +1064,9 @@ const char* EnumUtil::ToChars<InterruptMode>(InterruptMode value);
 
 template<>
 const char* EnumUtil::ToChars<JoinFilterPushdownMode>(JoinFilterPushdownMode value);
+
+template<>
+const char* EnumUtil::ToChars<JoinOrderOperatorType>(JoinOrderOperatorType value);
 
 template<>
 const char* EnumUtil::ToChars<JoinRefType>(JoinRefType value);
@@ -979,6 +1093,9 @@ template<>
 const char* EnumUtil::ToChars<LimitValueType>(LimitValueType value);
 
 template<>
+const char* EnumUtil::ToChars<LiteralKind>(LiteralKind value);
+
+template<>
 const char* EnumUtil::ToChars<LoadType>(LoadType value);
 
 template<>
@@ -992,6 +1109,9 @@ const char* EnumUtil::ToChars<LogMode>(LogMode value);
 
 template<>
 const char* EnumUtil::ToChars<LoggingTargetTable>(LoggingTargetTable value);
+
+template<>
+const char* EnumUtil::ToChars<LogicalOperatorRepeatability>(LogicalOperatorRepeatability value);
 
 template<>
 const char* EnumUtil::ToChars<LogicalOperatorType>(LogicalOperatorType value);
@@ -1009,6 +1129,21 @@ template<>
 const char* EnumUtil::ToChars<MapInvalidReason>(MapInvalidReason value);
 
 template<>
+const char* EnumUtil::ToChars<MatchMode>(MatchMode value);
+
+template<>
+const char* EnumUtil::ToChars<MatchRecognizeAfterMatch>(MatchRecognizeAfterMatch value);
+
+template<>
+const char* EnumUtil::ToChars<MatchRecognizeClauseKind>(MatchRecognizeClauseKind value);
+
+template<>
+const char* EnumUtil::ToChars<MatchRecognizePatternType>(MatchRecognizePatternType value);
+
+template<>
+const char* EnumUtil::ToChars<MatchRecognizeRows>(MatchRecognizeRows value);
+
+template<>
 const char* EnumUtil::ToChars<MemoryTag>(MemoryTag value);
 
 template<>
@@ -1024,7 +1159,7 @@ template<>
 const char* EnumUtil::ToChars<Monotonicity>(Monotonicity value);
 
 template<>
-const char* EnumUtil::ToChars<MultiFileAcquireResult>(MultiFileAcquireResult value);
+const char* EnumUtil::ToChars<MultiFileClaimResult>(MultiFileClaimResult value);
 
 template<>
 const char* EnumUtil::ToChars<MultiFileColumnMappingMode>(MultiFileColumnMappingMode value);
@@ -1111,6 +1246,12 @@ template<>
 const char* EnumUtil::ToChars<PatternMatchType>(PatternMatchType value);
 
 template<>
+const char* EnumUtil::ToChars<PatternMemo>(PatternMemo value);
+
+template<>
+const char* EnumUtil::ToChars<PatternOp>(PatternOp value);
+
+template<>
 const char* EnumUtil::ToChars<PendingExecutionResult>(PendingExecutionResult value);
 
 template<>
@@ -1126,7 +1267,19 @@ template<>
 const char* EnumUtil::ToChars<PipelineBroadcastExchangeConsumerMode>(PipelineBroadcastExchangeConsumerMode value);
 
 template<>
+const char* EnumUtil::ToChars<PipelineBroadcastExchangeOrderMode>(PipelineBroadcastExchangeOrderMode value);
+
+template<>
+const char* EnumUtil::ToChars<PipelineBroadcastExchangeScanMode>(PipelineBroadcastExchangeScanMode value);
+
+template<>
 const char* EnumUtil::ToChars<PipelineInputMode>(PipelineInputMode value);
+
+template<>
+const char* EnumUtil::ToChars<PipelineScheduleMode>(PipelineScheduleMode value);
+
+template<>
+const char* EnumUtil::ToChars<PipelineScheduleStageType>(PipelineScheduleStageType value);
 
 template<>
 const char* EnumUtil::ToChars<PragmaType>(PragmaType value);
@@ -1171,7 +1324,10 @@ template<>
 const char* EnumUtil::ToChars<RecoveryMode>(RecoveryMode value);
 
 template<>
-const char* EnumUtil::ToChars<RecursiveCTEInlineStageType>(RecursiveCTEInlineStageType value);
+const char* EnumUtil::ToChars<RecursiveCTEPipelineMetricType>(RecursiveCTEPipelineMetricType value);
+
+template<>
+const char* EnumUtil::ToChars<RecursiveCTESourcePhase>(RecursiveCTESourcePhase value);
 
 template<>
 const char* EnumUtil::ToChars<RecursiveProbeSidePreference>(RecursiveProbeSidePreference value);
@@ -1186,16 +1342,28 @@ template<>
 const char* EnumUtil::ToChars<RemoteCapability>(RemoteCapability value);
 
 template<>
+const char* EnumUtil::ToChars<RemoveUnusedColumnsMode>(RemoveUnusedColumnsMode value);
+
+template<>
 const char* EnumUtil::ToChars<RenderMode>(RenderMode value);
 
 template<>
 const char* EnumUtil::ToChars<RequestType>(RequestType value);
 
 template<>
+const char* EnumUtil::ToChars<ResultLifetime>(ResultLifetime value);
+
+template<>
 const char* EnumUtil::ToChars<ResultModifierType>(ResultModifierType value);
 
 template<>
+const char* EnumUtil::ToChars<ResultOrdering>(ResultOrdering value);
+
+template<>
 const char* EnumUtil::ToChars<RowGroupAppendMode>(RowGroupAppendMode value);
+
+template<>
+const char* EnumUtil::ToChars<RowIdHandling>(RowIdHandling value);
 
 template<>
 const char* EnumUtil::ToChars<SampleMethod>(SampleMethod value);
@@ -1205,6 +1373,9 @@ const char* EnumUtil::ToChars<SampleType>(SampleType value);
 
 template<>
 const char* EnumUtil::ToChars<SamplingState>(SamplingState value);
+
+template<>
+const char* EnumUtil::ToChars<ScanReadAheadAcquire>(ScanReadAheadAcquire value);
 
 template<>
 const char* EnumUtil::ToChars<ScanType>(ScanType value);
@@ -1243,6 +1414,9 @@ template<>
 const char* EnumUtil::ToChars<SettingScope>(SettingScope value);
 
 template<>
+const char* EnumUtil::ToChars<ShowBehaviorType>(ShowBehaviorType value);
+
+template<>
 const char* EnumUtil::ToChars<ShowType>(ShowType value);
 
 template<>
@@ -1264,16 +1438,25 @@ template<>
 const char* EnumUtil::ToChars<SortKeyType>(SortKeyType value);
 
 template<>
+const char* EnumUtil::ToChars<SourceBatchIndexState>(SourceBatchIndexState value);
+
+template<>
 const char* EnumUtil::ToChars<SourceResultType>(SourceResultType value);
 
 template<>
 const char* EnumUtil::ToChars<StarExpressionType>(StarExpressionType value);
 
 template<>
+const char* EnumUtil::ToChars<StateMemoryOwnership>(StateMemoryOwnership value);
+
+template<>
 const char* EnumUtil::ToChars<StatementReturnType>(StatementReturnType value);
 
 template<>
 const char* EnumUtil::ToChars<StatementType>(StatementType value);
+
+template<>
+const char* EnumUtil::ToChars<StatisticsPropagationMode>(StatisticsPropagationMode value);
 
 template<>
 const char* EnumUtil::ToChars<StatisticsType>(StatisticsType value);
@@ -1351,9 +1534,6 @@ template<>
 const char* EnumUtil::ToChars<TransactionType>(TransactionType value);
 
 template<>
-const char* EnumUtil::ToChars<TransformFrameState>(TransformFrameState value);
-
-template<>
 const char* EnumUtil::ToChars<TriggerEventType>(TriggerEventType value);
 
 template<>
@@ -1378,7 +1558,13 @@ template<>
 const char* EnumUtil::ToChars<UnionInvalidReason>(UnionInvalidReason value);
 
 template<>
+const char* EnumUtil::ToChars<VacuumIndexStrategy>(VacuumIndexStrategy value);
+
+template<>
 const char* EnumUtil::ToChars<VariantChildLookupMode>(VariantChildLookupMode value);
+
+template<>
+const char* EnumUtil::ToChars<VariantComparisonType>(VariantComparisonType value);
 
 template<>
 const char* EnumUtil::ToChars<VariantLogicalType>(VariantLogicalType value);
@@ -1390,13 +1576,22 @@ template<>
 const char* EnumUtil::ToChars<VectorBufferType>(VectorBufferType value);
 
 template<>
+const char* EnumUtil::ToChars<VectorPrepareState>(VectorPrepareState value);
+
+template<>
 const char* EnumUtil::ToChars<VectorType>(VectorType value);
 
 template<>
 const char* EnumUtil::ToChars<VerifyExistenceType>(VerifyExistenceType value);
 
 template<>
+const char* EnumUtil::ToChars<VersionCompressionResult>(VersionCompressionResult value);
+
+template<>
 const char* EnumUtil::ToChars<VertexType>(VertexType value);
+
+template<>
+const char* EnumUtil::ToChars<ViewSecurityType>(ViewSecurityType value);
 
 template<>
 const char* EnumUtil::ToChars<WALType>(WALType value);
@@ -1418,13 +1613,13 @@ template<>
 ARTConflictType EnumUtil::FromString<ARTConflictType>(const char *value);
 
 template<>
-ARTHandlingResult EnumUtil::FromString<ARTHandlingResult>(const char *value);
+ARTScanNodeResult EnumUtil::FromString<ARTScanNodeResult>(const char *value);
 
 template<>
-ARTScanHandling EnumUtil::FromString<ARTScanHandling>(const char *value);
+ARTScanProgress EnumUtil::FromString<ARTScanProgress>(const char *value);
 
 template<>
-ARTScanResult EnumUtil::FromString<ARTScanResult>(const char *value);
+ARTSearchResult EnumUtil::FromString<ARTSearchResult>(const char *value);
 
 template<>
 AccessMode EnumUtil::FromString<AccessMode>(const char *value);
@@ -1443,6 +1638,12 @@ AggregateHandling EnumUtil::FromString<AggregateHandling>(const char *value);
 
 template<>
 AggregateOrderDependent EnumUtil::FromString<AggregateOrderDependent>(const char *value);
+
+template<>
+AggregateRewritePolicy EnumUtil::FromString<AggregateRewritePolicy>(const char *value);
+
+template<>
+AggregateRewriteSourceType EnumUtil::FromString<AggregateRewriteSourceType>(const char *value);
 
 template<>
 AggregateStateExportMode EnumUtil::FromString<AggregateStateExportMode>(const char *value);
@@ -1589,6 +1790,9 @@ template<>
 ConflictManagerMode EnumUtil::FromString<ConflictManagerMode>(const char *value);
 
 template<>
+ConstraintTiming EnumUtil::FromString<ConstraintTiming>(const char *value);
+
+template<>
 ConstraintType EnumUtil::FromString<ConstraintType>(const char *value);
 
 template<>
@@ -1643,13 +1847,13 @@ template<>
 DeferredRuntimeFilterType EnumUtil::FromString<DeferredRuntimeFilterType>(const char *value);
 
 template<>
+DeleteIdState EnumUtil::FromString<DeleteIdState>(const char *value);
+
+template<>
 DependencyEntryType EnumUtil::FromString<DependencyEntryType>(const char *value);
 
 template<>
 DeprecatedIndexType EnumUtil::FromString<DeprecatedIndexType>(const char *value);
-
-template<>
-DeprecatedUsingKeySyntax EnumUtil::FromString<DeprecatedUsingKeySyntax>(const char *value);
 
 template<>
 DestroyBufferUpon EnumUtil::FromString<DestroyBufferUpon>(const char *value);
@@ -1697,7 +1901,16 @@ template<>
 ExtensionLoadResult EnumUtil::FromString<ExtensionLoadResult>(const char *value);
 
 template<>
+ExtensionRepositoryAccess EnumUtil::FromString<ExtensionRepositoryAccess>(const char *value);
+
+template<>
+ExtensionRepositoryType EnumUtil::FromString<ExtensionRepositoryType>(const char *value);
+
+template<>
 ExtensionUpdateResultTag EnumUtil::FromString<ExtensionUpdateResultTag>(const char *value);
+
+template<>
+ExternalResourceOperation EnumUtil::FromString<ExternalResourceOperation>(const char *value);
 
 template<>
 ExtraDropInfoType EnumUtil::FromString<ExtraDropInfoType>(const char *value);
@@ -1710,9 +1923,6 @@ ExtraTypeInfoType EnumUtil::FromString<ExtraTypeInfoType>(const char *value);
 
 template<>
 FileBufferType EnumUtil::FromString<FileBufferType>(const char *value);
-
-template<>
-FileCompressionType EnumUtil::FromString<FileCompressionType>(const char *value);
 
 template<>
 FileExpandResult EnumUtil::FromString<FileExpandResult>(const char *value);
@@ -1728,6 +1938,9 @@ FileLockType EnumUtil::FromString<FileLockType>(const char *value);
 
 template<>
 FileNameSegmentType EnumUtil::FromString<FileNameSegmentType>(const char *value);
+
+template<>
+FileWriteMode EnumUtil::FromString<FileWriteMode>(const char *value);
 
 template<>
 FilterPropagateResult EnumUtil::FromString<FilterPropagateResult>(const char *value);
@@ -1757,13 +1970,25 @@ template<>
 GeometryType EnumUtil::FromString<GeometryType>(const char *value);
 
 template<>
+GrammarChangeType EnumUtil::FromString<GrammarChangeType>(const char *value);
+
+template<>
 GroupByExpressionInfoType EnumUtil::FromString<GroupByExpressionInfoType>(const char *value);
 
 template<>
 HLLStorageType EnumUtil::FromString<HLLStorageType>(const char *value);
 
 template<>
+HTTPClientCachePolicy EnumUtil::FromString<HTTPClientCachePolicy>(const char *value);
+
+template<>
 HTTPStatusCode EnumUtil::FromString<HTTPStatusCode>(const char *value);
+
+template<>
+HTTPTransportReusePolicy EnumUtil::FromString<HTTPTransportReusePolicy>(const char *value);
+
+template<>
+IdentifierCaseMode EnumUtil::FromString<IdentifierCaseMode>(const char *value);
 
 template<>
 IndexAppendMode EnumUtil::FromString<IndexAppendMode>(const char *value);
@@ -1775,6 +2000,9 @@ template<>
 IndexConstraintType EnumUtil::FromString<IndexConstraintType>(const char *value);
 
 template<>
+IndexDeltaType EnumUtil::FromString<IndexDeltaType>(const char *value);
+
+template<>
 InsertColumnOrder EnumUtil::FromString<InsertColumnOrder>(const char *value);
 
 template<>
@@ -1782,6 +2010,9 @@ InterruptMode EnumUtil::FromString<InterruptMode>(const char *value);
 
 template<>
 JoinFilterPushdownMode EnumUtil::FromString<JoinFilterPushdownMode>(const char *value);
+
+template<>
+JoinOrderOperatorType EnumUtil::FromString<JoinOrderOperatorType>(const char *value);
 
 template<>
 JoinRefType EnumUtil::FromString<JoinRefType>(const char *value);
@@ -1808,6 +2039,9 @@ template<>
 LimitValueType EnumUtil::FromString<LimitValueType>(const char *value);
 
 template<>
+LiteralKind EnumUtil::FromString<LiteralKind>(const char *value);
+
+template<>
 LoadType EnumUtil::FromString<LoadType>(const char *value);
 
 template<>
@@ -1821,6 +2055,9 @@ LogMode EnumUtil::FromString<LogMode>(const char *value);
 
 template<>
 LoggingTargetTable EnumUtil::FromString<LoggingTargetTable>(const char *value);
+
+template<>
+LogicalOperatorRepeatability EnumUtil::FromString<LogicalOperatorRepeatability>(const char *value);
 
 template<>
 LogicalOperatorType EnumUtil::FromString<LogicalOperatorType>(const char *value);
@@ -1838,6 +2075,21 @@ template<>
 MapInvalidReason EnumUtil::FromString<MapInvalidReason>(const char *value);
 
 template<>
+MatchMode EnumUtil::FromString<MatchMode>(const char *value);
+
+template<>
+MatchRecognizeAfterMatch EnumUtil::FromString<MatchRecognizeAfterMatch>(const char *value);
+
+template<>
+MatchRecognizeClauseKind EnumUtil::FromString<MatchRecognizeClauseKind>(const char *value);
+
+template<>
+MatchRecognizePatternType EnumUtil::FromString<MatchRecognizePatternType>(const char *value);
+
+template<>
+MatchRecognizeRows EnumUtil::FromString<MatchRecognizeRows>(const char *value);
+
+template<>
 MemoryTag EnumUtil::FromString<MemoryTag>(const char *value);
 
 template<>
@@ -1853,7 +2105,7 @@ template<>
 Monotonicity EnumUtil::FromString<Monotonicity>(const char *value);
 
 template<>
-MultiFileAcquireResult EnumUtil::FromString<MultiFileAcquireResult>(const char *value);
+MultiFileClaimResult EnumUtil::FromString<MultiFileClaimResult>(const char *value);
 
 template<>
 MultiFileColumnMappingMode EnumUtil::FromString<MultiFileColumnMappingMode>(const char *value);
@@ -1940,6 +2192,12 @@ template<>
 PatternMatchType EnumUtil::FromString<PatternMatchType>(const char *value);
 
 template<>
+PatternMemo EnumUtil::FromString<PatternMemo>(const char *value);
+
+template<>
+PatternOp EnumUtil::FromString<PatternOp>(const char *value);
+
+template<>
 PendingExecutionResult EnumUtil::FromString<PendingExecutionResult>(const char *value);
 
 template<>
@@ -1955,7 +2213,19 @@ template<>
 PipelineBroadcastExchangeConsumerMode EnumUtil::FromString<PipelineBroadcastExchangeConsumerMode>(const char *value);
 
 template<>
+PipelineBroadcastExchangeOrderMode EnumUtil::FromString<PipelineBroadcastExchangeOrderMode>(const char *value);
+
+template<>
+PipelineBroadcastExchangeScanMode EnumUtil::FromString<PipelineBroadcastExchangeScanMode>(const char *value);
+
+template<>
 PipelineInputMode EnumUtil::FromString<PipelineInputMode>(const char *value);
+
+template<>
+PipelineScheduleMode EnumUtil::FromString<PipelineScheduleMode>(const char *value);
+
+template<>
+PipelineScheduleStageType EnumUtil::FromString<PipelineScheduleStageType>(const char *value);
 
 template<>
 PragmaType EnumUtil::FromString<PragmaType>(const char *value);
@@ -2000,7 +2270,10 @@ template<>
 RecoveryMode EnumUtil::FromString<RecoveryMode>(const char *value);
 
 template<>
-RecursiveCTEInlineStageType EnumUtil::FromString<RecursiveCTEInlineStageType>(const char *value);
+RecursiveCTEPipelineMetricType EnumUtil::FromString<RecursiveCTEPipelineMetricType>(const char *value);
+
+template<>
+RecursiveCTESourcePhase EnumUtil::FromString<RecursiveCTESourcePhase>(const char *value);
 
 template<>
 RecursiveProbeSidePreference EnumUtil::FromString<RecursiveProbeSidePreference>(const char *value);
@@ -2015,16 +2288,28 @@ template<>
 RemoteCapability EnumUtil::FromString<RemoteCapability>(const char *value);
 
 template<>
+RemoveUnusedColumnsMode EnumUtil::FromString<RemoveUnusedColumnsMode>(const char *value);
+
+template<>
 RenderMode EnumUtil::FromString<RenderMode>(const char *value);
 
 template<>
 RequestType EnumUtil::FromString<RequestType>(const char *value);
 
 template<>
+ResultLifetime EnumUtil::FromString<ResultLifetime>(const char *value);
+
+template<>
 ResultModifierType EnumUtil::FromString<ResultModifierType>(const char *value);
 
 template<>
+ResultOrdering EnumUtil::FromString<ResultOrdering>(const char *value);
+
+template<>
 RowGroupAppendMode EnumUtil::FromString<RowGroupAppendMode>(const char *value);
+
+template<>
+RowIdHandling EnumUtil::FromString<RowIdHandling>(const char *value);
 
 template<>
 SampleMethod EnumUtil::FromString<SampleMethod>(const char *value);
@@ -2034,6 +2319,9 @@ SampleType EnumUtil::FromString<SampleType>(const char *value);
 
 template<>
 SamplingState EnumUtil::FromString<SamplingState>(const char *value);
+
+template<>
+ScanReadAheadAcquire EnumUtil::FromString<ScanReadAheadAcquire>(const char *value);
 
 template<>
 ScanType EnumUtil::FromString<ScanType>(const char *value);
@@ -2072,6 +2360,9 @@ template<>
 SettingScope EnumUtil::FromString<SettingScope>(const char *value);
 
 template<>
+ShowBehaviorType EnumUtil::FromString<ShowBehaviorType>(const char *value);
+
+template<>
 ShowType EnumUtil::FromString<ShowType>(const char *value);
 
 template<>
@@ -2093,16 +2384,25 @@ template<>
 SortKeyType EnumUtil::FromString<SortKeyType>(const char *value);
 
 template<>
+SourceBatchIndexState EnumUtil::FromString<SourceBatchIndexState>(const char *value);
+
+template<>
 SourceResultType EnumUtil::FromString<SourceResultType>(const char *value);
 
 template<>
 StarExpressionType EnumUtil::FromString<StarExpressionType>(const char *value);
 
 template<>
+StateMemoryOwnership EnumUtil::FromString<StateMemoryOwnership>(const char *value);
+
+template<>
 StatementReturnType EnumUtil::FromString<StatementReturnType>(const char *value);
 
 template<>
 StatementType EnumUtil::FromString<StatementType>(const char *value);
+
+template<>
+StatisticsPropagationMode EnumUtil::FromString<StatisticsPropagationMode>(const char *value);
 
 template<>
 StatisticsType EnumUtil::FromString<StatisticsType>(const char *value);
@@ -2180,9 +2480,6 @@ template<>
 TransactionType EnumUtil::FromString<TransactionType>(const char *value);
 
 template<>
-TransformFrameState EnumUtil::FromString<TransformFrameState>(const char *value);
-
-template<>
 TriggerEventType EnumUtil::FromString<TriggerEventType>(const char *value);
 
 template<>
@@ -2207,7 +2504,13 @@ template<>
 UnionInvalidReason EnumUtil::FromString<UnionInvalidReason>(const char *value);
 
 template<>
+VacuumIndexStrategy EnumUtil::FromString<VacuumIndexStrategy>(const char *value);
+
+template<>
 VariantChildLookupMode EnumUtil::FromString<VariantChildLookupMode>(const char *value);
+
+template<>
+VariantComparisonType EnumUtil::FromString<VariantComparisonType>(const char *value);
 
 template<>
 VariantLogicalType EnumUtil::FromString<VariantLogicalType>(const char *value);
@@ -2219,13 +2522,22 @@ template<>
 VectorBufferType EnumUtil::FromString<VectorBufferType>(const char *value);
 
 template<>
+VectorPrepareState EnumUtil::FromString<VectorPrepareState>(const char *value);
+
+template<>
 VectorType EnumUtil::FromString<VectorType>(const char *value);
 
 template<>
 VerifyExistenceType EnumUtil::FromString<VerifyExistenceType>(const char *value);
 
 template<>
+VersionCompressionResult EnumUtil::FromString<VersionCompressionResult>(const char *value);
+
+template<>
 VertexType EnumUtil::FromString<VertexType>(const char *value);
+
+template<>
+ViewSecurityType EnumUtil::FromString<ViewSecurityType>(const char *value);
 
 template<>
 WALType EnumUtil::FromString<WALType>(const char *value);

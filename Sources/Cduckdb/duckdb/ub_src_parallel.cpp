@@ -43,6 +43,12 @@
 #line 0 "src/parallel/pipeline_prepare_finish_event.cpp"
 #include "src/parallel/pipeline_prepare_finish_event.cpp"
 
+#line 0 "src/parallel/pipeline_schedule.cpp"
+#include "src/parallel/pipeline_schedule.cpp"
+
+#line 0 "src/parallel/scan_read_ahead.cpp"
+#include "src/parallel/scan_read_ahead.cpp"
+
 #line 0 "src/parallel/task_executor.cpp"
 #include "src/parallel/task_executor.cpp"
 

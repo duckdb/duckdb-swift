@@ -7,6 +7,9 @@
 #line 0 "src/storage/compression/bitpacking_hugeint.cpp"
 #include "src/storage/compression/bitpacking_hugeint.cpp"
 
+#line 0 "src/storage/compression/compression_segment_reader.cpp"
+#include "src/storage/compression/compression_segment_reader.cpp"
+
 #line 0 "src/storage/compression/dict_fsst.cpp"
 #include "src/storage/compression/dict_fsst.cpp"
 

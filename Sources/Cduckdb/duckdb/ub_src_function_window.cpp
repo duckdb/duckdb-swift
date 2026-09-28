@@ -1,3 +1,6 @@
+#line 0 "src/function/window/match_recognize_matcher.cpp"
+#include "src/function/window/match_recognize_matcher.cpp"
+
 #line 0 "src/function/window/window_aggregate_function.cpp"
 #include "src/function/window/window_aggregate_function.cpp"
 
@@ -28,6 +31,9 @@
 #line 0 "src/function/window/window_index_tree.cpp"
 #include "src/function/window/window_index_tree.cpp"
 
+#line 0 "src/function/window/window_match_recognize.cpp"
+#include "src/function/window/window_match_recognize.cpp"
+
 #line 0 "src/function/window/window_merge_sort_tree.cpp"
 #include "src/function/window/window_merge_sort_tree.cpp"
 
@@ -39,6 +45,9 @@
 
 #line 0 "src/function/window/window_rownumber_function.cpp"
 #include "src/function/window/window_rownumber_function.cpp"
+
+#line 0 "src/function/window/window_scalar_function.cpp"
+#include "src/function/window/window_scalar_function.cpp"
 
 #line 0 "src/function/window/window_segment_tree.cpp"
 #include "src/function/window/window_segment_tree.cpp"

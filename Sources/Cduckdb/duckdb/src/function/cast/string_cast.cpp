@@ -161,6 +161,9 @@ bool VectorStringToList::StringToNestedTypeCastLoop(const string_t *source_data,
 		auto varchar_vector_validity = varchar_vector.Validity();
 		// Something went wrong in the conversion, we need to nullify the parent
 		for (idx_t i = 0; i < count; i++) {
+			if (!result_mask.RowIsValid(i)) {
+				continue;
+			}
 			for (idx_t j = list_data[i].offset; j < list_data[i].offset + list_data[i].length; j++) {
 				if (!result_child_validity.IsValid(j) && varchar_vector_validity.IsValid(j)) {
 					result_mask.SetInvalid(i);
@@ -423,7 +426,9 @@ static bool StringToNestedTypeCast(Vector &source, Vector &result, idx_t count, 
 		auto &source_mask = ConstantVector::Validity(source);
 		auto &result_mask = FlatVector::ValidityMutable(result);
 		auto ret = T::StringToNestedTypeCastLoop(source_data, source_mask, result, result_mask, 1, parameters, nullptr);
-		result.SetVectorType(VectorType::CONSTANT_VECTOR);
+		// a child may be neither flat nor constant - a VARIANT child is shredded - and setting the type
+		// directly would propagate into a buffer that cannot represent it
+		result.FlattenAndSetConstant();
 		return ret;
 	}
 	default: {

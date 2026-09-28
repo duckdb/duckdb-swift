@@ -19,6 +19,9 @@
 #line 0 "extension/json/json_functions/json_extract.cpp"
 #include "extension/json/json_functions/json_extract.cpp"
 
+#line 0 "extension/json/json_functions/json_geojson.cpp"
+#include "extension/json/json_functions/json_geojson.cpp"
+
 #line 0 "extension/json/json_functions/json_keys.cpp"
 #include "extension/json/json_functions/json_keys.cpp"
 
@@ -67,6 +70,6 @@
 #line 0 "extension/json/json_functions/read_json.cpp"
 #include "extension/json/json_functions/read_json.cpp"
 
-#line 0 "extension/json/json_functions/read_json_objects.cpp"
-#include "extension/json/json_functions/read_json_objects.cpp"
+#line 0 "extension/json/json_functions/read_single_json_file.cpp"
+#include "extension/json/json_functions/read_single_json_file.cpp"
 

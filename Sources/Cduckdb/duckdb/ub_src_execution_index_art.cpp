@@ -40,6 +40,9 @@
 #line 0 "src/execution/index/art/node48.cpp"
 #include "src/execution/index/art/node48.cpp"
 
+#line 0 "src/execution/index/art/node_handle.cpp"
+#include "src/execution/index/art/node_handle.cpp"
+
 #line 0 "src/execution/index/art/prefix.cpp"
 #include "src/execution/index/art/prefix.cpp"
 

@@ -2,13 +2,15 @@
 
 #include "duckdb/execution/operator/join/join_filter_pushdown.hpp"
 #include "duckdb/execution/operator/join/physical_comparison_join.hpp"
-#include "duckdb/function/aggregate/distributive_function_utils.hpp"
+#include "duckdb/function/aggregate/distributive_functions.hpp"
 #include "duckdb/function/function_binder.hpp"
+#include "duckdb/optimizer/builtin_function_lookup.hpp"
 #include "duckdb/optimizer/optimizer.hpp"
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
 #include "duckdb/planner/expression/bound_columnref_expression.hpp"
 #include "duckdb/planner/expression/bound_cast_expression.hpp"
 #include "duckdb/planner/expression/bound_function_expression.hpp"
+#include "duckdb/planner/expression/bound_reference_expression.hpp"
 #include "duckdb/planner/operator/logical_aggregate.hpp"
 #include "duckdb/planner/operator/logical_comparison_join.hpp"
 #include "duckdb/planner/operator/logical_get.hpp"
@@ -62,17 +64,24 @@ static bool PushdownJoinFilterExpressionInternal(const Expression &expr, JoinFil
 		path.binding = colref.Binding();
 		return true;
 	}
-	case ExpressionClass::BOUND_CAST: {
+	case ExpressionClass::BOUND_FUNCTION: {
+		if (!BoundCastExpression::IsCast(expr)) {
+			auto &function_expr = expr.Cast<BoundFunctionExpression>();
+			if (function_expr.Function().GetName() != "variant_normalize" || function_expr.GetChildren().size() != 1) {
+				return false;
+			}
+			return PushdownJoinFilterExpressionInternal(*function_expr.GetChildren()[0], path);
+		}
 		// We allow pushing through integral casts and integral/VARIANT casts.
-		const auto &bound_cast = expr.Cast<BoundCastExpression>();
-		const auto &src = bound_cast.Child().GetReturnType();
+		const auto &bound_cast = expr.Cast<BoundFunctionExpression>();
+		const auto &src = BoundCastExpression::Child(bound_cast).GetReturnType();
 		const auto &tgt = bound_cast.GetReturnType();
 		const bool integral_cast = IsJoinFilterPushdownIntegralCast(src, tgt);
 		const bool variant_integral_cast = IsJoinFilterPushdownVariantIntegralCast(src, tgt);
 		if (!integral_cast && !variant_integral_cast) {
 			return false;
 		}
-		if (!PushdownJoinFilterExpressionInternal(bound_cast.Child(), path)) {
+		if (!PushdownJoinFilterExpressionInternal(BoundCastExpression::Child(bound_cast), path)) {
 			return false;
 		}
 		if (variant_integral_cast) {
@@ -80,23 +89,18 @@ static bool PushdownJoinFilterExpressionInternal(const Expression &expr, JoinFil
 				path.mode = JoinFilterPushdownMode::STORAGE_ONLY;
 				path.casts.clear();
 			} else if (path.mode == JoinFilterPushdownMode::RECONSTRUCT_EXPRESSION) {
-				path.casts.emplace_back(tgt, bound_cast.IsTryCast() ? RuntimeFilterCastMode::TRY_CAST
-				                                                    : RuntimeFilterCastMode::DEFAULT_CAST);
+				path.casts.emplace_back(tgt, BoundCastExpression::IsTryCast(bound_cast)
+				                                 ? RuntimeFilterCastMode::TRY_CAST
+				                                 : RuntimeFilterCastMode::DEFAULT_CAST);
 			}
 			return true;
 		}
 		if (path.mode == JoinFilterPushdownMode::RECONSTRUCT_EXPRESSION) {
-			path.casts.emplace_back(tgt, bound_cast.IsTryCast() ? RuntimeFilterCastMode::TRY_CAST
-			                                                    : RuntimeFilterCastMode::DEFAULT_CAST);
+			path.casts.emplace_back(tgt, BoundCastExpression::IsTryCast(bound_cast)
+			                                 ? RuntimeFilterCastMode::TRY_CAST
+			                                 : RuntimeFilterCastMode::DEFAULT_CAST);
 		}
 		return true;
-	}
-	case ExpressionClass::BOUND_FUNCTION: {
-		auto &function_expr = expr.Cast<BoundFunctionExpression>();
-		if (function_expr.Function().GetName() != "variant_normalize" || function_expr.GetChildren().size() != 1) {
-			return false;
-		}
-		return PushdownJoinFilterExpressionInternal(*function_expr.GetChildren()[0], path);
 	}
 	default:
 		return false;
@@ -380,15 +384,15 @@ void JoinFilterPushdownOptimizer::GenerateJoinFilters(LogicalComparisonJoin &joi
 	}
 
 	// set up the min/max aggregates for each of the filters
-	vector<AggregateFunction> aggr_functions;
-	aggr_functions.push_back(MinFunction::GetFunction());
-	aggr_functions.push_back(MaxFunction::GetFunction());
+	auto &context = optimizer.GetContext();
 	for (auto &join_condition : pushdown_info->join_condition) {
-		for (auto &aggr : aggr_functions) {
-			FunctionBinder function_binder(optimizer.GetContext());
+		for (const auto &aggr_name : {MinFun::Name, MaxFun::Name}) {
+			FunctionBinder function_binder(context);
 			vector<unique_ptr<Expression>> aggr_children;
 			aggr_children.push_back(join.conditions[join_condition].GetRHS().Copy());
-			auto aggr_expr = function_binder.BindAggregateFunction(aggr, std::move(aggr_children), nullptr,
+			// the one-argument overload of the min/max set is the plain aggregate, min(x, n) takes two
+			auto aggr = GetBuiltinAggregateFunction(context, aggr_name, {aggr_children[0]->GetReturnType()});
+			auto aggr_expr = function_binder.BindAggregateFunction(std::move(aggr), std::move(aggr_children), nullptr,
 			                                                       AggregateType::NON_DISTINCT);
 			if (aggr_expr->GetChildren().size() != 1) {
 				// min/max with collation - not supported

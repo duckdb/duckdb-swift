@@ -85,6 +85,9 @@
 #line 0 "src/execution/physical_plan/plan_expression_get.cpp"
 #include "src/execution/physical_plan/plan_expression_get.cpp"
 
+#line 0 "src/execution/physical_plan/plan_external_resource.cpp"
+#include "src/execution/physical_plan/plan_external_resource.cpp"
+
 #line 0 "src/execution/physical_plan/plan_filter.cpp"
 #include "src/execution/physical_plan/plan_filter.cpp"
 
@@ -129,6 +132,9 @@
 
 #line 0 "src/execution/physical_plan/plan_sample.cpp"
 #include "src/execution/physical_plan/plan_sample.cpp"
+
+#line 0 "src/execution/physical_plan/plan_secure_view.cpp"
+#include "src/execution/physical_plan/plan_secure_view.cpp"
 
 #line 0 "src/execution/physical_plan/plan_set.cpp"
 #include "src/execution/physical_plan/plan_set.cpp"

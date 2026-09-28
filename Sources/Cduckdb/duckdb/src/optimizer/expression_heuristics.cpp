@@ -6,6 +6,7 @@
 #include "duckdb/planner/expression/list.hpp"
 #include "duckdb/planner/filter/expression_filter.hpp"
 #include "duckdb/planner/filter/table_filter_functions.hpp"
+#include "duckdb/planner/expression/expression_barrier.hpp"
 
 namespace duckdb {
 
@@ -47,8 +48,8 @@ void ExpressionHeuristics::ReorderExpressions(vector<unique_ptr<Expression>> &ex
 	};
 
 	for (idx_t i = 0; i < expressions.size(); i++) {
-		if (expressions[i]->CanThrow()) {
-			// do not allow reordering if an expression can throw
+		if (expressions[i]->CanThrow() || ExpressionBarrier::Contains(*expressions[i])) {
+			// do not allow reordering if an expression can throw, or carries a barrier
 			return;
 		}
 	}
@@ -86,21 +87,22 @@ idx_t ExpressionHeuristics::ExpressionCost(const BoundCaseExpression &expr) {
 	return case_cost;
 }
 
-idx_t ExpressionHeuristics::ExpressionCost(const BoundCastExpression &expr) {
+idx_t ExpressionHeuristics::CastExpressionCost(const BoundFunctionExpression &expr) {
 	// OPERATOR_CAST
 	// determine cast cost by comparing cast_expr.source_type and cast_expr_target_type
+	auto source_type = BoundCastExpression::SourceType(expr);
 	idx_t cast_cost = 0;
-	if (expr.GetReturnType() != expr.source_type()) {
+	if (expr.GetReturnType() != source_type) {
 		// if cast from or to varchar
 		// TODO: we might want to add more cases
-		if (expr.GetReturnType().id() == LogicalTypeId::VARCHAR || expr.source_type().id() == LogicalTypeId::VARCHAR ||
-		    expr.GetReturnType().id() == LogicalTypeId::BLOB || expr.source_type().id() == LogicalTypeId::BLOB) {
+		if (expr.GetReturnType().id() == LogicalTypeId::VARCHAR || source_type.id() == LogicalTypeId::VARCHAR ||
+		    expr.GetReturnType().id() == LogicalTypeId::BLOB || source_type.id() == LogicalTypeId::BLOB) {
 			cast_cost = 200;
 		} else {
 			cast_cost = 5;
 		}
 	}
-	return Cost(expr.Child()) + cast_cost;
+	return Cost(BoundCastExpression::Child(expr)) + cast_cost;
 }
 
 idx_t ExpressionHeuristics::ComparisonExpressionCost(const BoundFunctionExpression &expr) {
@@ -126,6 +128,9 @@ idx_t ExpressionHeuristics::ExpressionCost(const BoundFunctionExpression &expr) 
 	}
 	if (BoundComparisonExpression::IsComparison(expr)) {
 		return ComparisonExpressionCost(expr);
+	}
+	if (BoundCastExpression::IsCast(expr)) {
+		return CastExpressionCost(expr);
 	}
 	identifier_map_t<idx_t> function_costs = {{"+", 5},       {"-", 5},    {"&", 5},          {"#", 5},
 	                                          {">>", 5},      {"<<", 5},   {"abs", 5},        {"*", 10},
@@ -185,10 +190,6 @@ idx_t ExpressionHeuristics::Cost(const Expression &expr) {
 		auto &case_expr = expr.Cast<BoundCaseExpression>();
 		return ExpressionCost(case_expr);
 	}
-	case ExpressionClass::BOUND_CAST: {
-		auto &cast_expr = expr.Cast<BoundCastExpression>();
-		return ExpressionCost(cast_expr);
-	}
 	case ExpressionClass::BOUND_CONJUNCTION: {
 		auto &conj_expr = expr.Cast<BoundConjunctionExpression>();
 		return ExpressionCost(conj_expr);
@@ -229,6 +230,10 @@ idx_t ExpressionHeuristics::Cost(const Expression &expr) {
 idx_t ExpressionHeuristics::Cost(const TableFilter &filter) {
 	auto &expr_filter = ExpressionFilter::GetExpressionFilter(filter, "ExpressionHeuristics::Cost");
 	auto &expr = *expr_filter.expr;
+	if (ExpressionBarrier::Contains(expr)) {
+		// a barrier filter is always evaluated last, so that it never runs on rows another filter removes
+		return NumericLimits<idx_t>::Maximum();
+	}
 	if (ExpressionFilter::ContainsInternalFunction(expr, DynamicFilterScalarFun::NAME)) {
 		return 0;
 	}

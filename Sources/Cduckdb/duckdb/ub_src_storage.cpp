@@ -25,6 +25,9 @@
 #line 0 "src/storage/index.cpp"
 #include "src/storage/index.cpp"
 
+#line 0 "src/storage/index_entry.cpp"
+#include "src/storage/index_entry.cpp"
+
 #line 0 "src/storage/local_storage.cpp"
 #include "src/storage/local_storage.cpp"
 

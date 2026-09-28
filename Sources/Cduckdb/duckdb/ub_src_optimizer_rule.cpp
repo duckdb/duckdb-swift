@@ -46,6 +46,9 @@
 #line 0 "src/optimizer/rule/join_dependent_filter.cpp"
 #include "src/optimizer/rule/join_dependent_filter.cpp"
 
+#line 0 "src/optimizer/rule/least_greatest_simplification.cpp"
+#include "src/optimizer/rule/least_greatest_simplification.cpp"
+
 #line 0 "src/optimizer/rule/like_optimizations.cpp"
 #include "src/optimizer/rule/like_optimizations.cpp"
 
@@ -75,6 +78,9 @@
 
 #line 0 "src/optimizer/rule/string_prefix.cpp"
 #include "src/optimizer/rule/string_prefix.cpp"
+
+#line 0 "src/optimizer/rule/struct_extract_struct_pack_folding.cpp"
+#include "src/optimizer/rule/struct_extract_struct_pack_folding.cpp"
 
 #line 0 "src/optimizer/rule/timestamp_comparison.cpp"
 #include "src/optimizer/rule/timestamp_comparison.cpp"

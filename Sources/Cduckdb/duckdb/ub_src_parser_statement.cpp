@@ -43,6 +43,9 @@
 #line 0 "src/parser/statement/extension_statement.cpp"
 #include "src/parser/statement/extension_statement.cpp"
 
+#line 0 "src/parser/statement/external_resource_statement.cpp"
+#include "src/parser/statement/external_resource_statement.cpp"
+
 #line 0 "src/parser/statement/insert_statement.cpp"
 #include "src/parser/statement/insert_statement.cpp"
 

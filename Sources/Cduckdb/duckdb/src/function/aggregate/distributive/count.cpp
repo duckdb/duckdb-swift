@@ -271,15 +271,15 @@ struct CountFunction : public BaseCountFunction {
 
 AggregateStateLayout GetCountStateType(AggregateLayoutInput &input) {
 	auto &function = input.function;
-	return AggregateStateLayout(LogicalType::BIGINT, AlignValue(function.GetStateSizeCallback()(function)));
+	AggregateStateInput state_input(function, input.bind_data.get());
+	return AggregateStateLayout(LogicalType::BIGINT, AlignValue(function.GetStateSizeCallback()(state_input)));
 }
 
 unique_ptr<BaseStatistics> CountPropagateStats(ClientContext &context, BoundAggregateExpression &expr,
                                                AggregateStatisticsInput &input) {
 	if (!expr.IsDistinct() && !input.child_stats[0].CanHaveNull()) {
 		// count on a column without null values: use count star
-		expr.FunctionMutable().ReplaceImplementation(CountStarFun::GetFunction());
-		expr.FunctionMutable().SetName("count_star");
+		expr.FunctionMutable() = BoundAggregateFunction(CountStarFun::GetFunction());
 		expr.GetChildrenMutable().clear();
 	}
 	return nullptr;
@@ -288,11 +288,12 @@ unique_ptr<BaseStatistics> CountPropagateStats(ClientContext &context, BoundAggr
 } // namespace
 
 AggregateFunction CountFunctionBase::GetFunction() {
-	AggregateFunction fun({LogicalType(LogicalTypeId::ANY)}, LogicalType::BIGINT, AggregateFunction::StateSize<int64_t>,
+	AggregateFunction fun({}, LogicalType::BIGINT, AggregateFunction::StateSize<int64_t>,
 	                      AggregateFunction::StateInitialize<int64_t, CountFunction>, CountFunction::CountScatter,
 	                      AggregateFunction::StateCombine<int64_t, CountFunction>,
 	                      AggregateFunction::StateFinalize<int64_t, int64_t, CountFunction>,
 	                      FunctionNullHandling::SPECIAL_HANDLING, CountFunction::CountClusterUpdate);
+	fun.GetSignature().AddParameter("arg", LogicalTypeId::ANY);
 	fun.SetName("count");
 	fun.SetOrderDependent(AggregateOrderDependent::NOT_ORDER_DEPENDENT);
 	fun.SetStructStateExport(GetCountStateType);

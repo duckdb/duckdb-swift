@@ -46,7 +46,7 @@ struct PragmaStorageLocalState : public LocalTableFunctionState {
 };
 
 static unique_ptr<FunctionData> PragmaStorageInfoBind(ClientContext &context, TableFunctionBindInput &input,
-                                                      vector<LogicalType> &return_types, vector<string> &names) {
+                                                      vector<LogicalType> &return_types, vector<Identifier> &names) {
 	names.emplace_back("row_group_id");
 	return_types.emplace_back(LogicalType::BIGINT);
 
@@ -111,8 +111,10 @@ static unique_ptr<FunctionData> PragmaStorageInfoBind(ClientContext &context, Ta
 	auto qname = QualifiedName::Parse(input.inputs[0].GetValue<string>());
 
 	// look up the table name in the catalog
-	Binder::BindSchemaOrCatalog(context, qname);
+	CatalogEntryRetriever retriever(context);
+	qname = Binder::BindTableName(retriever, qname);
 	auto &table_entry = Catalog::GetEntry<TableCatalogEntry>(context, qname);
+	Binder::RegisterEntryRead(input.binder, context, table_entry);
 	return make_uniq<PragmaStorageFunctionData>(table_entry, options);
 }
 

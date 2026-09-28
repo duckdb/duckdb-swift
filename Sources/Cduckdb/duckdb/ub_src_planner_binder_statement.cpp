@@ -43,6 +43,9 @@
 #line 0 "src/planner/binder/statement/bind_extension.cpp"
 #include "src/planner/binder/statement/bind_extension.cpp"
 
+#line 0 "src/planner/binder/statement/bind_external_resource.cpp"
+#include "src/planner/binder/statement/bind_external_resource.cpp"
+
 #line 0 "src/planner/binder/statement/bind_insert.cpp"
 #include "src/planner/binder/statement/bind_insert.cpp"
 

@@ -19,9 +19,6 @@
 #line 0 "src/planner/expression/bound_expanded_expression.cpp"
 #include "src/planner/expression/bound_expanded_expression.cpp"
 
-#line 0 "src/planner/expression/bound_expression.cpp"
-#include "src/planner/expression/bound_expression.cpp"
-
 #line 0 "src/planner/expression/bound_function_expression.cpp"
 #include "src/planner/expression/bound_function_expression.cpp"
 
@@ -51,6 +48,9 @@
 
 #line 0 "src/planner/expression/legacy_bound_between_expression.cpp"
 #include "src/planner/expression/legacy_bound_between_expression.cpp"
+
+#line 0 "src/planner/expression/legacy_bound_cast_expression.cpp"
+#include "src/planner/expression/legacy_bound_cast_expression.cpp"
 
 #line 0 "src/planner/expression/legacy_bound_comparison_expression.cpp"
 #include "src/planner/expression/legacy_bound_comparison_expression.cpp"

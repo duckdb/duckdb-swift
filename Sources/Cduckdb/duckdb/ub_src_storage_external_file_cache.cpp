@@ -7,9 +7,6 @@
 #line 0 "src/storage/external_file_cache/external_file_cache.cpp"
 #include "src/storage/external_file_cache/external_file_cache.cpp"
 
-#line 0 "src/storage/external_file_cache/external_file_cache_block.cpp"
-#include "src/storage/external_file_cache/external_file_cache_block.cpp"
-
 #line 0 "src/storage/external_file_cache/external_file_cache_util.cpp"
 #include "src/storage/external_file_cache/external_file_cache_util.cpp"
 

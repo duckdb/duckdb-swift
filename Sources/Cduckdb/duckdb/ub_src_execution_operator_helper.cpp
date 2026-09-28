@@ -1,11 +1,8 @@
+#line 0 "src/execution/operator/helper/launch_external_resource.cpp"
+#include "src/execution/operator/helper/launch_external_resource.cpp"
+
 #line 0 "src/execution/operator/helper/physical_batch_collector.cpp"
 #include "src/execution/operator/helper/physical_batch_collector.cpp"
-
-#line 0 "src/execution/operator/helper/physical_buffered_batch_collector.cpp"
-#include "src/execution/operator/helper/physical_buffered_batch_collector.cpp"
-
-#line 0 "src/execution/operator/helper/physical_buffered_collector.cpp"
-#include "src/execution/operator/helper/physical_buffered_collector.cpp"
 
 #line 0 "src/execution/operator/helper/physical_connect.cpp"
 #include "src/execution/operator/helper/physical_connect.cpp"
@@ -22,6 +19,9 @@
 #line 0 "src/execution/operator/helper/physical_explain_analyze.cpp"
 #include "src/execution/operator/helper/physical_explain_analyze.cpp"
 
+#line 0 "src/execution/operator/helper/physical_external_resource.cpp"
+#include "src/execution/operator/helper/physical_external_resource.cpp"
+
 #line 0 "src/execution/operator/helper/physical_limit.cpp"
 #include "src/execution/operator/helper/physical_limit.cpp"
 
@@ -30,9 +30,6 @@
 
 #line 0 "src/execution/operator/helper/physical_load.cpp"
 #include "src/execution/operator/helper/physical_load.cpp"
-
-#line 0 "src/execution/operator/helper/physical_materialized_collector.cpp"
-#include "src/execution/operator/helper/physical_materialized_collector.cpp"
 
 #line 0 "src/execution/operator/helper/physical_pragma.cpp"
 #include "src/execution/operator/helper/physical_pragma.cpp"
@@ -48,6 +45,12 @@
 
 #line 0 "src/execution/operator/helper/physical_result_collector.cpp"
 #include "src/execution/operator/helper/physical_result_collector.cpp"
+
+#line 0 "src/execution/operator/helper/physical_result_sink.cpp"
+#include "src/execution/operator/helper/physical_result_sink.cpp"
+
+#line 0 "src/execution/operator/helper/physical_secure_view.cpp"
+#include "src/execution/operator/helper/physical_secure_view.cpp"
 
 #line 0 "src/execution/operator/helper/physical_set.cpp"
 #include "src/execution/operator/helper/physical_set.cpp"

@@ -85,6 +85,9 @@
 #line 0 "src/parser/peg/transformer/transform_expression.cpp"
 #include "src/parser/peg/transformer/transform_expression.cpp"
 
+#line 0 "src/parser/peg/transformer/transform_external_resource.cpp"
+#include "src/parser/peg/transformer/transform_external_resource.cpp"
+
 #line 0 "src/parser/peg/transformer/transform_generated.cpp"
 #include "src/parser/peg/transformer/transform_generated.cpp"
 
@@ -99,6 +102,9 @@
 
 #line 0 "src/parser/peg/transformer/transform_load.cpp"
 #include "src/parser/peg/transformer/transform_load.cpp"
+
+#line 0 "src/parser/peg/transformer/transform_match_recognize.cpp"
+#include "src/parser/peg/transformer/transform_match_recognize.cpp"
 
 #line 0 "src/parser/peg/transformer/transform_merge_into.cpp"
 #include "src/parser/peg/transformer/transform_merge_into.cpp"

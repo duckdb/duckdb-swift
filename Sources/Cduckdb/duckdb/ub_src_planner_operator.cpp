@@ -79,6 +79,9 @@
 #line 0 "src/planner/operator/logical_extension_operator.cpp"
 #include "src/planner/operator/logical_extension_operator.cpp"
 
+#line 0 "src/planner/operator/logical_external_resource.cpp"
+#include "src/planner/operator/logical_external_resource.cpp"
+
 #line 0 "src/planner/operator/logical_filter.cpp"
 #include "src/planner/operator/logical_filter.cpp"
 
@@ -129,6 +132,9 @@
 
 #line 0 "src/planner/operator/logical_sample.cpp"
 #include "src/planner/operator/logical_sample.cpp"
+
+#line 0 "src/planner/operator/logical_secure_view.cpp"
+#include "src/planner/operator/logical_secure_view.cpp"
 
 #line 0 "src/planner/operator/logical_set.cpp"
 #include "src/planner/operator/logical_set.cpp"

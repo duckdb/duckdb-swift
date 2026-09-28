@@ -82,6 +82,9 @@
 #line 0 "src/common/gzip_file_system.cpp"
 #include "src/common/gzip_file_system.cpp"
 
+#line 0 "src/common/hash_functions.cpp"
+#include "src/common/hash_functions.cpp"
+
 #line 0 "src/common/hive_partitioning.cpp"
 #include "src/common/hive_partitioning.cpp"
 
@@ -97,6 +100,12 @@
 #line 0 "src/common/memory_mapped_file.cpp"
 #include "src/common/memory_mapped_file.cpp"
 
+#line 0 "src/common/memory_safety.cpp"
+#include "src/common/memory_safety.cpp"
+
+#line 0 "src/common/open_file_info.cpp"
+#include "src/common/open_file_info.cpp"
+
 #line 0 "src/common/opener_file_system.cpp"
 #include "src/common/opener_file_system.cpp"
 
@@ -111,6 +120,9 @@
 
 #line 0 "src/common/printer.cpp"
 #include "src/common/printer.cpp"
+
+#line 0 "src/common/process_util.cpp"
+#include "src/common/process_util.cpp"
 
 #line 0 "src/common/radix_partitioning.cpp"
 #include "src/common/radix_partitioning.cpp"

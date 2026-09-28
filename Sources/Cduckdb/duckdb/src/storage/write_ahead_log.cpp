@@ -10,14 +10,14 @@
 #include "duckdb/catalog/catalog_entry/view_catalog_entry.hpp"
 #include "duckdb/catalog/duck_catalog.hpp"
 #include "duckdb/common/checksum.hpp"
+#include "duckdb/common/thread.hpp"
+#include "duckdb/main/settings.hpp"
 #include "duckdb/common/encryption_functions.hpp"
 #include "duckdb/common/encryption_key_manager.hpp"
 #include "duckdb/common/serializer/binary_serializer.hpp"
 #include "duckdb/common/serializer/memory_stream.hpp"
-#include "duckdb/execution/index/bound_index.hpp"
 #include "duckdb/parser/constraints/unique_constraint.hpp"
 #include "duckdb/parser/parsed_data/alter_table_info.hpp"
-#include "duckdb/storage/index.hpp"
 #include "duckdb/storage/single_file_block_manager.hpp"
 #include "duckdb/storage/storage_manager.hpp"
 #include "duckdb/storage/table/column_data.hpp"
@@ -343,7 +343,7 @@ void WriteAheadLog::WriteCreateSequence(const SequenceCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropSequence(const SequenceCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_SEQUENCE);
-	serializer.WriteEntry(WALDropSequence {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropSequence(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -351,8 +351,8 @@ void WriteAheadLog::WriteSequenceValue(SequenceValue val) {
 	auto &sequence = *val.entry;
 	WriteAheadLogSerializer serializer(*this, WALType::SEQUENCE_VALUE);
 	// last_value (id 105) is only serialized from storage version v2.0.0 onwards, and is omitted when unset
-	serializer.WriteEntry(WALSequenceValue {sequence.schema.name, sequence.name, val.usage_count, val.counter,
-	                                        val.entry->GetData().last_value});
+	serializer.WriteEntry(WALSequenceValue(QualifiedName(sequence.schema.GetSchemaPath(), sequence.name),
+	                                       val.usage_count, val.counter, val.entry->GetData().last_value));
 	serializer.End();
 }
 
@@ -367,7 +367,7 @@ void WriteAheadLog::WriteCreateMacro(const ScalarMacroCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropMacro(const ScalarMacroCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_MACRO);
-	serializer.WriteEntry(WALDropMacro {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropMacro(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -379,7 +379,7 @@ void WriteAheadLog::WriteCreateTableMacro(const TableMacroCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropTableMacro(const TableMacroCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_TABLE_MACRO);
-	serializer.WriteEntry(WALDropTableMacro {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropTableMacro(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -397,21 +397,17 @@ void SerializeIndex(AttachedDatabase &db, WriteAheadLogSerializer &serializer, T
 		options["v1_0_0_storage"] = v1_0_0_storage;
 	}
 
-	for (auto &index : list.Indexes()) {
-		if (name == index.GetIndexName()) {
-			// We never write an unbound index to the WAL.
-			D_ASSERT(index.IsBound());
-			const auto &info = index.Cast<BoundIndex>().SerializeToWAL(options);
-			serializer.WriteProperty(102, "index_storage_info", info);
-			serializer.WriteList(103, "index_storage", info.buffers.size(), [&](Serializer::List &list, idx_t i) {
-				auto &buffers = info.buffers[i];
-				for (auto buffer : buffers) {
-					list.WriteElement(buffer.buffer_ptr, buffer.allocation_size);
-				}
-			});
-			break;
-		}
+	auto info = list.SerializeToWAL(name, options);
+	if (!info) {
+		return;
 	}
+	serializer.WriteProperty(102, "index_storage_info", *info);
+	serializer.WriteList(103, "index_storage", info->buffers.size(), [&](Serializer::List &list, idx_t i) {
+		auto &buffers = info->buffers[i];
+		for (auto buffer : buffers) {
+			list.WriteElement(buffer.buffer_ptr, buffer.allocation_size);
+		}
+	});
 }
 
 void WriteAheadLog::WriteCreateIndex(const IndexCatalogEntry &entry) {
@@ -428,7 +424,7 @@ void WriteAheadLog::WriteCreateIndex(const IndexCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropIndex(const IndexCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_INDEX);
-	serializer.WriteEntry(WALDropIndex {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropIndex(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -443,7 +439,7 @@ void WriteAheadLog::WriteCreateType(const TypeCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropType(const TypeCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_TYPE);
-	serializer.WriteEntry(WALDropType {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropType(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -458,7 +454,8 @@ void WriteAheadLog::WriteCreateTrigger(const TriggerCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropTrigger(const TriggerCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_TRIGGER);
-	serializer.WriteEntry(WALDropTrigger {entry.schema.name, entry.name, entry.base_table->Table()});
+	serializer.WriteEntry(
+	    WALDropTrigger(QualifiedName(entry.schema.GetSchemaPath(), entry.name), entry.base_table->Table()));
 	serializer.End();
 }
 
@@ -473,7 +470,7 @@ void WriteAheadLog::WriteCreateView(const ViewCatalogEntry &entry) {
 
 void WriteAheadLog::WriteDropView(const ViewCatalogEntry &entry) {
 	WriteAheadLogSerializer serializer(*this, WALType::DROP_VIEW);
-	serializer.WriteEntry(WALDropView {entry.schema.name, entry.name});
+	serializer.WriteEntry(WALDropView(QualifiedName(entry.schema.GetSchemaPath(), entry.name)));
 	serializer.End();
 }
 
@@ -498,9 +495,9 @@ void WriteAheadLog::WriteDropSchema(const SchemaCatalogEntry &entry) {
 //===--------------------------------------------------------------------===//
 // DATA
 //===--------------------------------------------------------------------===//
-void WriteAheadLog::WriteSetTable(const Identifier &schema, const Identifier &table) {
+void WriteAheadLog::WriteSetTable(const QualifiedName &table) {
 	WriteAheadLogSerializer serializer(*this, WALType::USE_TABLE);
-	serializer.WriteEntry(WALUseTable {schema, table});
+	serializer.WriteEntry(WALUseTable(table));
 	serializer.End();
 }
 
@@ -556,7 +553,7 @@ void WriteAheadLog::WriteAlter(CatalogEntry &entry, const AlterInfo &info) {
 	WriteAheadLogSerializer serializer(*this, WALType::ALTER_INFO);
 	serializer.WriteProperty(101, "info", &info);
 
-	if (!info.IsAddPrimaryKey()) {
+	if (!info.IsAddUniqueConstraint()) {
 		return serializer.End();
 	}
 
@@ -582,14 +579,77 @@ void WriteAheadLog::Flush() {
 	if (!writer) {
 		return;
 	}
+	SyncUpTo(FlushMarker());
+}
+
+idx_t WriteAheadLog::FlushMarker() {
+	if (!writer) {
+		// nothing was ever written to this WAL: there is nothing to make durable
+		return 0;
+	}
 
 	// write an empty entry
 	WriteAheadLogSerializer serializer(*this, WALType::WAL_FLUSH);
 	serializer.End();
 
-	// flushes all changes made to the WAL to disk
-	writer->Sync();
+	// push to the OS without syncing: SyncUpTo does that, potentially batched with other commits
+	writer->Flush();
 	storage_manager.SetWALSize(writer->GetFileSize());
+	auto marker_offset = writer->GetTotalWritten();
+	{
+		lock_guard<mutex> guard(sync_lock);
+		if (marker_offset > requested_sync_offset) {
+			requested_sync_offset = marker_offset;
+		}
+	}
+	return marker_offset;
+}
+
+void WriteAheadLog::SyncUpTo(idx_t offset) {
+	D_ASSERT(writer && offset > 0);
+	auto &db_instance = GetDatabase().GetDatabase();
+	auto fsync_sleep_ms = Settings::Get<DebugWalFsyncSleepMsSetting>(db_instance);
+	auto force_fsync_failure = Settings::Get<DebugForceWalFsyncFailureSetting>(db_instance);
+	unique_lock<mutex> guard(sync_lock);
+	// durable_offset only advances on successful syncs, so an offset it covers stays durable
+	while (durable_offset < offset) {
+		if (sync_failed) {
+			throw IOException("Cannot sync WAL \"%s\": a previous sync of this WAL has failed", wal_path);
+		}
+		if (sync_in_flight) {
+			// one sync at a time: the next syncer covers every marker flushed meanwhile
+			sync_cv.wait(guard);
+			continue;
+		}
+		// sync everything flushed so far, on behalf of every waiter
+		auto target = requested_sync_offset;
+		sync_in_flight = true;
+		guard.unlock();
+		ErrorData error;
+		try {
+			if (fsync_sleep_ms > 0) {
+				ThreadUtil::SleepMs(fsync_sleep_ms);
+			}
+			if (force_fsync_failure) {
+				throw IOException("debug_force_wal_fsync_failure: injected WAL fsync failure");
+			}
+			writer->SyncHandle();
+		} catch (std::exception &ex) {
+			error = ErrorData(ex);
+		}
+		guard.lock();
+		sync_in_flight = false;
+		if (error.HasError()) {
+			// the OS may have dropped the dirty pages: this WAL must never be synced again
+			sync_failed = true;
+		} else {
+			durable_offset = target;
+		}
+		sync_cv.notify_all();
+		if (error.HasError()) {
+			error.Throw();
+		}
+	}
 }
 
 void WriteAheadLog::IncrementWALEntriesCount() {

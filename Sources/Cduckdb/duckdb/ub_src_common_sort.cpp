@@ -10,6 +10,9 @@
 #line 0 "src/common/sort/partition_key_tracker.cpp"
 #include "src/common/sort/partition_key_tracker.cpp"
 
+#line 0 "src/common/sort/partitioned_sort.cpp"
+#include "src/common/sort/partitioned_sort.cpp"
+
 #line 0 "src/common/sort/sort.cpp"
 #include "src/common/sort/sort.cpp"
 

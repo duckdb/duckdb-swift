@@ -43,6 +43,9 @@
 #line 0 "src/execution/operator/join/physical_range_join.cpp"
 #include "src/execution/operator/join/physical_range_join.cpp"
 
+#line 0 "src/execution/operator/join/physical_recursive_cte_key_join.cpp"
+#include "src/execution/operator/join/physical_recursive_cte_key_join.cpp"
+
 #line 0 "src/execution/operator/join/physical_right_delim_join.cpp"
 #include "src/execution/operator/join/physical_right_delim_join.cpp"
 
