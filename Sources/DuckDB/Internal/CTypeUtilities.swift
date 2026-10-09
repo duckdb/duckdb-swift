@@ -245,15 +245,17 @@ extension duckdb_decimal {
     var scale: Int
     var mantissa: UIntHuge
     if source.exponent > 0 {
-      let exponent = UIntHuge(source.exponent)
-      let (out, overflow) = source.hugeMantissa.multipliedReportingOverflow(by: exponent)
-      guard overflow == false else { throw DatabaseError.decimalUnrepresentable }
-      mantissa = out
+      mantissa = try source.makeHugeMantissa()
+      for _ in 0..<source.exponent {
+        let (out, overflow) = mantissa.multipliedReportingOverflow(by: UIntHuge(10))
+        guard overflow == false else { throw DatabaseError.decimalUnrepresentable }
+        mantissa = out
+      }
       scale = 0
     }
     else {
       scale = -source.exponent
-      mantissa = source.hugeMantissa
+      mantissa = try source.makeHugeMantissa()
       while scale > Self.scaleLimit {
         mantissa /= 10
         scale -= 1
@@ -278,15 +280,20 @@ extension duckdb_decimal {
 
 fileprivate extension Decimal {
   
-  var hugeMantissa: UIntHuge {
-    let components = [
-      _mantissa.0, _mantissa.1, _mantissa.2, _mantissa.3,
-      _mantissa.4, _mantissa.5, _mantissa.6, _mantissa.7
-    ]
+  func makeHugeMantissa() throws -> UIntHuge {
     var mantissa = UIntHuge(0)
-    for i in 0..<Int(_length) {
-      mantissa += UIntHuge(components[i]) << (i * 16)
+    var hasDigit = false
+    for scalar in significand.description.unicodeScalars {
+      guard scalar.value >= 48, scalar.value <= 57 else { continue }
+      hasDigit = true
+      let digit = UIntHuge(scalar.value - 48)
+      let (shifted, multiplyOverflow) = mantissa.multipliedReportingOverflow(by: UIntHuge(10))
+      guard multiplyOverflow == false else { throw DatabaseError.decimalUnrepresentable }
+      let (added, addOverflow) = shifted.addingReportingOverflow(digit)
+      guard addOverflow == false else { throw DatabaseError.decimalUnrepresentable }
+      mantissa = added
     }
+    guard hasDigit else { throw DatabaseError.decimalUnrepresentable }
     return mantissa
   }
 }
