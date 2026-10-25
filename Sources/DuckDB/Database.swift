@@ -67,7 +67,11 @@ public final class Database: Sendable {
     case inMemory
   }
   
-  private let ptr = UnsafeMutablePointer<duckdb_database?>.allocate(capacity: 1)
+  private let ptr: UnsafeMutablePointer<duckdb_database?> = {
+    let pointer = UnsafeMutablePointer<duckdb_database?>.allocate(capacity: 1)
+    pointer.initialize(to: nil)
+    return pointer
+  }()
   
   /// Creates a Duck DB database
   ///
@@ -97,6 +101,7 @@ public final class Database: Sendable {
   
   private init(path: String?, config: Configuration?) throws {
     let outError = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>.allocate(capacity: 1)
+    outError.initialize(to: nil)
     defer { outError.deallocate() }
     let status = path.withOptionalCString { strPtr in
       if let config {
